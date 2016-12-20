@@ -9,21 +9,21 @@ import Grid from '../../components/Characters/GamesList/Grid';
 import Table from '../../components/Characters/GamesList/Table';
 
 const GamesList = ({ location: { pathname }, mode }) => {
-    const gamesFlex = testApi.getAllGames();
-    
-    return( 
-        <DocumentTitle title="Characters | Touhou">
-            {mode === 'grid'
-                ? <Grid gamesFlex={gamesFlex} pathname={pathname} snakeCase={_.snakeCase} />
-                : <Table gamesFlex={gamesFlex} pathname={pathname} snakeCase={_.snakeCase} />
-            }
-        </DocumentTitle>
-    );
+  const gamesFlex = testApi.getAllGames();
+
+  return (
+    <DocumentTitle title="Characters | Touhou">
+      {mode === 'grid'
+        ? <Grid gamesFlex={gamesFlex} pathname={pathname} snakeCase={_.snakeCase} />
+        : <Table gamesFlex={gamesFlex} pathname={pathname} snakeCase={_.snakeCase} />
+      }
+    </DocumentTitle>
+  );
 }
 
 GamesList.propTypes = {
-    location: PropTypes.object,
-    mode: PropTypes.string,
+  location: PropTypes.object,
+  mode: PropTypes.string,
 };
 
 export default ListHoc(GamesList);

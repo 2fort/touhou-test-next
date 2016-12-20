@@ -12,14 +12,14 @@ import Character from './components/Characters/Character';
 import Route404 from './components/404';
 
 module.exports = (
-    <Route path="/" component={Index}>
-        <IndexRoute component={Home} />
-        <Route path="test" component={Test} />
-        <Route path="characters" component={Characters}>
-            <IndexRoute component={GamesList} />
-            <Route path=":game" component={CharactersList} />
-            <Route path=":game/:char" component={Character} />
-        </Route>
-        <Route path="*" component={Route404} />
+  <Route path="/" component={Index}>
+    <IndexRoute component={Home} />
+    <Route path="test" component={Test} />
+    <Route path="characters" component={Characters}>
+      <IndexRoute component={GamesList} />
+      <Route path=":game" component={CharactersList} />
+      <Route path=":game/:char" component={Character} />
     </Route>
+    <Route path="*" component={Route404} />
+  </Route>
 );

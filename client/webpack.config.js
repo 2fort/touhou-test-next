@@ -9,7 +9,7 @@ module.exports = {
     'react-hot-loader/patch',
     'webpack-dev-server/client?http://localhost:8081',
     'webpack/hot/only-dev-server',
-    './src/js/app.js',
+    './src/js/app.jsx',
   ],
 
   output: {
@@ -136,9 +136,9 @@ module.exports = {
     }),
   ],
 
-  devtool: 'cheap-module-eval-source-map',
+  // devtool: 'cheap-module-eval-source-map',
 
-  // devtool: 'source-map',
+  devtool: 'source-map',
   performance: { hints: false },
 
   devServer: {
@@ -146,7 +146,7 @@ module.exports = {
     contentBase: '/build',
     publicPath: '/',
     historyApiFallback: true,
-    // stats: 'minimal',
+    stats: 'minimal',
     port: 8081,
   },
 };

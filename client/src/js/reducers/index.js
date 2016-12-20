@@ -3,8 +3,8 @@ import test from './test';
 import characters from './characters';
 
 const rootReducer = combineReducers({
-    test,
-    characters,
+  test,
+  characters,
 });
 
 export default rootReducer;

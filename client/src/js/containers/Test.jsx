@@ -11,75 +11,75 @@ import MyModal from '../components/Test/MyModal';
 import TestCore from '../components/Test/TestCore';
 
 class Test extends Component {
-    componentWillMount() {
-        this.props.actions.showResetButton();
+  componentWillMount() {
+    this.props.actions.showResetButton();
 
-        if (!this.props.inProgress) {
-            this.props.actions.beginTest();
-        }
+    if (!this.props.inProgress) {
+      this.props.actions.beginTest();
     }
-    componentWillUnmount() {
-        this.props.actions.hideResetButton();
+  }
+  componentWillUnmount() {
+    this.props.actions.hideResetButton();
+  }
+  render() {
+    const { steps, maxSteps, activeStep, passedSteps, modalIsOpen, inProgress, actions } = this.props;
+
+    if (!inProgress) {
+      return null;
     }
-    render() {
-        const { steps, maxSteps, activeStep, passedSteps, modalIsOpen, inProgress, actions } = this.props;
 
-        if (!inProgress) {
-            return null;
-        }
+    return (
+      <DocumentTitle title="Test | Touhou">
+        <div>
+          <Slider
+            setStep={actions.setStep}
+            passedSteps={passedSteps}
+            maxSteps={maxSteps}
+            step={activeStep}
+          />
+          <TopButtons
+            steps={steps}
+            passedSteps={passedSteps}
+            activeStep={activeStep}
+          />
 
-        return (
-            <DocumentTitle title="Test | Touhou">
-                <div>
-                    <Slider
-                      setStep={actions.setStep}
-                      passedSteps={passedSteps}
-                      maxSteps={maxSteps}
-                      step={activeStep}
-                    />
-                    <TopButtons
-                      steps={steps}
-                      passedSteps={passedSteps}
-                      activeStep={activeStep}
-                    />
+          <TestCore
+            steps={steps}
+            activeStep={activeStep}
+            actions={actions}
+            maxSteps={maxSteps}
+            passedSteps={passedSteps}
+          />
 
-                    <TestCore
-                      steps={steps}
-                      activeStep={activeStep}
-                      actions={actions}
-                      maxSteps={maxSteps}
-                      passedSteps={passedSteps}
-                    />
-
-                    <MyModal
-                      open={modalIsOpen}
-                      actions={actions}
-                      steps={steps}
-                    />
-                </div>
-            </DocumentTitle>
-        );
-    }
+          <MyModal
+            open={modalIsOpen}
+            actions={actions}
+            steps={steps}
+          />
+        </div>
+      </DocumentTitle>
+    );
+  }
 }
 
 Test.propTypes = {
-    steps: PropTypes.array,
-    maxSteps: PropTypes.number,
-    activeStep: PropTypes.number,
-    passedSteps: PropTypes.number,
-    modalIsOpen: PropTypes.bool,
-    inProgress: PropTypes.bool.isRequired,
-    actions: PropTypes.object,
+  steps: PropTypes.array,
+  maxSteps: PropTypes.number,
+  activeStep: PropTypes.number,
+  passedSteps: PropTypes.number,
+  modalIsOpen: PropTypes.bool,
+  inProgress: PropTypes.bool.isRequired,
+  actions: PropTypes.object,
 };
 
 function mapStateToProps({ test: { resetButtonVisible, ...data } }) {
-    return { ...data };
+  return { ...data };
 }
 
 function mapDispatchToProps(dispatch) {
-    return {
-        actions: bindActionCreators(TestActions, dispatch),
-    };
+  return {
+    actions: bindActionCreators(TestActions, dispatch),
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Test);

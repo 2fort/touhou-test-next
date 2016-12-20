@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import * as CharactersActions from '../../actions/charactersActions';
 
-export default function(ComposedComponent) {
+export default function (ComposedComponent) {
   class List extends Component {
 
     componentWillMount() {
@@ -12,9 +12,9 @@ export default function(ComposedComponent) {
       const { router: { replace } } = this.context;
 
       if (mode === 'table' && !query.mode) {
-          replace({ pathname, query: { mode: 'table' }, state: {} });
+        replace({ pathname, query: { mode: 'table' }, state: {} });
       } else if (mode === 'grid' && query.mode === 'table') {
-          changeMode('table');
+        changeMode('table');
       }
     }
 
@@ -51,7 +51,7 @@ export default function(ComposedComponent) {
   };
 
   List.contextTypes = {
-      router: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(List);
