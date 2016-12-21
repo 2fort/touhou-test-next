@@ -5,17 +5,26 @@ const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 module.exports = {
 
-  entry: [
-    'react-hot-loader/patch',
-    'webpack-dev-server/client?http://localhost:8081',
-    'webpack/hot/only-dev-server',
-    './src/js/app.jsx',
-  ],
+  entry: {
+    dev: [
+      'react-hot-loader/patch',
+      'webpack-dev-server/client?http://localhost:8081',
+      'webpack/hot/only-dev-server',
+    ],
+    app: [
+      './src/js/app.jsx',
+    ],
+    admin: [
+      './src-admin/js/app-admin.jsx',
+    ],
+  },
 
   output: {
     path: '/build',
     publicPath: '/',
     filename: '[hash].[name].js',
+    // path: '/',
+    // filename: 'apps/[name]/build/bundle.js',
   },
 
   resolve: {
@@ -84,10 +93,12 @@ module.exports = {
       },
       {
         test: /\.(svg|ttf|woff|woff2|eot)$/,
+        // exclude: /node_modules(?!\/bootstrap)/, // exclude node_modules except bootstrap
         exclude: /node_modules/,
+        // exclude: /node_modules(?!\/font-awesome)/,
         use: [
           {
-            loader: 'url-loader',
+            loader: 'file-loader',
           },
         ],
       },
@@ -121,6 +132,15 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Touhou | Comiket',
       template: './src/my-index.ejs',
+      chunks: ['dev', 'app'],
+      filename: 'index.html',
+      inject: 'body',
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Admin | Touhou-test',
+      template: './src-admin/admin-index.ejs',
+      chunks: ['dev', 'admin'],
+      filename: 'admin/index.html',
       inject: 'body',
     }),
     new webpack.DefinePlugin({
@@ -131,8 +151,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
     new ExtractTextPlugin({
-      filename: '[hash].[name].css',
-      allChunks: true,
+      filename: '[contenthash].[name].css',
     }),
   ],
 
@@ -148,5 +167,21 @@ module.exports = {
     historyApiFallback: true,
     stats: 'minimal',
     port: 8081,
+    // It's working, but not nesessary
+    proxy: {
+      '/admin': {
+        target: {
+          host: 'localhost',
+          protocol: 'http:',
+          port: 8081,
+        },
+        // ignorePath: true,
+        // changeOrigin: true,
+        secure: false,
+        bypass: (req, res, proxyOptions) => {
+          return '/admin';
+        },
+      },
+    },
   },
 };

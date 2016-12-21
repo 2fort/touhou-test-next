@@ -16,4 +16,6 @@ client/node_modules
 client/build
 TODO
 
+server/node_modules
+
 Temp
