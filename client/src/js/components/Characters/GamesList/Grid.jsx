@@ -6,7 +6,7 @@ const GamesGrid = ({ gamesFlex, pathname, snakeCase }) => {
     <div key={game.title} className="flex-item">
       <p>
         <Link className="imagelink" to={`${pathname}/${snakeCase(game.title)}`}>
-          <img alt="char" src={require(`../../../../images/games/${game.cover}`)} />
+          <img alt="char" src={`/images/games/${game.cover}`} />
         </Link>
       </p>
       <p>

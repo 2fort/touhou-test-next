@@ -6,7 +6,7 @@ const GamesTable = ({ gamesFlex, pathname, snakeCase }) => {
     <tr key={game.title}>
       <td className="td-centered">
         <Link className="imagelink" to={`${pathname}/${snakeCase(game.title)}`}>
-          <img alt="char" src={require(`../../../../images/games/${game.cover}`)} />
+          <img alt="char" src={`/images/games/${game.cover}`} />
         </Link>
       </td>
       <td>

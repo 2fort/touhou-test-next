@@ -167,7 +167,7 @@ module.exports = {
     historyApiFallback: true,
     stats: 'minimal',
     port: 8081,
-    /*proxy: {
+    /* proxy: {
       '/admin': {
         target: {
           host: 'localhost',
@@ -182,5 +182,14 @@ module.exports = {
         },
       },
     },*/
+    proxy: {
+      '/images': {
+        target: {
+          host: 'localhost',
+          protocol: 'http:',
+          port: 8082,
+        },
+      },
+    },
   },
 };

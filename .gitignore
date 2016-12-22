@@ -1,16 +1,12 @@
 .vscode
 
-client/src/images/games/*
-client/src/images/l/*
-client/src/images/m/*
-client/src/images/s/*
-client/src/images/temp/*
+server/public/images/games/*
+server/public/images/m/*
+server/public/images/s/*
 
-!client/src/images/games/.gitkeep
-!client/src/images/l/.gitkeep
-!client/src/images/m/.gitkeep
-!client/src/images/s/.gitkeep
-!client/src/images/temp/.gitkeep
+!server/public/images/games/.gitkeep
+!server/public/images/m/.gitkeep
+!server/public/images/s/.gitkeep
 
 client/node_modules
 client/build

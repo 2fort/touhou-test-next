@@ -6,7 +6,7 @@ const CharactersTable = ({ charsFlex, pathname, snakeCase }) => {
     <tr key={char.name}>
       <td className="td-centered">
         <Link className="imagelink" to={`${pathname}/${snakeCase(char.name)}`}>
-          <img alt="char" src={require(`../../../../images/s/${char.image}`)} />
+          <img alt="char" src={`/images/s/${char.image}`} />
         </Link>
       </td>
       <td>

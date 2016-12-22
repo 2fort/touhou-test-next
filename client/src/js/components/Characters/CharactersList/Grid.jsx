@@ -6,7 +6,7 @@ const CharactersGrid = ({ charsFlex, pathname, snakeCase }) => {
     <div key={char.name} className="flex-item">
       <p>
         <Link className="imagelink" to={`${pathname}/${snakeCase(char.name)}`}>
-          <img alt="char" src={require(`../../../../images/s/${char.image}`)} />
+          <img alt="char" src={`/images/s/${char.image}`} />
         </Link>
       </p>
       <p>

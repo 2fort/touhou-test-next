@@ -11,7 +11,7 @@ const Character = ({ params: { char } }) => {
         <h1>{charInfo.name}</h1>
         <div className="singlechar-flex">
           <div>
-            <img alt="char" src={require(`../../../images/m/${charInfo.image}`)} />
+            <img alt="char" src={`/images/m/${charInfo.image}`} />
           </div>
           <div>
             <p>Character info: <a href={charInfo.wiki}>{charInfo.wiki.substring(7)}</a></p>
