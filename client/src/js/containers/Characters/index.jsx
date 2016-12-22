@@ -9,13 +9,12 @@ import ModeButtons from '../../components/Characters/ModeButtons';
 import * as CharactersActions from '../../actions/charactersActions';
 
 class Characters extends Component {
-  constructor(props, context) {
-    super(props, context);
+  constructor(props) {
+    super(props);
     this.btnChangeMode = this.btnChangeMode.bind(this);
   }
   btnChangeMode(btnMode) {
-    const { location: { pathname }, actions: { changeMode } } = this.props;
-    const { router: { replace } } = this.context;
+    const { location: { pathname }, actions: { changeMode }, router: { replace } } = this.props;
 
     if (btnMode === 'grid') {
       changeMode('grid');
@@ -42,15 +41,18 @@ class Characters extends Component {
   }
 }
 
-Characters.contextTypes = {
-  router: PropTypes.object.isRequired,
-};
-
 Characters.propTypes = {
   children: PropTypes.node,
   params: PropTypes.object,
-  location: PropTypes.object,
-  actions: PropTypes.object,
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+  }),
+  actions: PropTypes.shape({
+    changeMode: PropTypes.func,
+  }),
+  router: PropTypes.shape({
+    replace: PropTypes.func.isRequired,
+  }),
 };
 
 function mapDispatchToProps(dispatch) {

@@ -17,5 +17,6 @@ client/build
 TODO
 
 server/node_modules
+server/config.js
 
 Temp

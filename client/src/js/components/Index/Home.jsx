@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
 
-const Home = ({ location }, { router }) => (
+const Home = ({ router }) => (
   <div className="simple-container home">
     Run <br />
     <button type="button" onClick={() => router.push('/test')}>TEST</button> <br />
@@ -11,11 +11,9 @@ const Home = ({ location }, { router }) => (
 );
 
 Home.propTypes = {
-  location: PropTypes.object,
-};
-
-Home.contextTypes = {
-  router: PropTypes.object.isRequired,
+  router: PropTypes.shape({
+    push: PropTypes.func,
+  }),
 };
 
 export default Home;

@@ -19,17 +19,13 @@ const CharactersList = ({ location: { pathname }, params: { game }, mode }) => {
       }
     </DocumentTitle>
   );
-}
+};
 
 CharactersList.propTypes = {
   params: PropTypes.object,
   location: PropTypes.object,
   mode: PropTypes.string,
   actions: PropTypes.object,
-};
-
-CharactersList.contextTypes = {
-  router: PropTypes.object.isRequired,
 };
 
 export default ListHoc(CharactersList);

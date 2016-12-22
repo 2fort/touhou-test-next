@@ -155,9 +155,9 @@ module.exports = {
     }),
   ],
 
-  // devtool: 'cheap-module-eval-source-map',
+  devtool: 'cheap-module-eval-source-map',
 
-  devtool: 'source-map',
+  // devtool: 'source-map',
   performance: { hints: false },
 
   devServer: {
@@ -167,8 +167,7 @@ module.exports = {
     historyApiFallback: true,
     stats: 'minimal',
     port: 8081,
-    // It's working, but not nesessary
-    proxy: {
+    /*proxy: {
       '/admin': {
         target: {
           host: 'localhost',
@@ -182,6 +181,6 @@ module.exports = {
           return '/admin';
         },
       },
-    },
+    },*/
   },
 };

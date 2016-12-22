@@ -8,21 +8,19 @@ export default function (ComposedComponent) {
   class List extends Component {
 
     componentWillMount() {
-      const { location: { pathname, query }, mode, actions: { changeMode } } = this.props;
-      const { router: { replace } } = this.context;
+      const { location: { pathname, query }, mode, router: { replace }, actions } = this.props;
 
       if (mode === 'table' && !query.mode) {
         replace({ pathname, query: { mode: 'table' }, state: {} });
       } else if (mode === 'grid' && query.mode === 'table') {
-        changeMode('table');
+        actions.changeMode('table');
       }
     }
 
-    // then we on /characters?mode=table and menu button "Charaters" was pressed, we need add ?mode=table to pathname
+    // then we on /characters?mode=table and menu button "Charaters" was pressed, we need to add ?mode=table to pathname
     componentWillReceiveProps(nextProps) {
-      const { location: { pathname }, mode } = this.props;
+      const { location: { pathname }, mode, router: { replace } } = this.props;
       const { location: { query } } = nextProps;
-      const { router: { replace } } = this.context;
 
       if (mode === 'table' && !query.mode && nextProps.mode !== 'grid') {
         replace({ pathname, query: { mode: 'table' }, state: {} });
@@ -30,7 +28,7 @@ export default function (ComposedComponent) {
     }
 
     render() {
-      return <ComposedComponent {...this.props} />
+      return <ComposedComponent {...this.props} />;
     }
   }
 
@@ -45,13 +43,19 @@ export default function (ComposedComponent) {
   }
 
   List.propTypes = {
-    location: PropTypes.object,
-    mode: PropTypes.string,
-    actions: PropTypes.object,
-  };
-
-  List.contextTypes = {
-    router: PropTypes.object.isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired,
+      query: PropTypes.shape({
+        mode: PropTypes.string,
+      }),
+    }).isRequired,
+    mode: PropTypes.string.isRequired,
+    actions: PropTypes.shape({
+      changeMode: PropTypes.func,
+    }).isRequired,
+    router: PropTypes.shape({
+      replace: PropTypes.func,
+    }).isRequired,
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(List);
