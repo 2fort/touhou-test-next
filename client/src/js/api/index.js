@@ -51,10 +51,6 @@ export function getSingleCharInfo(charName) {
   return _characters.filter(char => _.snakeCase(char.name) === charName)[0];
 }
 
-export function getAllGames() {
-  return _games;
-}
-
 export function getAllCharsFromGame(gameTitle) {
   return _characters.filter(data => _.snakeCase(data.game) === gameTitle);
 }

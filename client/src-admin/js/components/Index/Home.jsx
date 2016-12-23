@@ -1,10 +1,9 @@
 import React, { PropTypes } from 'react';
 
-const Home = (props) => {
-  console.log(props);
+const Home = () => {
   return (
-    <div>
-      Hi!
+    <div className="jumbotron">
+      <h1>Hello, admin!</h1>
     </div>
   );
 };

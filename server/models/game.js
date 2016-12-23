@@ -8,6 +8,7 @@ const schema = new mongoose.Schema({
   },
   year: Number,
   cover: String,
+  slug: String,
 });
 
 module.exports = mongoose.model('game', schema);

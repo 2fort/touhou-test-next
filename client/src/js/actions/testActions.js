@@ -1,8 +1,12 @@
 import * as types from '../constants/ActionTypes';
 
 export function beginTest() {
-  return {
-    type: types.TEST_BEGIN,
+  return (dispatch, getState) => {
+    if (!getState().test.inProgress) {
+      dispatch({
+        type: types.TEST_BEGIN,
+      });
+    }
   };
 }
 

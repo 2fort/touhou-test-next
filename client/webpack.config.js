@@ -190,6 +190,13 @@ module.exports = {
           port: 8082,
         },
       },
+      '/api': {
+        target: {
+          host: 'localhost',
+          protocol: 'http:',
+          port: 8082,
+        },
+      },
     },
   },
 };

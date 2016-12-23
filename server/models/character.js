@@ -20,6 +20,7 @@ const schema = new mongoose.Schema({
     },
   },
   wiki: String,
+  slug: String,
   game_id: mongoose.Schema.Types.ObjectId,
 });
 
