@@ -11,18 +11,17 @@ import CharactersList from './containers/Characters/CharactersList';
 import Character from './components/Characters/Character';
 import Route404 from './components/404';
 
-import { test } from './routes-hooks';
-
-module.exports = (
-  <Route path="/" component={Index}>
-    <IndexRoute component={Home} />
-    <Route path="test" component={Test} onEnter={test.enter} onLeave={test.leave} />
-    <Route path="characters" component={Characters}>
-      <IndexRoute component={GamesList} />
-      <Route path=":game" component={CharactersList} />
-      <Route path=":game/:char" component={Character} />
+export default function getRoutes(store) {
+  return (
+    <Route path="/" component={Index}>
+      <IndexRoute component={Home} />
+      <Route path="test" component={Test} onEnter={({ args }) => Test.onEnter(store, { ...args })} />
+      <Route path="characters" component={Characters}>
+        <IndexRoute component={GamesList} />
+        <Route path=":game" component={CharactersList} />
+        <Route path=":game/:char" component={Character} />
+      </Route>
+      <Route path="*" component={Route404} />
     </Route>
-    <Route path="admin" onEnter={() => { window.location = '/admin'; }} />
-    <Route path="*" component={Route404} />
-  </Route>
-);
+  );
+}

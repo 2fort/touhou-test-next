@@ -5,6 +5,9 @@ router.get('/hello',  (req, res) => {
   res.json({ message: 'hello'});
 });
 
+router.use('/import', require('./import'));
+router.use('/admin', require('./admin'));
+
 router.get('/characters', async (req, res) => {
   try {
     const result = await Game.find().exec();
@@ -19,5 +22,11 @@ router.get('/characters', async (req, res) => {
     return res.json({ message: 'wtf' });
   }
 });
+
+/* router.get('/characters/:game', async (req, res) => {
+  const game = req.params.game;
+  res.json({ game: game });
+});*/
+
 
 module.exports = router;

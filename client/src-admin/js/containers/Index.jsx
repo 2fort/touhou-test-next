@@ -3,7 +3,6 @@ import React, { PropTypes } from 'react';
 import NavbarHeader from '../components/Index/NavbarHeader';
 
 const Index = ({ children }) => {
-  // console.log(children);
   return (
     <div>
       <NavbarHeader />

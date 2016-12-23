@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import DocumentTitle from 'react-document-title';
@@ -10,41 +10,55 @@ import Slider from '../components/Test/Slider';
 import MyModal from '../components/Test/MyModal';
 import TestCore from '../components/Test/TestCore';
 
-const Test = ({ steps, maxSteps, activeStep, passedSteps, modalIsOpen, actions }) => {
-  console.log('rendered');
+class Test extends Component {
+  static onEnter(store, nextState, replace) {
+    store.dispatch(TestActions.beginTest());
+  }
 
-  return (
-    <DocumentTitle title="Test | Touhou">
-      <div>
-        <Slider
-          setStep={actions.setStep}
-          passedSteps={passedSteps}
-          maxSteps={maxSteps}
-          step={activeStep}
-        />
-        <TopButtons
-          steps={steps}
-          passedSteps={passedSteps}
-          activeStep={activeStep}
-        />
+  componentWillMount() {
+    this.props.actions.showResetButton();
+  }
 
-        <TestCore
-          steps={steps}
-          activeStep={activeStep}
-          actions={actions}
-          maxSteps={maxSteps}
-          passedSteps={passedSteps}
-        />
+  componentWillUnmount() {
+    this.props.actions.hideResetButton();
+  }
 
-        <MyModal
-          open={modalIsOpen}
-          actions={actions}
-          steps={steps}
-        />
-      </div>
-    </DocumentTitle>
-  );
-};
+  render() {
+    const { steps, maxSteps, activeStep, passedSteps, modalIsOpen, actions } = this.props;
+
+    return (
+      <DocumentTitle title="Test | Touhou">
+        <div>
+          <Slider
+            setStep={actions.setStep}
+            passedSteps={passedSteps}
+            maxSteps={maxSteps}
+            step={activeStep}
+          />
+          <TopButtons
+            steps={steps}
+            passedSteps={passedSteps}
+            activeStep={activeStep}
+          />
+
+          <TestCore
+            steps={steps}
+            activeStep={activeStep}
+            actions={actions}
+            maxSteps={maxSteps}
+            passedSteps={passedSteps}
+          />
+
+          <MyModal
+            open={modalIsOpen}
+            actions={actions}
+            steps={steps}
+          />
+        </div>
+      </DocumentTitle>
+    );
+  }
+}
 
 Test.propTypes = {
   steps: PropTypes.arrayOf(
@@ -64,8 +78,8 @@ Test.propTypes = {
   actions: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({ test: { ...data } }) {
-  return { ...data };
+function mapStateToProps({ test: { steps, maxSteps, activeStep, passedSteps, modalIsOpen } }) {
+  return { steps, maxSteps, activeStep, passedSteps, modalIsOpen };
 }
 
 function mapDispatchToProps(dispatch) {

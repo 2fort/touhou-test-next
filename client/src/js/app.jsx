@@ -4,8 +4,11 @@ import { Provider } from 'react-redux';
 import Router from 'react-router/lib/Router';
 import browserHistory from 'react-router/lib/browserHistory';
 
-import routes from './routes';
-import { store } from './store/configureStore';
+import getRoutes from './routes';
+import configureStore from './store/configureStore';
+
+const store = configureStore();
+const routes = getRoutes(store);
 
 require('../sass/app.scss');
 

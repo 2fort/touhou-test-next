@@ -140,7 +140,7 @@ module.exports = {
       title: 'Admin | Touhou-test',
       template: './src-admin/admin-index.ejs',
       chunks: ['dev', 'admin'],
-      filename: 'admin/index.html',
+      filename: 'admin.html',
       inject: 'body',
     }),
     new webpack.DefinePlugin({
@@ -164,24 +164,14 @@ module.exports = {
     hot: true,
     contentBase: '/build',
     publicPath: '/',
-    historyApiFallback: true,
+    historyApiFallback: {
+      index: '/',
+      rewrites: [
+        { from: /\/admin/, to: '/admin.html' },
+      ],
+    },
     stats: 'minimal',
     port: 8081,
-    /* proxy: {
-      '/admin': {
-        target: {
-          host: 'localhost',
-          protocol: 'http:',
-          port: 8081,
-        },
-        // ignorePath: true,
-        // changeOrigin: true,
-        secure: false,
-        bypass: (req, res, proxyOptions) => {
-          return '/admin';
-        },
-      },
-    },*/
     proxy: {
       '/images': {
         target: {
