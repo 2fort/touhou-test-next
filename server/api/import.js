@@ -6,6 +6,8 @@ const Character = require('../models/character');
 const games = require('../../client/src/json/games.json');
 const characters = require('../../client/src/json/characters.json');
 
+const ObjectId = require('mongodb').ObjectId;
+
 router.get('/games', (req, res) => {
   games.forEach(game => {
     game.slug = _.snakeCase(game.title);
@@ -25,12 +27,33 @@ router.get('/characters', (req, res) => {
     character.slug = _.snakeCase(character.name);
   });
 
-  Character.insertMany(characters)
+  Game.find().lean().exec()
+    .then(games => {
+      characters.forEach(character => {
+        games.forEach(game => {
+          if (game.title === character.game) {
+            character._game = ObjectId(game._id);
+          }
+        });
+        delete character.game;
+      });
+      return Character.insertMany(characters);
+    })
     .then(result => {
       return res.json({ result });
     })
-    .catch(err => {
+    .catch((err) => {
       return res.json({ err });
+    });
+});
+
+router.get('/populate/:id', (req, res) => {
+  Character.findById(req.params.id).populate('_game', 'title')
+    .then((response) => {
+      return res.json(response);
+    })
+    .catch((err) => {
+      return res.json(err);
     });
 });
 

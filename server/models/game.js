@@ -11,4 +11,12 @@ const schema = new mongoose.Schema({
   slug: String,
 });
 
-module.exports = mongoose.model('game', schema);
+schema.set('toJSON', {
+  transform: function (doc, ret, options) {
+    // ret.id = ret._id;
+    // delete ret._id;
+    delete ret.__v;
+  },
+});
+
+module.exports = mongoose.model('Game', schema);

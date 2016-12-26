@@ -1,9 +1,9 @@
 import React from 'react';
 
-const CharactersNew = () => (
+const New = () => (
   <div>
     New character will be here.
   </div>
 );
 
-export default CharactersNew;
+export default New;

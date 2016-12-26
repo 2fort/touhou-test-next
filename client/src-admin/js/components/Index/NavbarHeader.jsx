@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
+import { Link, withRouter } from 'react-router';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
-const NavbarHeader = (props, { router }) => {
+const NavbarHeader = ({ router }) => {
   return (
     <Navbar inverse collapseOnSelect>
       <div className="container">
@@ -16,13 +16,25 @@ const NavbarHeader = (props, { router }) => {
         <Navbar.Collapse>
           <Nav>
             <IndexLinkContainer to="/admin"><NavItem eventKey={1} href="#">Link</NavItem></IndexLinkContainer>
-            <NavDropdown eventKey={2} title="Games" id="basic-nav-dropdown">
+            <NavDropdown
+              eventKey={2}
+              title="Games"
+              id="basic-nav-dropdown"
+              active={router.isActive('/admin/games')}
+            >
               <LinkContainer onlyActiveOnIndex to="/admin/games"><MenuItem eventKey={2.1}>List</MenuItem></LinkContainer>
               <MenuItem divider />
               <LinkContainer to="/admin/games/new"><MenuItem eventKey={2.2}>Add new</MenuItem></LinkContainer>
             </NavDropdown>
-            <NavDropdown eventKey={3} title="Characters" id="basic-nav-dropdown">
-              <LinkContainer onlyActiveOnIndex to="/admin/characters"><MenuItem eventKey={3.1}>List</MenuItem></LinkContainer>
+            <NavDropdown
+              eventKey={3}
+              title="Characters"
+              id="basic-nav-dropdown"
+              active={router.isActive('/admin/characters')}
+            >
+              <LinkContainer onlyActiveOnIndex to="/admin/characters">
+                <MenuItem eventKey={3.1}>List</MenuItem>
+              </LinkContainer>
               <MenuItem divider />
               <LinkContainer to="/admin/characters/new"><MenuItem eventKey={3.2}>Add new</MenuItem></LinkContainer>
             </NavDropdown>
@@ -36,8 +48,4 @@ const NavbarHeader = (props, { router }) => {
   );
 };
 
-NavbarHeader.contextTypes = {
-  router: PropTypes.object.isRequired,
-};
-
-export default NavbarHeader;
+export default withRouter(NavbarHeader);

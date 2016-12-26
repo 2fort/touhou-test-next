@@ -12,7 +12,39 @@ class Characters extends Component {
   constructor(props) {
     super(props);
     this.btnChangeMode = this.btnChangeMode.bind(this);
+    this.setGameTitle = this.setGameTitle.bind(this);
+    this.state = {
+      gameTitle: '',
+    };
   }
+
+  componentWillMount() {
+    if (this.props.params.game) {
+      this.setGameTitle(this.props.params.game);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.game !== nextProps.params.game) {
+      if (nextProps.params.game) {
+        this.setGameTitle(nextProps.params.game);
+      } else {
+        this.setState({ gameTitle: '' });
+      }
+    }
+  }
+
+  setGameTitle(gameParam) {
+    fetch(`/api/game/${gameParam}`)
+      .then(response => response.json())
+      .then((game) => {
+        this.setState({ gameTitle: game[0].title });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   btnChangeMode(btnMode) {
     const { location: { pathname }, actions: { changeMode }, router: { replace } } = this.props;
 
@@ -24,6 +56,7 @@ class Characters extends Component {
       replace({ pathname, query: { mode: 'table' }, state: {} });
     }
   }
+
   render() {
     const { children, params } = this.props;
 
@@ -31,7 +64,7 @@ class Characters extends Component {
       <DocumentTitle title="Characters | Touhou">
         <div className="simple-container">
           <div className="flex-top">
-            <Breadcrumbs {...params} />
+            <Breadcrumbs gameTitle={this.state.gameTitle} {...params} />
             {!params.char && <ModeButtons btnChangeMode={this.btnChangeMode} />}
           </div>
           {children}
@@ -43,7 +76,10 @@ class Characters extends Component {
 
 Characters.propTypes = {
   children: PropTypes.node,
-  params: PropTypes.object,
+  params: PropTypes.shape({
+    game: PropTypes.string,
+    char: PropTypes.string,
+  }),
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }),

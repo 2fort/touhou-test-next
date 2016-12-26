@@ -1,16 +1,16 @@
 import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
 
-const CharactersTable = ({ charsFlex, pathname, snakeCase }) => {
+const CharactersTable = ({ charsFlex, pathname }) => {
   const tableData = charsFlex.map(char => (
     <tr key={char.name}>
       <td className="td-centered">
-        <Link className="imagelink" to={`${pathname}/${snakeCase(char.name)}`}>
+        <Link className="imagelink" to={`${pathname}/${char.slug}`}>
           <img alt="char" src={`/images/s/${char.image}`} />
         </Link>
       </td>
       <td>
-        <Link to={`${pathname}/${snakeCase(char.name)}`}>
+        <Link to={`${pathname}/${char.slug}`}>
           {char.name}
         </Link>
       </td>
@@ -45,7 +45,6 @@ const CharactersTable = ({ charsFlex, pathname, snakeCase }) => {
 CharactersTable.propTypes = {
   charsFlex: PropTypes.array,
   pathname: PropTypes.string,
-  snakeCase: PropTypes.func,
 };
 
 export default CharactersTable;

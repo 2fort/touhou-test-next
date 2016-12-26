@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import _ from 'lodash';
 import DocumentTitle from 'react-document-title';
 
 import ListHoc from './ListHoc';
@@ -32,8 +31,8 @@ class GamesList extends Component {
     return (
       <DocumentTitle title="Characters | Touhou">
         {mode === 'grid'
-          ? <Grid gamesFlex={this.state.games} pathname={pathname} snakeCase={_.snakeCase} />
-          : <Table gamesFlex={this.state.games} pathname={pathname} snakeCase={_.snakeCase} />
+          ? <Grid gamesFlex={this.state.games} pathname={pathname} />
+          : <Table gamesFlex={this.state.games} pathname={pathname} />
         }
       </DocumentTitle>
     );
@@ -41,7 +40,9 @@ class GamesList extends Component {
 }
 
 GamesList.propTypes = {
-  location: PropTypes.object,
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+  }),
   mode: PropTypes.string,
 };
 

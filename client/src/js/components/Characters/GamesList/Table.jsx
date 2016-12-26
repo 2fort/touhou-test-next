@@ -1,17 +1,17 @@
 import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
 
-const GamesTable = ({ gamesFlex, pathname, snakeCase }) => {
+const GamesTable = ({ gamesFlex, pathname }) => {
   const tableData = gamesFlex.map(game => (
     <tr key={game.title}>
       <td className="td-centered">
-        <Link className="imagelink" to={`${pathname}/${snakeCase(game.title)}`}>
+        <Link className="imagelink" to={`${pathname}/${game.slug}`}>
           <img alt="char" src={`/images/games/${game.cover}`} />
         </Link>
       </td>
       <td>
         {game.prefix && `${game.prefix}: `}
-        <Link to={`${pathname}/${snakeCase(game.title)}`}>
+        <Link to={`${pathname}/${game.slug}`}>
           {game.title}
         </Link>
       </td>
@@ -43,7 +43,6 @@ const GamesTable = ({ gamesFlex, pathname, snakeCase }) => {
 GamesTable.propTypes = {
   gamesFlex: PropTypes.array,
   pathname: PropTypes.string,
-  snakeCase: PropTypes.func,
 };
 
 export default GamesTable;

@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import _characters from '../../json/characters.json';
-import _games from '../../json/games.json';
 
 function randomNumber(scopeLength) {
   return Math.floor(Math.random() * scopeLength);
@@ -49,14 +48,6 @@ export function generateNewTest(maxSteps) {
 
 export function getSingleCharInfo(charName) {
   return _characters.filter(char => _.snakeCase(char.name) === charName)[0];
-}
-
-export function getAllCharsFromGame(gameTitle) {
-  return _characters.filter(data => _.snakeCase(data.game) === gameTitle);
-}
-
-export function getProperGameTitle(gameTitle) {
-  return _games.filter(game => _.snakeCase(game.title) === gameTitle)[0].title;
 }
 
 export function getProperCharName(charName) {

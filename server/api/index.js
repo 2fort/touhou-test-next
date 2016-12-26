@@ -1,32 +1,36 @@
 const router = require('express').Router();
 const Game = require('../models/game');
-
-router.get('/hello',  (req, res) => {
-  res.json({ message: 'hello'});
-});
+const Character = require('../models/character');
 
 router.use('/import', require('./import'));
 router.use('/admin', require('./admin'));
 
 router.get('/characters', async (req, res) => {
   try {
-    const result = await Game.find().exec();
-    const send = result.map(game => ({
-      prefix: game.prefix,
-      title: game.title,
-      year: game.year,
-      cover: game.cover,
-    }));
-    return res.json(send);
+    const games = await Game.find({}, 'prefix title year cover slug').exec();
+    return res.json(games);
   } catch (e) {
-    return res.json({ message: 'wtf' });
+    return res.json({ message: e.message });
   }
 });
 
-/* router.get('/characters/:game', async (req, res) => {
-  const game = req.params.game;
-  res.json({ game: game });
-});*/
+router.get('/characters/:game', (req, res) => {
+  Game.find({ slug: req.params.game }).lean().exec()
+    .then((game) => {
+      return Character.find({ _game: game[0]._id }, 'name image slug wiki').exec();
+    })
+    .then((characters) => {
+      return res.json(characters);
+    })
+    .catch((err) => {
+      return res.status(404).json(err);
+    });
+});
 
+router.get('/game/:game', (req, res) => {
+  Game.find({ slug: req.params.game}, 'title').exec()
+    .then(game => res.json(game))
+    .catch(err => console.log(err));
+});
 
 module.exports = router;

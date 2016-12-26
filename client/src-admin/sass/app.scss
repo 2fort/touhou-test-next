@@ -9,3 +9,10 @@ html {
   font-size: 14px;
 }
 
+td {
+  &.toowide {
+    max-width: 200px;
+    // overflow-wrap: break-word;
+    word-break: break-all;
+  }
+}

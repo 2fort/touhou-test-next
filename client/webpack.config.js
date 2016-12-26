@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+// const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 module.exports = {
 
@@ -128,7 +128,7 @@ module.exports = {
   },
 
   plugins: [
-    new LodashModuleReplacementPlugin,
+    // new LodashModuleReplacementPlugin, // _.snakeCase('SinGyoku') -> 'singyoku' instead of 'sin_gyoku', ?
     new HtmlWebpackPlugin({
       title: 'Touhou | Comiket',
       template: './src/my-index.ejs',
@@ -155,9 +155,10 @@ module.exports = {
     }),
   ],
 
-  devtool: 'cheap-module-eval-source-map',
+  // devtool: 'cheap-module-eval-source-map',
 
-  // devtool: 'source-map',
+  devtool: 'source-map',
+
   performance: { hints: false },
 
   devServer: {

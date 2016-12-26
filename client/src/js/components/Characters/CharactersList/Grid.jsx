@@ -1,16 +1,16 @@
 import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
 
-const CharactersGrid = ({ charsFlex, pathname, snakeCase }) => {
+const CharactersGrid = ({ charsFlex, pathname }) => {
   const data = charsFlex.map(char => (
     <div key={char.name} className="flex-item">
       <p>
-        <Link className="imagelink" to={`${pathname}/${snakeCase(char.name)}`}>
+        <Link className="imagelink" to={`${pathname}/${char.slug}`}>
           <img alt="char" src={`/images/s/${char.image}`} />
         </Link>
       </p>
       <p>
-        <Link to={`${pathname}/${snakeCase(char.name)}`}>{char.name}</Link>
+        <Link to={`${pathname}/${char.slug}`}>{char.name}</Link>
       </p>
     </div>
   ));
@@ -24,7 +24,6 @@ const CharactersGrid = ({ charsFlex, pathname, snakeCase }) => {
 CharactersGrid.propTypes = {
   charsFlex: PropTypes.array,
   pathname: PropTypes.string,
-  snakeCase: PropTypes.func,
 };
 
 export default CharactersGrid;

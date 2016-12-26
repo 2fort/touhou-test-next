@@ -11,6 +11,7 @@
         "react/jsx-indent": ["error", 2],
         "max-len": ["error", 125],
         "import/no-extraneous-dependencies": 1,
-        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
+        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+        "no-underscore-dangle": 0
     }
 }

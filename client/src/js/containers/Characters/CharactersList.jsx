@@ -1,31 +1,62 @@
-import React, { PropTypes } from 'react';
-import _ from 'lodash';
+import React, { Component, PropTypes } from 'react';
 import DocumentTitle from 'react-document-title';
-
-import * as testApi from '../../api';
 
 import ListHoc from './ListHoc';
 import Grid from '../../components/Characters/CharactersList/Grid';
 import Table from '../../components/Characters/CharactersList/Table';
 
-const CharactersList = ({ location: { pathname }, params: { game }, mode }) => {
-  const charsFlex = testApi.getAllCharsFromGame(game);
+class CharactersList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      characters: [],
+      title: '',
+    };
+  }
 
-  return (
-    <DocumentTitle title={`${testApi.getProperGameTitle(game)} | Touhou`}>
-      {mode === 'grid'
-        ? <Grid charsFlex={charsFlex} pathname={pathname} snakeCase={_.snakeCase} />
-        : <Table charsFlex={charsFlex} pathname={pathname} snakeCase={_.snakeCase} />
-      }
-    </DocumentTitle>
-  );
-};
+  componentWillMount() {
+    let stateCharacters = [];
+    fetch(`/api/characters/${this.props.params.game}`)
+      .then(response => response.json())
+      .then((characters) => {
+        stateCharacters = characters;
+        return fetch(`/api/game/${this.props.params.game}`);
+      })
+      .then(response => response.json())
+      .then((game) => {
+        this.setState({
+          characters: stateCharacters,
+          title: game[0].title,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  render() {
+    const { location: { pathname }, mode } = this.props;
+
+    return (
+      <DocumentTitle title={`${this.state.title} | Touhou`}>
+        {mode === 'grid'
+          ? <Grid charsFlex={this.state.characters} pathname={pathname} />
+          : <Table charsFlex={this.state.characters} pathname={pathname} />
+        }
+      </DocumentTitle>
+    );
+  }
+}
 
 CharactersList.propTypes = {
-  params: PropTypes.object,
-  location: PropTypes.object,
+  params: PropTypes.shape({
+    game: PropTypes.string,
+    char: PropTypes.string,
+  }),
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+  }),
   mode: PropTypes.string,
-  actions: PropTypes.object,
 };
 
 export default ListHoc(CharactersList);

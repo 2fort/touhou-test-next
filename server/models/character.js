@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const schema = new mongoose.Schema({
   name: {
@@ -21,7 +22,18 @@ const schema = new mongoose.Schema({
   },
   wiki: String,
   slug: String,
-  game_id: mongoose.Schema.Types.ObjectId,
+  _game: {
+    type: Schema.Types.ObjectId,
+    ref: 'Game',
+  },
 });
 
-module.exports = mongoose.model('character', schema);
+schema.set('toJSON', {
+  transform: function (doc, ret, options) {
+    // ret.id = ret._id;
+    // delete ret._id;
+    delete ret.__v;
+  },
+});
+
+module.exports = mongoose.model('Character', schema);

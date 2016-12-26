@@ -1,9 +1,9 @@
 import React from 'react';
 
-const GamesNew = () => (
+const New = () => (
   <div>
     New Game will be here.
   </div>
 );
 
-export default GamesNew;
+export default New;
