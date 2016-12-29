@@ -30,7 +30,7 @@ export default class MyModal extends Component {
     let incorrectAnswers = steps.filter(step => step.rightAnswer !== step.givenAnswer).length;
 
     return (
-      <Modal isOpen={open} style={customStyles} onRequestClose={actions.closeResultsWindow} >
+      <Modal isOpen={open} style={customStyles} onRequestClose={actions.closeResultsWindow} contentLabel="Results" >
         <div className="my-modal">
           <h2>Results:</h2>
           <span className="correct">right answers: {correctAnswers}</span> <br />

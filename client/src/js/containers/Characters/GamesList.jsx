@@ -1,9 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import DocumentTitle from 'react-document-title';
+import Helmet from 'react-helmet';
 
 import ListHoc from './ListHoc';
-import Grid from '../../components/Characters/GamesList/Grid';
-import Table from '../../components/Characters/GamesList/Table';
+import { Grid, Table } from '../../components/Characters/GamesList';
 
 class GamesList extends Component {
   constructor(props) {
@@ -29,12 +28,14 @@ class GamesList extends Component {
     const { location: { pathname }, mode } = this.props;
 
     return (
-      <DocumentTitle title="Characters | Touhou">
+      <div>
+        <Helmet title="Characters" />
+
         {mode === 'grid'
           ? <Grid gamesFlex={this.state.games} pathname={pathname} />
           : <Table gamesFlex={this.state.games} pathname={pathname} />
         }
-      </DocumentTitle>
+      </div>
     );
   }
 }

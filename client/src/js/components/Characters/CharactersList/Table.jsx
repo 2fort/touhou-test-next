@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
 
-const CharactersTable = ({ charsFlex, pathname }) => {
+const Table = ({ charsFlex, pathname }) => {
   const tableData = charsFlex.map(char => (
     <tr key={char.name}>
       <td className="td-centered">
@@ -42,9 +42,9 @@ const CharactersTable = ({ charsFlex, pathname }) => {
   );
 };
 
-CharactersTable.propTypes = {
+Table.propTypes = {
   charsFlex: PropTypes.array,
   pathname: PropTypes.string,
 };
 
-export default CharactersTable;
+export default Table;

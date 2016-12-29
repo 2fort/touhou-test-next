@@ -1,14 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import DocumentTitle from 'react-document-title';
+import Helmet from 'react-helmet';
 
 import * as TestActions from '../actions/testActions';
+import { IStep } from '../propTypes';
 
-import TopButtons from '../components/Test/TopButtons';
-import Slider from '../components/Test/Slider';
-import MyModal from '../components/Test/MyModal';
-import TestCore from '../components/Test/TestCore';
+import { TestCore, MyModal, Slider, TopButtons } from '../components/Test';
 
 class Test extends Component {
   static onEnter(store, nextState, replace) {
@@ -27,50 +25,42 @@ class Test extends Component {
     const { steps, maxSteps, activeStep, passedSteps, modalIsOpen, actions } = this.props;
 
     return (
-      <DocumentTitle title="Test | Touhou">
-        <div>
-          <Slider
-            setStep={actions.setStep}
-            passedSteps={passedSteps}
-            maxSteps={maxSteps}
-            step={activeStep}
-          />
-          <TopButtons
-            steps={steps}
-            passedSteps={passedSteps}
-            activeStep={activeStep}
-          />
+      <div>
+        <Helmet title="Test" />
 
-          <TestCore
-            steps={steps}
-            activeStep={activeStep}
-            actions={actions}
-            maxSteps={maxSteps}
-            passedSteps={passedSteps}
-          />
+        <Slider
+          actions={{ setStep: actions.setStep }}
+          passedSteps={passedSteps}
+          maxSteps={maxSteps}
+          step={activeStep}
+        />
 
-          <MyModal
-            open={modalIsOpen}
-            actions={actions}
-            steps={steps}
-          />
-        </div>
-      </DocumentTitle>
+        <TopButtons
+          steps={steps}
+          passedSteps={passedSteps}
+          activeStep={activeStep}
+        />
+
+        <TestCore
+          steps={steps}
+          activeStep={activeStep}
+          actions={actions}
+          maxSteps={maxSteps}
+          passedSteps={passedSteps}
+        />
+
+        <MyModal
+          open={modalIsOpen}
+          actions={actions}
+          steps={steps}
+        />
+      </div>
     );
   }
 }
 
 Test.propTypes = {
-  steps: PropTypes.arrayOf(
-    PropTypes.shape({
-      step: PropTypes.number.isRequired,
-      image: PropTypes.string.isRequired,
-      passed: PropTypes.bool.isRequired,
-      buttons: PropTypes.arrayOf(PropTypes.string).isRequired,
-      rightAnswer: PropTypes.string.isRequired,
-      givenAnswer: PropTypes.string,
-    }),
-  ),
+  steps: PropTypes.arrayOf(PropTypes.shape(IStep)).isRequired,
   maxSteps: PropTypes.number.isRequired,
   activeStep: PropTypes.number.isRequired,
   passedSteps: PropTypes.number.isRequired,

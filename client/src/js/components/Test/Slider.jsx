@@ -4,21 +4,21 @@ export default class Slider extends Component {
   constructor(props) {
     super(props);
     this.state = { value: props.step };
-
-    this.handleInput = this.handleInput.bind(this);
   }
+
   componentWillReceiveProps(nextProps) {
     this.setState({ value: nextProps.step });
   }
-  handleInput(e) {
+
+  handleInput = (e) => {
     e.preventDefault();
     this.setState({ value: e.target.value });
-    this.props.setStep(parseInt(e.target.value, 10));
+    this.props.actions.setStep(parseInt(e.target.value, 10));
   }
+
   render() {
     const { passedSteps, maxSteps } = this.props;
-
-    let max = (passedSteps !== maxSteps) ? passedSteps + 1 : maxSteps;
+    const max = (passedSteps !== maxSteps) ? passedSteps + 1 : maxSteps;
 
     return (
       <div className="myslider">
@@ -38,5 +38,7 @@ Slider.propTypes = {
   step: PropTypes.number.isRequired,
   passedSteps: PropTypes.number.isRequired,
   maxSteps: PropTypes.number.isRequired,
-  setStep: PropTypes.func.isRequired,
+  actions: PropTypes.shape({
+    setStep: PropTypes.func.isRequired,
+  }).isRequired,
 };

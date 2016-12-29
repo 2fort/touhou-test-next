@@ -43,12 +43,6 @@ class Form extends Component {
       },
       wiki: '',
     };
-
-    this.nameChangeHandler = this.nameChangeHandler.bind(this);
-    this.gameChangeHandler = this.gameChangeHandler.bind(this);
-    this.artAuthorChangeHandler = this.artAuthorChangeHandler.bind(this);
-    this.artUrlChangeHandler = this.artUrlChangeHandler.bind(this);
-    this.wikiChangeHandler = this.wikiChangeHandler.bind(this);
   }
 
   componentWillMount() {
@@ -64,32 +58,32 @@ class Form extends Component {
       });
   }
 
-  nameChangeHandler(e) {
+  nameChangeHandler = (e) => {
     this.setState({ name: e.target.value });
   }
 
-  gameChangeHandler(e) {
+  gameChangeHandler = (e) => {
     const newState = update(this.state, {
       _game: { title: { $set: e.target.value } },
     });
     this.setState(newState);
   }
 
-  artAuthorChangeHandler(e) {
+  artAuthorChangeHandler = (e) => {
     const newState = update(this.state, {
       art: { author: { $set: e.target.value } },
     });
     this.setState(newState);
   }
 
-  artUrlChangeHandler(e) {
+  artUrlChangeHandler = (e) => {
     const newState = update(this.state, {
       art: { url: { $set: e.target.value } },
     });
     this.setState(newState);
   }
 
-  wikiChangeHandler(e) {
+  wikiChangeHandler = (e) => {
     this.setState({ wiki: e.target.value });
   }
 

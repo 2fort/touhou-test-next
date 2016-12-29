@@ -5,6 +5,7 @@ import Hammer from 'hammerjs';
 import CharacterImage from './CharacterImage';
 import CharacterButtons from './CharacterButtons';
 import { NextButton, PrevButton } from './PrevNextButtons';
+import { IStep } from '../../../propTypes';
 
 export default class TestCore extends Component {
   componentDidMount() {
@@ -31,7 +32,7 @@ export default class TestCore extends Component {
         <PrevButton
           steps={steps}
           activeStep={activeStep}
-          goPrevStep={actions.goPrevStep}
+          actions={{ goPrevStep: actions.goPrevStep }}
         >
           &nbsp;&lt;&nbsp;
         </PrevButton>
@@ -41,9 +42,8 @@ export default class TestCore extends Component {
         />
 
         <CharacterButtons
-          currentStep={Object.assign({}, steps[activeStep - 1])}
-          actions={actions}
-          maxSteps={maxSteps}
+          currentStep={steps[activeStep - 1]}
+          actions={{ answerGiven: actions.answerGiven }}
         />
 
         <NextButton
@@ -51,7 +51,7 @@ export default class TestCore extends Component {
           activeStep={activeStep}
           passedSteps={passedSteps}
           maxSteps={maxSteps}
-          goNextStep={actions.goNextStep}
+          actions={{ goNextStep: actions.goNextStep }}
         >
           &nbsp;&gt;&nbsp;
         </NextButton>
@@ -61,7 +61,7 @@ export default class TestCore extends Component {
 }
 
 TestCore.propTypes = {
-  steps: PropTypes.array,
+  steps: PropTypes.arrayOf(PropTypes.shape(IStep)),
   activeStep: PropTypes.number,
   actions: PropTypes.object,
   maxSteps: PropTypes.number,

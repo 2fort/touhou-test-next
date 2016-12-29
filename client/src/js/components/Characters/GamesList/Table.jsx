@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
 
-const GamesTable = ({ gamesFlex, pathname }) => {
+const Table = ({ gamesFlex, pathname }) => {
   const tableData = gamesFlex.map(game => (
     <tr key={game.title}>
       <td className="td-centered">
@@ -33,6 +33,7 @@ const GamesTable = ({ gamesFlex, pathname }) => {
       </tbody>
     </table>
   ))();
+
   return (
     <div className="flex-container">
       {data}
@@ -40,9 +41,9 @@ const GamesTable = ({ gamesFlex, pathname }) => {
   );
 };
 
-GamesTable.propTypes = {
+Table.propTypes = {
   gamesFlex: PropTypes.array,
   pathname: PropTypes.string,
 };
 
-export default GamesTable;
+export default Table;

@@ -1,7 +1,9 @@
 import React from 'react';
+import Helmet from 'react-helmet';
 
 export default () => (
   <div className="simple-container">
-    Oops! Page not found.
+    <Helmet title="404" />
+    Page not found.
   </div>
 );

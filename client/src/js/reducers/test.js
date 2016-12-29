@@ -44,17 +44,11 @@ export default function test(state = initialState, action) {
     }
 
     case types.GO_PREV_STEP: {
-      if (state.activeStep !== 1) {
-        return { ...state, activeStep: state.activeStep - 1 };
-      }
-      break;
+      return { ...state, activeStep: state.activeStep - 1 };
     }
 
     case types.GO_NEXT_STEP: {
-      if (state.activeStep <= state.passedSteps && state.activeStep < maxSteps) {
-        return { ...state, activeStep: state.activeStep + 1 };
-      }
-      break;
+      return { ...state, activeStep: state.activeStep + 1 };
     }
 
     case types.SET_STEP: {
@@ -81,9 +75,7 @@ export default function test(state = initialState, action) {
     }
 
     case types.ANSWER_GIVEN: {
-      const newSteps = state.steps.slice(0);
-      newSteps[state.activeStep - 1] = action.step;
-      return { ...state, steps: newSteps, passedSteps: state.passedSteps + 1 };
+      return { ...state, steps: action.newSteps, passedSteps: state.passedSteps + 1 };
     }
 
     default: {

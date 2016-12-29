@@ -1,8 +1,10 @@
+import update from 'immutability-helper';
 import * as types from '../constants/ActionTypes';
 
 export function beginTest() {
   return (dispatch, getState) => {
-    if (!getState().test.inProgress) {
+    const test = getState().test;
+    if (!test.inProgress) {
       dispatch({
         type: types.TEST_BEGIN,
       });
@@ -17,14 +19,22 @@ export function endTest() {
 }
 
 export function goPrevStep() {
-  return {
-    type: types.GO_PREV_STEP,
+  return (dispatch, getState) => {
+    const test = getState().test;
+
+    if (test.activeStep !== 1) {
+      dispatch({ type: types.GO_PREV_STEP });
+    }
   };
 }
 
 export function goNextStep() {
-  return {
-    type: types.GO_NEXT_STEP,
+  return (dispatch, getState) => {
+    const test = getState().test;
+
+    if (test.activeStep <= test.passedSteps && test.activeStep < test.maxSteps) {
+      dispatch({ type: types.GO_NEXT_STEP });
+    }
   };
 }
 
@@ -53,10 +63,32 @@ export function resetTest() {
   };
 }
 
-export function answerGiven(step) {
-  return {
-    type: types.ANSWER_GIVEN,
-    step,
+export function answerGiven(name) {
+  return (dispatch, getState) => {
+    const test = getState().test;
+    const currentStep = test.steps[test.activeStep - 1];
+
+    const newStep = update(currentStep, {
+      passed: { $set: true },
+      givenAnswer: { $set: name },
+    });
+
+    const newSteps = update(test.steps, {
+      $splice: [[test.activeStep - 1, 1, newStep]],
+    });
+
+    dispatch({
+      type: types.ANSWER_GIVEN,
+      newSteps,
+    });
+
+    setTimeout(() => {
+      if (currentStep.step === test.maxSteps) {
+        dispatch(openResultsWindow());
+      } else {
+        dispatch(goNextStep());
+      }
+    }, 850);
   };
 }
 

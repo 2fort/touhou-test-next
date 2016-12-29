@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import DocumentTitle from 'react-document-title';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -11,11 +10,7 @@ import * as CharactersActions from '../../actions/charactersActions';
 class Characters extends Component {
   constructor(props) {
     super(props);
-    this.btnChangeMode = this.btnChangeMode.bind(this);
-    this.setGameTitle = this.setGameTitle.bind(this);
-    this.state = {
-      gameTitle: '',
-    };
+    this.state = { gameTitle: '' };
   }
 
   componentWillMount() {
@@ -34,7 +29,7 @@ class Characters extends Component {
     }
   }
 
-  setGameTitle(gameParam) {
+  setGameTitle = (gameParam) => {
     fetch(`/api/game/${gameParam}`)
       .then(response => response.json())
       .then((game) => {
@@ -45,7 +40,7 @@ class Characters extends Component {
       });
   }
 
-  btnChangeMode(btnMode) {
+  btnChangeMode = (btnMode) => {
     const { location: { pathname }, actions: { changeMode }, router: { replace } } = this.props;
 
     if (btnMode === 'grid') {
@@ -61,15 +56,13 @@ class Characters extends Component {
     const { children, params } = this.props;
 
     return (
-      <DocumentTitle title="Characters | Touhou">
-        <div className="simple-container">
-          <div className="flex-top">
-            <Breadcrumbs gameTitle={this.state.gameTitle} {...params} />
-            {!params.char && <ModeButtons btnChangeMode={this.btnChangeMode} />}
-          </div>
-          {children}
+      <div className="simple-container">
+        <div className="flex-top">
+          <Breadcrumbs gameTitle={this.state.gameTitle} {...params} />
+          {!params.char && <ModeButtons btnChangeMode={this.btnChangeMode} />}
         </div>
-      </DocumentTitle>
+        {children}
+      </div>
     );
   }
 }

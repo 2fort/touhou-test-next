@@ -1,30 +1,30 @@
 import React, { PropTypes, Component } from 'react';
 import Link from 'react-router/lib/Link';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { resetTest } from '../../actions/testActions';
 
 const NavLink = props => <Link activeClassName="active" {...props} />;
 
 class Navbar extends Component {
   constructor(props) {
     super(props);
-
     this.state = { expanded: false };
-    this.triggerMenu = this.triggerMenu.bind(this);
-    this.hideMenu = this.hideMenu.bind(this);
   }
 
-  triggerMenu() {
+  triggerMenu = () => {
     this.setState({ expanded: !this.state.expanded });
   }
 
-  hideMenu() {
+  hideMenu = () => {
     this.setState({ expanded: false });
   }
 
   render() {
-    const { resetButtonVisible, resetTest } = this.props;
+    const { resetButtonVisible, actions } = this.props;
 
     const reloadButton =
-      (<button type="button" className="reload" title="Reset" onClick={resetTest}>
+      (<button type="button" className="reload" title="Reset" onClick={actions.resetTest}>
         <i className="fa fa-fw fa-lg fa-refresh" aria-hidden="true" />
         <span className="mobile-hide"> Reset</span>
       </button>);
@@ -55,7 +55,19 @@ class Navbar extends Component {
 
 Navbar.propTypes = {
   resetButtonVisible: PropTypes.bool.isRequired,
-  resetTest: PropTypes.func.isRequired,
+  actions: PropTypes.shape({
+    resetTest: PropTypes.func.isRequired,
+  }),
 };
 
-export default Navbar;
+function mapStateToProps({ test: { resetButtonVisible } }) {
+  return { resetButtonVisible };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({ resetTest }, dispatch),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);

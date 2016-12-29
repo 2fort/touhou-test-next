@@ -7,16 +7,15 @@ const Breadcrumbs = ({ gameTitle, game, char }) => {
   } else if (game && !char) {
     return (
       <div className="breadcrumbs">
-        <Link to="/characters">Characters</Link>&nbsp;/&nbsp;{gameTitle}
+        <Link to="/characters">Characters</Link>{' '}/{' '}{gameTitle}
       </div>
     );
   }
   return (
     <div className="breadcrumbs">
-      <Link to="/characters">Characters</Link>&nbsp;/&nbsp;
-        <Link to={`/characters/${game}`}>
-          {gameTitle}
-        </Link>
+      <Link to="/characters">Characters</Link>
+      {' '}/{' '}
+      <Link to={`/characters/${game}`}>{gameTitle}</Link>
     </div>
   );
 };

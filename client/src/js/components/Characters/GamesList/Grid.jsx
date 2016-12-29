@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
 
-const GamesGrid = ({ gamesFlex, pathname }) => {
+const Grid = ({ gamesFlex, pathname }) => {
   const data = gamesFlex.map(game => (
     <div key={game.title} className="flex-item">
       <p>
@@ -23,9 +23,9 @@ const GamesGrid = ({ gamesFlex, pathname }) => {
   );
 };
 
-GamesGrid.propTypes = {
+Grid.propTypes = {
   gamesFlex: PropTypes.array,
   pathname: PropTypes.string,
 };
 
-export default GamesGrid;
+export default Grid;

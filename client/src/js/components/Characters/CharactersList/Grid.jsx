@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
 
-const CharactersGrid = ({ charsFlex, pathname }) => {
+const Grid = ({ charsFlex, pathname }) => {
   const data = charsFlex.map(char => (
     <div key={char.name} className="flex-item">
       <p>
@@ -21,9 +21,9 @@ const CharactersGrid = ({ charsFlex, pathname }) => {
   );
 };
 
-CharactersGrid.propTypes = {
+Grid.propTypes = {
   charsFlex: PropTypes.array,
   pathname: PropTypes.string,
 };
 
-export default CharactersGrid;
+export default Grid;

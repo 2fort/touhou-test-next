@@ -5,15 +5,13 @@ export default class Edit extends Component {
   constructor(props) {
     super(props);
     this.state = { successAlert: false, dangerAlert: '' };
-    this.handleSuccessMessage = this.handleSuccessMessage.bind(this);
-    this.handleDangerMessage = this.handleDangerMessage.bind(this);
   }
 
-  handleSuccessMessage() {
+  handleSuccessMessage = () => {
     this.setState({ successAlert: true });
   }
 
-  handleDangerMessage(message) {
+  handleDangerMessage = (message) => {
     this.setState({ dangerAlert: message });
   }
 
@@ -55,11 +53,6 @@ class Form extends Component {
   constructor(props) {
     super(props);
     this.state = { _id: '', prefix: '', title: '', year: '', file: {} };
-    this.handlePrefixChange = this.handlePrefixChange.bind(this);
-    this.handleTitleChange = this.handleTitleChange.bind(this);
-    this.handleYearChange = this.handleYearChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleFileChange = this.handleFileChange.bind(this);
   }
 
   componentWillMount() {
@@ -78,23 +71,23 @@ class Form extends Component {
       });
   }
 
-  handlePrefixChange(e) {
+  handlePrefixChange = (e) => {
     this.setState({ prefix: e.target.value });
   }
 
-  handleTitleChange(e) {
+  handleTitleChange = (e) => {
     this.setState({ title: e.target.value });
   }
 
-  handleYearChange(e) {
+  handleYearChange = (e) => {
     this.setState({ year: e.target.value });
   }
 
-  handleFileChange(e) {
+  handleFileChange = (e) => {
     this.setState({ year: e.target.files[0] });
   }
 
-  handleSubmit(e) {
+  handleSubmit = (e) => {
     e.preventDefault();
     fetch(`/api/admin/games/edit/${this.props.id}`, {
       method: 'post',

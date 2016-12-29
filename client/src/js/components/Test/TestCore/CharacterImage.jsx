@@ -8,10 +8,9 @@ export default class CharacterImage extends Component {
     return false;
   }
   render() {
-    const img = `/images/m/${this.props.image}`;
     return (
       <div className="character-image">
-        <img key={img} alt="character" src={img} />
+        <img alt="character" src={`/images/m/${this.props.image}`} />
       </div>
     );
   }

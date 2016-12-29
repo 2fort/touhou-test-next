@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
+import { IStep } from '../../../propTypes';
 
-const NextButton = ({ steps, activeStep, passedSteps, maxSteps, goNextStep, children }) => {
+const NextButton = ({ steps, activeStep, passedSteps, maxSteps, actions, children }) => {
   let color = 'disabled';
 
   if (activeStep !== passedSteps + 1 && activeStep < maxSteps) {
@@ -15,7 +16,7 @@ const NextButton = ({ steps, activeStep, passedSteps, maxSteps, goNextStep, chil
 
   return (
     <div className="navigation">
-      <button type="button" className={color} id="next" onClick={goNextStep}>
+      <button type="button" className={color} id="next" onClick={actions.goNextStep}>
         {children}
       </button>
     </div>
@@ -23,15 +24,17 @@ const NextButton = ({ steps, activeStep, passedSteps, maxSteps, goNextStep, chil
 };
 
 NextButton.propTypes = {
-  steps: PropTypes.arrayOf(PropTypes.object).isRequired,
+  steps: PropTypes.arrayOf(PropTypes.shape(IStep)).isRequired,
   activeStep: PropTypes.number.isRequired,
   passedSteps: PropTypes.number.isRequired,
   maxSteps: PropTypes.number.isRequired,
-  goNextStep: PropTypes.func.isRequired,
+  actions: PropTypes.shape({
+    goNextStep: PropTypes.func.isRequired,
+  }).isRequired,
   children: PropTypes.node,
 };
 
-const PrevButton = ({ steps, activeStep, goPrevStep, children }) => {
+const PrevButton = ({ steps, activeStep, actions, children }) => {
   let color = 'disabled';
 
   if (activeStep !== 1) {
@@ -41,7 +44,7 @@ const PrevButton = ({ steps, activeStep, goPrevStep, children }) => {
 
   return (
     <div className="navigation">
-      <button type="button" className={color} id="prev" onClick={goPrevStep}>
+      <button type="button" className={color} id="prev" onClick={actions.goPrevStep}>
         {children}
       </button>
     </div>
@@ -49,9 +52,11 @@ const PrevButton = ({ steps, activeStep, goPrevStep, children }) => {
 };
 
 PrevButton.propTypes = {
-  steps: PropTypes.arrayOf(PropTypes.object).isRequired,
+  steps: PropTypes.arrayOf(PropTypes.shape(IStep)).isRequired,
   activeStep: PropTypes.number.isRequired,
-  goPrevStep: PropTypes.func.isRequired,
+  actions: PropTypes.shape({
+    goPrevStep: PropTypes.func.isRequired,
+  }).isRequired,
   children: PropTypes.node.isRequired,
 };
 
