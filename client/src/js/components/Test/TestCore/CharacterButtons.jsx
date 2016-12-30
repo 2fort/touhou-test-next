@@ -1,20 +1,13 @@
 import React, { PropTypes } from 'react';
-import { IStep } from '../../../propTypes';
+import { connect } from 'react-redux';
+import { answerGiven } from '../../../actions/testActions';
 
-const CharacterButtons = ({ currentStep, actions }) => {
-  const { rightAnswer, givenAnswer, passed, buttons } = currentStep;
+const CharacterButtons = ({ structure, onButtonClick }) => {
+  const charButtons = structure.map((button, i) => {
+    let color = button.color;
 
-  const charButtons = buttons.map((name, i) => {
-    let color = 'blue';
-
-    if (passed && name === rightAnswer) {
-      color = 'green';
-    } else if (passed && name === givenAnswer && givenAnswer !== rightAnswer) {
-      color = 'red';
-    }
-
-    color += (passed) ? ' disabled' : '';
-    color += (name === givenAnswer) ? ' active' : '';
+    color += (button.disabled) ? ' disabled' : '';
+    color += (button.active) ? ' active' : '';
 
     return (
       <button
@@ -22,24 +15,63 @@ const CharacterButtons = ({ currentStep, actions }) => {
         key={i}
         className={color}
         onClick={(e) => {
-          if (!passed) {
-            actions.answerGiven(e.target.innerText);
+          if (!button.disabled) {
+            onButtonClick(e.target.innerText);
           }
         }}
       >
-        {name}
+        {button.name}
       </button>
     );
   });
 
-  return (<div className="buttons">{charButtons}</div>);
+  return (
+    <div className="buttons">
+      {charButtons}
+    </div>
+  );
 };
+
+function mapStateToProps({ test }) {
+  const currentStep = test.steps[test.activeStep - 1];
+  const { rightAnswer, givenAnswer, passed, buttons } = currentStep;
+
+  const structure = buttons.map((name) => {
+    const params = {
+      name,
+      color: 'blue',
+      disabled: passed,
+      active: (name === givenAnswer),
+    };
+
+    if (passed && name === rightAnswer) {
+      params.color = 'green';
+    } else if (passed && name === givenAnswer && givenAnswer !== rightAnswer) {
+      params.color = 'red';
+    }
+
+    return params;
+  });
+
+  return { structure };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    onButtonClick: (name) => {
+      dispatch(answerGiven(name));
+    },
+  };
+}
 
 CharacterButtons.propTypes = {
-  currentStep: PropTypes.shape(IStep).isRequired,
-  actions: PropTypes.shape({
-    answerGiven: PropTypes.func.isRequired,
-  }).isRequired,
+  structure: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string,
+    color: PropTypes.string,
+    passed: PropTypes.bool,
+    active: PropTypes.bool,
+  })).isRequired,
+  onButtonClick: PropTypes.func.isRequired,
 };
 
-export default CharacterButtons;
+export default connect(mapStateToProps, mapDispatchToProps)(CharacterButtons);

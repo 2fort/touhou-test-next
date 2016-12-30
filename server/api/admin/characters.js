@@ -3,7 +3,13 @@ const _ = require('lodash');
 const Character = require('../../models/character');
 
 router.get('/', (req, res) => {
-  Character.find().populate('_game', 'title').exec()
+  let offset = 0;
+
+  if (req.query.start) {
+    offset = Number(req.query.start);
+  }
+
+  Character.find().skip(offset).limit(10).populate('_game', 'title').exec()
     .then((characters) => {
       return res.json(characters);
     })

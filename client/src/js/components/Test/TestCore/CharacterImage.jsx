@@ -1,21 +1,37 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
-export default class CharacterImage extends Component {
+class CharacterImage extends Component {
   shouldComponentUpdate(nextProps) {
-    if (nextProps.image !== this.props.image) {
+    if (nextProps.structure.image !== this.props.structure.image) {
       return true;
     }
     return false;
   }
   render() {
+    const { baseDir, image } = this.props.structure;
     return (
       <div className="character-image">
-        <img alt="character" src={`/images/m/${this.props.image}`} />
+        <img alt="character" src={baseDir + image} />
       </div>
     );
   }
 }
 
+function mapStateToProps({ test: { steps, activeStep } }) {
+  const structure = {
+    baseDir: '/images/m/',
+    image: steps[activeStep - 1].image,
+  };
+
+  return { structure };
+}
+
 CharacterImage.propTypes = {
-  image: PropTypes.string.isRequired,
+  structure: PropTypes.shape({
+    baseDir: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+  }).isRequired,
 };
+
+export default connect(mapStateToProps)(CharacterImage);

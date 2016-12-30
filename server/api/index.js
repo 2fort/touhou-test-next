@@ -33,4 +33,10 @@ router.get('/game/:game', (req, res) => {
     .catch(err => console.log(err));
 });
 
+router.get('/exp', (req, res) => {
+  Character.find().skip(0).limit(10).exec()
+    .then(games => res.json(games))
+    .catch(err => console.log(err));
+});
+
 module.exports = router;

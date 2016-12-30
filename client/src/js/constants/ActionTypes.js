@@ -11,12 +11,7 @@ export const OPEN_RESULTS_WINDOW = 'OPEN_RESULTS_WINDOW';
 export const CLOSE_RESULTS_WINDOW = 'CLOSE_RESULTS_WINDOW';
 
 export const RESET_TEST = 'RESET_TEST';
-
 export const ANSWER_GIVEN = 'ANSWER_GIVEN';
-
-export const SHOW_RESET_BUTTON = 'SHOW_RESET_BUTTON';
-export const HIDE_RESET_BUTTON = 'HIDE_RESET_BUTTON';
-
 
 // characters actions
 

@@ -42,7 +42,7 @@ export default class Edit extends Component {
         />
 
         <button type="button" className="btn btn-default" onClick={() => router.goBack()} >
-          <i className="fa fa-arrow-left" aria-hidden="true" /> Back
+          <span aria-hidden="true">&larr;</span> Back
         </button>
       </div>
     );
@@ -123,7 +123,7 @@ class Form extends Component {
                 value={this.state._id}
                 type="text"
                 className="form-control"
-                disabled
+                readOnly
               />
             </div>
           </div>

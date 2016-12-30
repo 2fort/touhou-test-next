@@ -91,15 +91,3 @@ export function answerGiven(name) {
     }, 850);
   };
 }
-
-export function showResetButton() {
-  return {
-    type: types.SHOW_RESET_BUTTON,
-  };
-}
-
-export function hideResetButton() {
-  return {
-    type: types.HIDE_RESET_BUTTON,
-  };
-}

@@ -20,7 +20,9 @@ class Edit extends Component {
     return (
       <div>
         <Form games={this.state.games} id={this.props.params.id} />
-        <button type="button" className="btn btn-default" onClick={() => this.props.router.goBack()}>Back</button>
+        <button type="button" className="btn btn-default" onClick={() => this.props.router.goBack()}>
+          <span aria-hidden="true">&larr;</span> Back
+        </button>
       </div>
     );
   }
@@ -100,7 +102,7 @@ class Form extends Component {
           <div className="form-group">
             <label htmlFor="id" className="col-sm-2 control-label">id</label>
             <div className="col-sm-10">
-              <input name="id" value={this.state._id} type="text" className="form-control" disabled />
+              <input name="id" value={this.state._id} type="text" className="form-control" readOnly />
             </div>
           </div>
         </form>

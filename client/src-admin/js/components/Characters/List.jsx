@@ -8,7 +8,16 @@ export default class List extends Component {
   }
 
   componentWillMount() {
-    fetch('/api/admin/characters')
+    let reqUrl = '/api/admin/characters';
+
+    if (this.props.params.page) {
+      console.log('here', this.props.params.page);
+      const page = this.props.params.page;
+      reqUrl += `?start=${page * 10}`;
+      console.log('here 2', reqUrl);
+    }
+
+    fetch(reqUrl)
       .then((response) => {
         return response.json();
       })
@@ -40,9 +49,12 @@ const Table = ({ characters }) => {
       <td>{char.art.author}</td>
       <td className="toowide">{char.art.url}</td>
       <td>
+        <Link to={`/admin/characters/show/${char._id}`}>
+          <i className="fa fa-eye fa-lg" aria-hidden="true" />
+        </Link>{' '}
         <Link to={`/admin/characters/edit/${char._id}`}>
           <i className="fa fa-pencil fa-lg" aria-hidden="true" />
-        </Link>&nbsp;
+        </Link>{' '}
         <Link to={`/admin/characters/delete/${char._id}`}>
           <i className="fa fa-trash fa-lg" aria-hidden="true" />
         </Link>

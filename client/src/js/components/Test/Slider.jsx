@@ -1,44 +1,44 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { setStep } from '../../actions/testActions';
 
-export default class Slider extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { value: props.step };
-  }
+const Slider = ({ structure: { value, max }, onSliderMove }) => (
+  <div className="myslider">
+    <div className="inside">
+      <input
+        onChange={onSliderMove}
+        type="range" min="1" max={max} step="1"
+        value={value} className={`width-${max}`}
+      />
+    </div>
+  </div>
+);
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({ value: nextProps.step });
-  }
+function mapStateToProps({ test: { activeStep, passedSteps, maxSteps } }) {
+  const structure = {
+    value: activeStep,
+    max: (passedSteps !== maxSteps) ? passedSteps + 1 : maxSteps,
+  };
 
-  handleInput = (e) => {
-    e.preventDefault();
-    this.setState({ value: e.target.value });
-    this.props.actions.setStep(parseInt(e.target.value, 10));
-  }
+  return { structure };
+}
 
-  render() {
-    const { passedSteps, maxSteps } = this.props;
-    const max = (passedSteps !== maxSteps) ? passedSteps + 1 : maxSteps;
-
-    return (
-      <div className="myslider">
-        <div className="inside">
-          <input
-            onInput={this.handleInput}
-            type="range" min="1" max={max} step="1"
-            value={this.state.value} className={`width-${max}`}
-          />
-        </div>
-      </div>
-    );
-  }
+function mapDispatchToProps(dispatch) {
+  return {
+    onSliderMove: (e) => {
+      e.preventDefault();
+      const step = parseInt(e.target.value, 10);
+      dispatch(setStep(step));
+    },
+  };
 }
 
 Slider.propTypes = {
-  step: PropTypes.number.isRequired,
-  passedSteps: PropTypes.number.isRequired,
-  maxSteps: PropTypes.number.isRequired,
-  actions: PropTypes.shape({
-    setStep: PropTypes.func.isRequired,
+  structure: PropTypes.shape({
+    value: PropTypes.number.isRequired,
+    max: PropTypes.number.isRequired,
   }).isRequired,
+  onSliderMove: PropTypes.func.isRequired,
 };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Slider);

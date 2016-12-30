@@ -5,7 +5,6 @@ const maxSteps = 20;
 
 const initialState = {
   inProgress: false,
-  resetButtonVisible: false,
 };
 
 export default function test(state = initialState, action) {
@@ -26,20 +25,6 @@ export default function test(state = initialState, action) {
     case types.TEST_END: {
       return {
         ...initialState,
-      };
-    }
-
-    case types.SHOW_RESET_BUTTON: {
-      return {
-        ...state,
-        resetButtonVisible: true,
-      };
-    }
-
-    case types.HIDE_RESET_BUTTON: {
-      return {
-        ...state,
-        resetButtonVisible: false,
       };
     }
 
@@ -82,5 +67,4 @@ export default function test(state = initialState, action) {
       return state;
     }
   }
-  return state;
 }
