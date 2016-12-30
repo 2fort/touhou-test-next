@@ -78,7 +78,7 @@
                 background-color: darken($blue, 7%);
             }
 
-            &.disabled {
+            &:disabled {
                 &:hover {
                     background-color: $blue;
                 }
@@ -103,7 +103,7 @@
             padding: 0 6px;
             transition: all .2s;
 
-            &.disabled {
+            &:disabled {
                 background-color: #fff;
                 color: $gray;
 

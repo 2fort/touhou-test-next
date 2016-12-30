@@ -4,20 +4,16 @@ import { answerGiven } from '../../../actions/testActions';
 
 const CharacterButtons = ({ structure, onButtonClick }) => {
   const charButtons = structure.map((button, i) => {
-    let color = button.color;
-
-    color += (button.disabled) ? ' disabled' : '';
-    color += (button.active) ? ' active' : '';
+    const color = (button.active) ? `${button.color} active` : button.color;
 
     return (
       <button
         type="button"
         key={i}
+        disabled={button.disabled}
         className={color}
         onClick={(e) => {
-          if (!button.disabled) {
-            onButtonClick(e.target.innerText);
-          }
+          onButtonClick(e.target.innerText);
         }}
       >
         {button.name}
