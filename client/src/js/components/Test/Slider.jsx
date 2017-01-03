@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { setStep } from '../../actions/testActions';
+import { setStep } from '../../actions/mainActions';
 
 const Slider = ({ structure: { value, max }, onSliderMove }) => (
   <div className="myslider">
@@ -14,7 +14,7 @@ const Slider = ({ structure: { value, max }, onSliderMove }) => (
   </div>
 );
 
-function mapStateToProps({ test: { activeStep, passedSteps, maxSteps } }) {
+function mapStateToProps({ main: { activeStep, passedSteps, maxSteps } }) {
   const structure = {
     value: activeStep,
     max: (passedSteps !== maxSteps) ? passedSteps + 1 : maxSteps,

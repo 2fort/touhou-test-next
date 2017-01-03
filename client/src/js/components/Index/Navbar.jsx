@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { Link, withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import { resetTest } from '../../actions/testActions';
+import { resetTest } from '../../actions/asyncActions';
 
 const NavLink = props => <Link activeClassName="active" {...props} />;
 

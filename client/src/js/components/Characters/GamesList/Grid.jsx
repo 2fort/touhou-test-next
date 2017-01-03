@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
 
 const Grid = ({ gamesFlex, pathname }) => {
-  const data = gamesFlex.map(game => (
+  const data = Object.values(gamesFlex).map(game => (
     <div key={game.title} className="flex-item">
       <p>
         <Link className="imagelink" to={`${pathname}/${game.slug}`}>
@@ -24,7 +24,7 @@ const Grid = ({ gamesFlex, pathname }) => {
 };
 
 Grid.propTypes = {
-  gamesFlex: PropTypes.array,
+  gamesFlex: PropTypes.objectOf(PropTypes.object),
   pathname: PropTypes.string,
 };
 

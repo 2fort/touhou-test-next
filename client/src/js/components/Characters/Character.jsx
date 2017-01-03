@@ -1,30 +1,68 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
+import { fetchCharacter, fetchCharacterBegin, purgeCache } from '../../actions/asyncActions';
 
-import * as testApi from '../../api';
+class Character extends Component {
+  static onEnter(dispatch) {
+    dispatch(fetchCharacterBegin());
+  }
 
-const Character = ({ params: { char } }) => {
-  const charInfo = testApi.getSingleCharInfo(char);
-  return (
-    <div className="singlechar">
-      <Helmet title={charInfo.name} />
+  static onLeave(dispatch) {
+    dispatch(purgeCache());
+  }
 
-      <h1>{charInfo.name}</h1>
-      <div className="singlechar-flex">
-        <div>
-          <img alt="char" src={`/images/m/${charInfo.image}`} />
-        </div>
-        <div>
-          <p>Character info: <a href={charInfo.wiki}>{charInfo.wiki.substring(7)}</a></p>
-          <p>Illustration author: <a href={charInfo.art.url}> {charInfo.art.author}</a></p>
+  componentWillMount() {
+    this.props.getCharacter(this.props.params.char);
+  }
+
+  render() {
+    const { characters, fetchInProgress } = this.props;
+
+    if (fetchInProgress) {
+      return null;
+    }
+
+    const character = Object.values(characters)[0];
+
+    return (
+      <div itemScope itemType="http://schema.org/Person" className="singlechar">
+        <Helmet title={character.name} />
+
+        <h1 itemProp="name">{character.name}</h1>
+        <div className="singlechar-flex">
+          <div>
+            <img itemProp="image" alt="char" src={`/images/m/${character.image}`} />
+          </div>
+          <div>
+            <p>Character info: <a itemProp="sameAs" href={character.wiki}>{character.wiki.substring(7)}</a></p>
+            <p>Illustration author: <a href={character.art.url}> {character.art.author}</a></p>
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
+
+function mapStateToProps({ store: { characters, fetchInProgress } }) {
+  return { characters, fetchInProgress };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getCharacter: (char) => {
+      dispatch(fetchCharacter(char));
+    },
+  };
+}
 
 Character.propTypes = {
-  params: PropTypes.object,
+  params: PropTypes.shape({
+    char: PropTypes.string,
+  }),
+  characters: PropTypes.objectOf(PropTypes.object),
+  getCharacter: PropTypes.func,
+  fetchInProgress: PropTypes.bool,
 };
 
-export default Character;
+export default connect(mapStateToProps, mapDispatchToProps)(Character);

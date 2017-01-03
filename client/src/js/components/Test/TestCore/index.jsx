@@ -6,7 +6,7 @@ import Hammer from 'hammerjs';
 import CharacterImage from './CharacterImage';
 import CharacterButtons from './CharacterButtons';
 import { NextButton, PrevButton } from './NavButtons';
-import { goNextStep, goPrevStep } from '../../../actions/testActions';
+import { goNextStep, goPrevStep } from '../../../actions/mainActions';
 
 class TestCore extends Component {
   componentDidMount() {

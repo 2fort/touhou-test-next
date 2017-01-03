@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Modal from 'react-modal';
-import { resetTest, closeResultsWindow } from '../../actions/testActions';
+import { resetTest } from '../../actions/asyncActions';
+import { closeResultsWindow } from '../../actions/mainActions';
 
 class MyModal extends Component {
   shouldComponentUpdate(nextProps) {
@@ -46,7 +47,7 @@ class MyModal extends Component {
   }
 }
 
-function mapStateToProps({ test: { steps, modalIsOpen } }) {
+function mapStateToProps({ main: { steps, modalIsOpen } }) {
   const structure = {
     isOpen: modalIsOpen,
     correctAnswers: 0,

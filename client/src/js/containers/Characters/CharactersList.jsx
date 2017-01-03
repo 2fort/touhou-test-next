@@ -1,52 +1,56 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 
-import ListHoc from './ListHoc';
 import { Grid, Table } from '../../components/Characters/CharactersList';
+import { fetchCharacters, fetchCharactersBegin, purgeCache } from '../../actions/asyncActions';
 
 class CharactersList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      characters: [],
-      title: '',
-    };
+  static onEnter(dispatch) {
+    dispatch(fetchCharactersBegin());
+  }
+
+  static onLeave(dispatch) {
+    dispatch(purgeCache());
   }
 
   componentWillMount() {
-    let stateCharacters = [];
-    fetch(`/api/characters/${this.props.params.game}`)
-      .then(response => response.json())
-      .then((characters) => {
-        stateCharacters = characters;
-        return fetch(`/api/game/${this.props.params.game}`);
-      })
-      .then(response => response.json())
-      .then((game) => {
-        this.setState({
-          characters: stateCharacters,
-          title: game[0].title,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    this.props.getCharacters(this.props.params.game);
   }
 
   render() {
-    const { location: { pathname }, mode } = this.props;
+    const { characters, title, location: { pathname }, mode } = this.props;
 
     return (
       <div>
-        <Helmet title={this.state.title} />
+        <Helmet title={title} />
 
         {mode === 'grid'
-          ? <Grid charsFlex={this.state.characters} pathname={pathname} />
-          : <Table charsFlex={this.state.characters} pathname={pathname} />
+          ? <Grid charsFlex={characters} pathname={pathname} />
+          : <Table charsFlex={characters} pathname={pathname} />
         }
       </div>
     );
   }
+}
+
+function mapStateToProps({ store: { characters, games, fetchInProgress }, main: { mode } }) {
+  let title = '';
+
+  if (!fetchInProgress) {
+    const gameId = Object.values(characters)[0]._game;
+    title = games[gameId].title;
+  }
+
+  return { characters, title, mode };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getCharacters: (game) => {
+      dispatch(fetchCharacters(game));
+    },
+  };
 }
 
 CharactersList.propTypes = {
@@ -57,7 +61,10 @@ CharactersList.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }),
-  mode: PropTypes.string,
+  mode: PropTypes.string.isRequired,
+  characters: PropTypes.objectOf(PropTypes.object),
+  title: PropTypes.string,
+  getCharacters: PropTypes.func,
 };
 
-export default ListHoc(CharactersList);
+export default connect(mapStateToProps, mapDispatchToProps)(CharactersList);

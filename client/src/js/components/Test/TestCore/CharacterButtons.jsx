@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { answerGiven } from '../../../actions/testActions';
+import { answerGiven } from '../../../actions/mainActions';
 
 const CharacterButtons = ({ structure, onButtonClick }) => {
   const charButtons = structure.map((button, i) => {
@@ -28,8 +28,8 @@ const CharacterButtons = ({ structure, onButtonClick }) => {
   );
 };
 
-function mapStateToProps({ test }) {
-  const currentStep = test.steps[test.activeStep - 1];
+function mapStateToProps({ main: { steps, activeStep } }) {
+  const currentStep = steps[activeStep - 1];
   const { rightAnswer, givenAnswer, passed, buttons } = currentStep;
 
   const structure = buttons.map((name) => {

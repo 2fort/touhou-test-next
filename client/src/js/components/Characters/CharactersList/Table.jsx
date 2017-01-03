@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
 
 const Table = ({ charsFlex, pathname }) => {
-  const tableData = charsFlex.map(char => (
+  const tableData = Object.values(charsFlex).map(char => (
     <tr key={char.name}>
       <td className="td-centered">
         <Link className="imagelink" to={`${pathname}/${char.slug}`}>
@@ -43,7 +43,7 @@ const Table = ({ charsFlex, pathname }) => {
 };
 
 Table.propTypes = {
-  charsFlex: PropTypes.array,
+  charsFlex: PropTypes.objectOf(PropTypes.object),
   pathname: PropTypes.string,
 };
 

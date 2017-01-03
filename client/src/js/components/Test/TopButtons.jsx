@@ -15,7 +15,7 @@ const TopButtons = ({ structure }) => {
   );
 };
 
-function mapStateToProps({ test: { steps, passedSteps, activeStep } }) {
+function mapStateToProps({ main: { steps, passedSteps, activeStep } }) {
   const structure = steps.map((step, i) => {
     const params = {
       color: 'gray',

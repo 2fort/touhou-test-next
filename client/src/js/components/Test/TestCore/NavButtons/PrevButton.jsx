@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import Button from './Button';
-import { goPrevStep } from '../../../../actions/testActions';
+import { goPrevStep } from '../../../../actions/mainActions';
 
-function mapStateToProps({ test: { steps, activeStep } }) {
+function mapStateToProps({ main: { steps, activeStep } }) {
   const structure = { color: '', disabled: false };
 
   if (activeStep === 1) {

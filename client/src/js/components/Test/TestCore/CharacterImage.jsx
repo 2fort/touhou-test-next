@@ -18,7 +18,7 @@ class CharacterImage extends Component {
   }
 }
 
-function mapStateToProps({ test: { steps, activeStep } }) {
+function mapStateToProps({ main: { steps, activeStep } }) {
   const structure = {
     baseDir: '/images/m/',
     image: steps[activeStep - 1].image,

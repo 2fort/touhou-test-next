@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import Button from './Button';
-import { goNextStep } from '../../../../actions/testActions';
+import { goNextStep } from '../../../../actions/mainActions';
 
-function mapStateToProps({ test: { steps, activeStep, passedSteps, maxSteps } }) {
+function mapStateToProps({ main: { steps, activeStep, passedSteps, maxSteps } }) {
   const structure = { color: '', disabled: false };
 
   if (activeStep === maxSteps || activeStep === passedSteps + 1) {

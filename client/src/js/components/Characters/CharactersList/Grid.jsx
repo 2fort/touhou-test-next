@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
 
 const Grid = ({ charsFlex, pathname }) => {
-  const data = charsFlex.map(char => (
+  const data = Object.values(charsFlex).map(char => (
     <div key={char.name} className="flex-item">
       <p>
         <Link className="imagelink" to={`${pathname}/${char.slug}`}>
@@ -14,6 +14,7 @@ const Grid = ({ charsFlex, pathname }) => {
       </p>
     </div>
   ));
+
   return (
     <div className="flex-container">
       {data}
@@ -22,7 +23,7 @@ const Grid = ({ charsFlex, pathname }) => {
 };
 
 Grid.propTypes = {
-  charsFlex: PropTypes.array,
+  charsFlex: PropTypes.objectOf(PropTypes.object),
   pathname: PropTypes.string,
 };
 

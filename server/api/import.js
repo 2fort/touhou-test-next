@@ -3,8 +3,8 @@ const _ = require('lodash');
 const Game = require('../models/game');
 const Character = require('../models/character');
 
-const games = require('../../client/src/json/games.json');
-const characters = require('../../client/src/json/characters.json');
+const games = require('../json/games.json');
+const characters = require('../json/characters.json');
 
 const ObjectId = require('mongodb').ObjectId;
 
