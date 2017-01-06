@@ -1,35 +1,25 @@
-// main actions
-export const CHANGE_MODE = 'CHANGE_MODE';
+// Characters actions
+export const CHANGE_MODE = 'CHARACTERS/CHANGE_MODE';
 
-export const TEST_BEGIN = 'TEST_BEGIN';
-export const TEST_END = 'TEST_END';
+// Test actions
+const testPrefix = 'TEST/';
+export const TEST_BEGIN = `${testPrefix}BEGIN`;
+export const TEST_END = `${testPrefix}END`;
 
-export const GO_PREV_STEP = 'GO_PREV_STEP';
-export const GO_NEXT_STEP = 'GO_NEXT_STEP';
-export const SET_STEP = 'SET_STEP';
+export const TEST_SET_STEP = `${testPrefix}SET_STEP`;
 
-export const OPEN_RESULTS_WINDOW = 'OPEN_RESULTS_WINDOW';
-export const CLOSE_RESULTS_WINDOW = 'CLOSE_RESULTS_WINDOW';
+export const TEST_OPEN_RESULTS_WINDOW = `${testPrefix}OPEN_RESULTS_WINDOW`;
+export const TEST_CLOSE_RESULTS_WINDOW = `${testPrefix}CLOSE_RESULTS_WINDOW`;
 
-export const RESET_TEST = 'RESET_TEST';
-export const ANSWER_GIVEN = 'ANSWER_GIVEN';
+export const TEST_RESET = `${testPrefix}RESET_TEST`;
+export const TEST_ANSWER_GIVEN = `${testPrefix}ANSWER_GIVEN`;
 
-// store actions
+// mounting actions
+export const COMPONENT_MOUNT = 'COMPONENT_MOUNT';
+export const COMPONENT_UNMOUNT = 'COMPONENT_UNMOUNT';
+export const COMPONENT_DESTROY = 'COMPONENT_DESTROY';
 
-export const PURGE_CACHE = 'PURGE_CACHE';
-
-export const FETCH_GAMES_BEGIN = 'FETCH_GAMES_BEGIN';
-export const FETCH_GAMES_SUCCESS = 'FETCH_GAMES_SUCCESS';
-export const FETCH_GAMES_FAIL = 'FETCH_GAMES_FAIL';
-
-export const FETCH_CHARACTERS_BEGIN = 'FETCH_CHARACTERS_BEGIN';
-export const FETCH_CHARACTERS_SUCCESS = 'FETCH_CHARACTERS_SUCCESS';
-export const FETCH_CHARACTERS_FAIL = 'FETCH_CHARACTERS_FAIL';
-
-export const FETCH_CHARACTER_BEGIN = 'FETCH_CHARACTER_BEGIN';
-export const FETCH_CHARACTER_SUCCESS = 'FETCH_CHARACTER_SUCCESS';
-export const FETCH_CHARACTER_FAIL = 'FETCH_CHARACTER_FAIL';
-
-export const FETCH_TEST_INFO_BEGIN = 'FETCH_TEST_INFO_BEGIN';
-export const FETCH_TEST_INFO_SUCCESS = 'FETCH_TEST_INFO_SUCCESS';
-export const FETCH_TEST_INFO_FAIL = 'FETCH_TEST_INFO_FAIL';
+// fetching actions
+export const FETCH_BEGIN = 'FETCH_BEGIN';
+export const FETCH_SUCCESS = 'FETCH_SUCCESS';
+export const FETCH_FAIL = 'FETCH_FAIL';

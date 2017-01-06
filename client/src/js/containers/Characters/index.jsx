@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
-import Breadcrumbs from '../../components/Characters/Breadcrumbs';
-import ModeButtons from '../../components/Characters/ModeButtons';
+import Breadcrumbs from './components/Breadcrumbs';
+import ModeButtons from './components/ModeButtons';
 
 const Characters = ({ router, location, children, params }) => (
   <div className="simple-container">

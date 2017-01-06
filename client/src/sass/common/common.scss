@@ -143,6 +143,7 @@ button {
     max-width: $container-width;
     padding: 1rem;
     overflow: hidden;
+    min-height: 200px;
 
     a {
         box-sizing: border-box;

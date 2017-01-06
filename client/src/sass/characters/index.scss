@@ -31,7 +31,6 @@
 }
 
 .singlechar {
-
     h1 {
         margin: 0 0 1rem;
         text-align: center;
@@ -76,6 +75,15 @@
 
 .td-centered {
     text-align: center;
+}
+
+.flex-loading {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    //min-height: inherit;
+    min-height: 150px;
 }
 
 table {
