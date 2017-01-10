@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import React, { PropTypes, Component } from 'react';
 import { Link, withRouter } from 'react-router';
 import { resetTest } from '../../../actions/testActions';
+import LoadingSignal from './LoadingSignal';
 
 const NavLink = props => <Link activeClassName="active" {...props} />;
 
@@ -25,29 +26,32 @@ class Navbar extends Component {
     const inButton = this.state.expanded ? 'show' : 'hide';
 
     return (
-      <div className="menu">
-        <nav>
-          <Link onClick={this.hideMenu} className="logo" to="/">Touhou @ Comiket</Link>
+      <div>
+        <div className="menu">
+          <nav>
+            <Link onClick={this.hideMenu} className="logo" to="/">Touhou @ Comiket</Link>
+            &nbsp;<LoadingSignal />
 
-          {router.isActive('/test') &&
-            <button type="button" className="reload" title="Reset" onClick={onResetButtonClick}>
-              <i className="fa fa-fw fa-lg fa-refresh" aria-hidden="true" />
-              <span className="mobile-hide"> Reset</span>
+            {router.isActive('/test') &&
+              <button type="button" className="reload" title="Reset" onClick={onResetButtonClick}>
+                <i className="fa fa-fw fa-lg fa-refresh" aria-hidden="true" />
+                <span className="mobile-hide"> Reset</span>
+              </button>
+            }
+
+            <button type="button" className="burger" onClick={this.triggerMenu}>
+              <i className="fa fa-bars fa-lg" aria-hidden="true" />
             </button>
-          }
 
-          <button type="button" className="burger" onClick={this.triggerMenu}>
-            <i className="fa fa-bars fa-lg" aria-hidden="true" />
-          </button>
-
-          <div className={`collapsible ${inButton}`}>
-            <NavLink onClick={this.hideMenu} to="/test">Test</NavLink>
-            <NavLink onClick={this.hideMenu} to="/characters">Characters</NavLink>
-            <a href="https://github.com/2fort/touhou-test-jsx">
-              <i className="fa fa-github fa-fw fa-lg" aria-hidden="true" /> Github
-            </a>
-          </div>
-        </nav>
+            <div className={`collapsible ${inButton}`}>
+              <NavLink onClick={this.hideMenu} to="/test">Test</NavLink>
+              <NavLink onClick={this.hideMenu} to="/characters">Characters</NavLink>
+              <a href="https://github.com/2fort/touhou-test-jsx">
+                <i className="fa fa-github fa-fw fa-lg" aria-hidden="true" /> Github
+              </a>
+            </div>
+          </nav>
+        </div>
       </div>
     );
   }

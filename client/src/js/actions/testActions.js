@@ -61,20 +61,20 @@ export function fetchCharsAndBeginTest(component, maxSteps) {
       .then((characters) => {
         const data = normalize(characters, [charactersEntity]);
 
-        dispatch({
-          type: types.FETCH_SUCCESS,
-          component,
-          entities: data.entities,
-          visible: data.result,
-          fetchedAt: Date.now(),
-        });
-
         const steps = generateTest(characters, maxSteps);
 
         dispatch({
           type: types.TEST_BEGIN,
           steps,
           maxSteps,
+        });
+
+        dispatch({
+          type: types.FETCH_SUCCESS,
+          component,
+          entities: data.entities,
+          visible: data.result,
+          fetchedAt: Date.now(),
         });
       })
       .catch((err) => {

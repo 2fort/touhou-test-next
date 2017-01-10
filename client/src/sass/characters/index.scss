@@ -1,91 +1,91 @@
 @import '~purecss/build/tables-min';
 
 .flex-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: baseline;
-    overflow-x: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  overflow-x: auto;
 
-    p {
-        padding: 0;
-        margin: .2rem 0 0;
-    }
+  p {
+    padding: 0;
+    margin: .2rem 0 0;
+  }
 }
 
 .flex-item {
-    flex: 1 0 150px;
-    margin: .5rem 1rem;
-    text-align: center;
+  flex: 1 0 150px;
+  margin: .5rem 1rem;
+  text-align: center;
 
-    img {
-        max-width: 150px;
-        max-height: 150px;
-    }
+  img {
+    max-width: 150px;
+    max-height: 150px;
+  }
 
-    @media only screen and (max-width: 580px) {
-        & {
-            margin: .5rem .4rem;
-        }
+  @media only screen and (max-width: 580px) {
+    & {
+      margin: .5rem .4rem;
     }
+  }
 }
 
 .singlechar {
-    h1 {
-        margin: 0 0 1rem;
-        text-align: center;
-    }
+  h1 {
+    margin: 0 0 1rem;
+    text-align: center;
+  }
 }
 
 .singlechar-flex {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  box-sizing: border-box;
 
-    img {
-        max-width: 100%;
-        height: auto;
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  p {
+    padding: 0 1.5rem;
+
+    @media only screen and (max-width: 740px) {
+      & {
+        padding: 0;
+      }
     }
-
-    p {
-        padding: 0 1.5rem;
-
-        @media only screen and (max-width: 740px) {
-            & {
-                padding: 0;
-            }
-        }
-    }
+  }
 }
 
 .flex-top {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    margin-bottom: .5rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  margin-bottom: .5rem;
 }
 
 .modebuttons {
-    text-align: right;
-    font-size: .95rem;
+  text-align: right;
+  font-size: .95rem;
 }
 
 .td-centered {
-    text-align: center;
+  text-align: center;
 }
 
 .flex-loading {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    //min-height: inherit;
-    min-height: 150px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  //min-height: inherit;
+  min-height: 150px;
 }
 
 table {
-    width: 100%;
+  width: 100%;
 }

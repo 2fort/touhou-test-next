@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
-import Loading from '../../shared/Loading';
 import { fetchCharacter } from '../../actions/charactersActions';
+import NavButton from '../../shared/NavButton';
 
 class SingleCharacter extends Component {
   componentDidMount() {
@@ -17,39 +17,39 @@ class SingleCharacter extends Component {
   render() {
     const { character, state } = this.props;
 
-    if (!state.active || state.pending) {
-      return <Loading />;
-    }
+    if (!state.active || state.pending) return null;
 
     return (
       <div itemScope itemType="http://schema.org/Person" className="singlechar">
         <Helmet title={character.name} />
-
-        <h1 itemProp="name">{character.name}</h1>
-        <div className="singlechar-flex">
-          <div>
-            <img itemProp="image" alt="char" src={`/images/m/${character.image}`} />
-          </div>
-          <div>
-            <p>Character info: <a itemProp="sameAs" href={character.wiki}>{character.wiki.substring(7)}</a></p>
-            <p>Illustration author: <a href={character.art.url}> {character.art.author}</a></p>
+        <NavButton structure={{ color: 'blue', disable: true }}>&nbsp;&lt;&nbsp;</NavButton>
+        <div>
+          <h1 itemProp="name">{character.name}</h1>
+          <div className="singlechar-flex">
+            <div>
+              <img itemProp="image" alt="char" src={`/images/m/${character.image}`} />
+            </div>
+            <div>
+              <p>Character info: <a itemProp="sameAs" href={character.wiki}>{character.wiki.substring(7)}</a></p>
+              <p>Illustration author: <a href={character.art.url}> {character.art.author}</a></p>
+            </div>
           </div>
         </div>
+        <NavButton structure={{ color: 'blue', disable: true }}>&nbsp;&gt;&nbsp;</NavButton>
       </div>
     );
   }
 }
 
 function mapStateToProps({ domain: { singleCharacter }, entities: { characters } }) {
-  if (!singleCharacter) {
-    return { state: { active: false, pending: false } };
-  }
+  const state = { active: false, pending: false };
 
-  const state = { active: singleCharacter.active, pending: singleCharacter.pending };
+  if (!singleCharacter) return { state };
 
-  if (!state.active || state.pending) {
-    return { state };
-  }
+  state.active = singleCharacter.active;
+  state.pending = singleCharacter.pending;
+
+  if (!state.active || state.pending) return { state };
 
   const character = singleCharacter.visible.map(slug => characters[slug])[0];
   return { character, state };

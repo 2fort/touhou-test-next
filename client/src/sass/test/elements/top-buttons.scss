@@ -1,25 +1,25 @@
 .topbuttons {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    margin: -1rem auto 1rem;
-    max-width: $container-width;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  margin: -1rem auto 1rem;
+  max-width: $container-width;
 
-    div {
-        border: 1px solid rgba(0, 0, 0, .25);
-        box-sizing: border-box;
-        flex: 1 1 5%;
-        margin-left: 1px;
-        margin-right: 1px;
-        opacity: .55;
-        z-index: -1;
+  div {
+    border: 1px solid rgba(0, 0, 0, .25);
+    box-sizing: border-box;
+    flex: 1 1 5%;
+    margin-left: 1px;
+    margin-right: 1px;
+    opacity: .55;
+    z-index: -1;
 
-        &.active {
-            opacity: 1;
-        }
-
-        &.blue {
-            background-color: lighten($blue, 5%);
-        }
+    &.active {
+      opacity: 1;
     }
+
+    &.blue {
+      background-color: lighten($blue, 5%);
+    }
+  }
 }

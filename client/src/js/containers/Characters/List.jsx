@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import React, { Component, PropTypes } from 'react';
 import Helmet from 'react-helmet';
 
-import Loading from '../../shared/Loading';
 import { GamesGrid, GamesTable, CharsGrid, CharsTable } from './components/gridsAndTables';
 import { fetchCharacters, fetchGames } from '../../actions/charactersActions';
 
@@ -21,11 +20,9 @@ class List extends Component {
   }
 
   render() {
-    const { state, data, location } = this.props;
+    const { ready, data, location } = this.props;
 
-    if (!state.active || state.pending) {
-      return <Loading />;
-    }
+    if (!ready) return null;
 
     let Grid = Noop;
     let Table = Noop;
@@ -52,10 +49,7 @@ class List extends Component {
 }
 
 List.propTypes = {
-  state: PropTypes.shape({
-    active: PropTypes.bool,
-    pending: PropTypes.bool,
-  }),
+  ready: PropTypes.bool,
   data: PropTypes.shape({
     entities: PropTypes.arrayOf(PropTypes.object),
     title: PropTypes.string,
@@ -73,17 +67,8 @@ List.propTypes = {
 
 const GamesList = (() => {
   function mapStateToProps({ entities, domain: { gamesList }, main: { mode } }) {
-    if (!gamesList) {
-      return { state: { active: false, pending: false } };
-    }
-
-    const state = {
-      active: gamesList.active,
-      pending: gamesList.pending,
-    };
-
-    if (!state.active || state.pending) {
-      return { state };
+    if (!gamesList || !gamesList.active || gamesList.pending) {
+      return { ready: false };
     }
 
     const data = {
@@ -93,7 +78,7 @@ const GamesList = (() => {
       entity: gamesList.visible.map(id => entities.games[id]),
     };
 
-    return { state, data };
+    return { ready: true, data };
   }
 
   function mapDispatchToProps(dispatch) {
@@ -124,17 +109,8 @@ const GamesList = (() => {
 
 const CharactersList = (() => {
   function mapStateToProps({ entities, domain: { charactersList }, main: { mode } }, { params }) {
-    if (!charactersList) {
-      return { state: { active: false, pending: false } };
-    }
-
-    const state = {
-      active: charactersList.active,
-      pending: charactersList.pending,
-    };
-
-    if (!state.active || state.pending) {
-      return { state };
+    if (!charactersList || !charactersList.active || charactersList.pending) {
+      return { ready: false };
     }
 
     const data = {
@@ -144,7 +120,7 @@ const CharactersList = (() => {
       entity: charactersList.visible.map(slug => entities.characters[slug]),
     };
 
-    return { state, data };
+    return { ready: true, data };
   }
 
   function mapDispatchToProps(dispatch, { params: { game } }) {

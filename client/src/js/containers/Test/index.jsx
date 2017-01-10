@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 
 import { ResultModal, Slider, TopButtons, CharacterImage, CharacterButtons } from './components';
 import { NextButton, PrevButton } from './components/NavButtons';
-
 import { fetchCharsAndBeginTest } from '../../actions/testActions';
 import TestCore from './TestCore';
 import Loading from '../../shared/Loading';
@@ -25,9 +24,7 @@ class Test extends Component {
   render() {
     const { state } = this.props;
 
-    if (!state.inProgress) {
-      return <Loading />;
-    }
+    if (!state.inProgress || state.pending) return <Loading />;
 
     return (
       <div>
@@ -49,9 +46,10 @@ class Test extends Component {
 }
 
 function mapStateToProps({ domain: { test } }) {
-  const state = { inProgress: false };
+  const state = { pending: false, inProgress: false };
   if (!test) return { state };
 
+  state.pending = test.pending;
   state.inProgress = (test.steps.length > 0);
   return { state };
 }
