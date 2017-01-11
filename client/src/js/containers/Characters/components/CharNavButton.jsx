@@ -17,10 +17,14 @@ const CharNavButton = ({ char, game, children }) => {
   );
 };
 
+CharNavButton.defaultProps = {
+  char: undefined,
+};
+
 CharNavButton.propTypes = {
   game: PropTypes.string.isRequired,
   char: PropTypes.string,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.element.isRequired,
 };
 
 export default CharNavButton;
