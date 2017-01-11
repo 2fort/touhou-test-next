@@ -17,16 +17,16 @@ class DomainClass {
   getComponent(state, action, component) {
     if (component === action.component) {
       switch (action.type) {
-        case types.COMPONENT_MOUNT: {
+        case types.CONTAINER_MOUNT: {
           const returnState = (state) || this.components[component].defaultState;
           return Immutable.merge(returnState, { active: true });
         }
 
-        case types.COMPONENT_UNMOUNT: {
+        case types.CONTAINER_UNMOUNT: {
           return Immutable.merge(state, { active: false });
         }
 
-        case types.COMPONENT_DESTROY: {
+        case types.CONTAINER_DESTROY: {
           return null;
         }
 

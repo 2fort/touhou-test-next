@@ -15,9 +15,9 @@ export const TEST_RESET = `${testPrefix}RESET_TEST`;
 export const TEST_ANSWER_GIVEN = `${testPrefix}ANSWER_GIVEN`;
 
 // mounting actions
-export const COMPONENT_MOUNT = 'COMPONENT_MOUNT';
-export const COMPONENT_UNMOUNT = 'COMPONENT_UNMOUNT';
-export const COMPONENT_DESTROY = 'COMPONENT_DESTROY';
+export const CONTAINER_MOUNT = 'CONTAINER_MOUNT';
+export const CONTAINER_UNMOUNT = 'CONTAINER_UNMOUNT';
+export const CONTAINER_DESTROY = 'CONTAINER_DESTROY';
 
 // fetching actions
 export const FETCH_BEGIN = 'FETCH_BEGIN';

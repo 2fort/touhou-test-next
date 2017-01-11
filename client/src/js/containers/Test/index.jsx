@@ -60,13 +60,13 @@ function mapDispatchToProps(dispatch) {
     actions: {
       didMount: () => {
         dispatch({
-          type: 'COMPONENT_MOUNT',
+          type: 'CONTAINER_MOUNT',
           component,
         });
       },
       willUnmount: () => {
         dispatch({
-          type: 'COMPONENT_UNMOUNT',
+          type: 'CONTAINER_UNMOUNT',
           component,
         });
       },
