@@ -81,7 +81,7 @@ export function fetchCharsAndBeginTest(component, maxSteps) {
         dispatch({
           type: types.FETCH_FAIL,
           component,
-          err: err.message,
+          err,
         });
       });
   };

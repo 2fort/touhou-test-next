@@ -15,7 +15,7 @@ function main(state = initialState, action) {
       return Immutable.merge(state, { mode: action.mode });
 
     case types.FETCH_FAIL:
-      return Immutable.merge(state, { error: action.err });
+      return Immutable.merge(state, { error: action.err.message });
 
     default: {
       return state;

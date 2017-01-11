@@ -2,8 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 
-import CharNavButton from './components/CharNavButton';
+import { TopContainer, Breadcrumbs, CharNavButton } from './components';
 import { fetchCharacter } from '../../actions/charactersActions';
+import Fetch404 from '../Base/Fetch404';
 
 class SingleCharacter extends Component {
   componentDidMount() {
@@ -22,30 +23,37 @@ class SingleCharacter extends Component {
   }
 
   render() {
-    const { character, ready } = this.props;
+    const { character, ready, params } = this.props;
 
     if (!ready) return null;
+    if (!character) return <Fetch404 title={'Character not found!'}>Character not found!</Fetch404>;
 
     return (
-      <div itemScope itemType="http://schema.org/Person" className="singlechar">
-        <Helmet title={character.name} />
+      <div>
+        <TopContainer>
+          <Breadcrumbs params={params} />
+        </TopContainer>
 
-        <h1 itemProp="name">{character.name}</h1>
+        <div itemScope itemType="http://schema.org/Person" className="singlechar">
+          <Helmet title={character.name} />
 
-        <div className="singlechar-container">
-          <CharNavButton game={character._game} char={character.prevCharacter}>&nbsp;&lt;&nbsp;</CharNavButton>
+          <h1 itemProp="name">{character.name}</h1>
 
-          <div className="singlechar-flex">
-            <div className="singlechar-img">
-              <img itemProp="image" alt="char" src={`/images/m/${character.image}`} />
+          <div className="singlechar-container">
+            <CharNavButton game={character._game} char={character.prevCharacter}>&nbsp;&lt;&nbsp;</CharNavButton>
+
+            <div className="singlechar-flex">
+              <div className="singlechar-img">
+                <img itemProp="image" alt="char" src={`/images/m/${character.image}`} />
+              </div>
+              <div className="singlechar-desc">
+                <p>Character info: <a itemProp="sameAs" href={character.wiki}>{character.wiki.substring(7)}</a></p>
+                <p>Illustration author: <a href={character.art.url}> {character.art.author}</a></p>
+              </div>
             </div>
-            <div className="singlechar-desc">
-              <p>Character info: <a itemProp="sameAs" href={character.wiki}>{character.wiki.substring(7)}</a></p>
-              <p>Illustration author: <a href={character.art.url}> {character.art.author}</a></p>
-            </div>
+
+            <CharNavButton game={character._game} char={character.nextCharacter}>&nbsp;&gt;&nbsp;</CharNavButton>
           </div>
-
-          <CharNavButton game={character._game} char={character.nextCharacter}>&nbsp;&gt;&nbsp;</CharNavButton>
         </div>
       </div>
     );

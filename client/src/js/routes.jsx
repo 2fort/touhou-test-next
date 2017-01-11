@@ -7,7 +7,7 @@ import test from './containers/Test';
 import Characters from './containers/Characters';
 import { GamesList, CharactersList } from './containers/Characters/List';
 import SingleCharacter from './containers/Characters/SingleCharacter';
-import Route404 from './containers/Base/404';
+import Route404 from './containers/Base/Page404';
 
 export default (
   <Route path="/" component={Base}>

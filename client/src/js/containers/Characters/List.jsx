@@ -3,7 +3,9 @@ import React, { Component, PropTypes } from 'react';
 import Helmet from 'react-helmet';
 
 import { GamesGrid, GamesTable, CharsGrid, CharsTable } from './components/gridsAndTables';
+import { TopContainer, Breadcrumbs, ModeButtons } from './components';
 import { fetchCharacters, fetchGames } from '../../actions/charactersActions';
+import Fetch404 from '../Base/Fetch404';
 
 const Noop = () => (
   <div>{' '}</div>
@@ -20,9 +22,10 @@ class List extends Component {
   }
 
   render() {
-    const { ready, data, location } = this.props;
+    const { ready, data, router, params, location } = this.props;
 
     if (!ready) return null;
+    if (!data) return <Fetch404>Game not found!</Fetch404>;
 
     let Grid = Noop;
     let Table = Noop;
@@ -38,6 +41,11 @@ class List extends Component {
     return (
       <div>
         <Helmet title={data.title} />
+
+        <TopContainer>
+          <Breadcrumbs params={params} />
+          <ModeButtons router={router} location={location} />
+        </TopContainer>
 
         {(data.mode === 'grid')
             ? <Grid entity={data.entity} pathname={location.pathname} />
@@ -55,9 +63,10 @@ List.defaultProps = {
 List.propTypes = {
   ready: PropTypes.bool.isRequired,
   data: PropTypes.shape({
-    entities: PropTypes.arrayOf(PropTypes.object),
-    title: PropTypes.string,
-    mode: PropTypes.string,
+    component: PropTypes.string.isRequired,
+    entity: PropTypes.arrayOf(PropTypes.object).isRequired,
+    title: PropTypes.string.isRequired,
+    mode: PropTypes.string.isRequired,
   }),
   actions: PropTypes.shape({
     didMount: PropTypes.func.isRequired,
@@ -66,6 +75,13 @@ List.propTypes = {
   }).isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
+  }).isRequired,
+  params: PropTypes.shape({
+    game: PropTypes.string,
+    char: PropTypes.string,
+  }).isRequired,
+  router: PropTypes.shape({
+    replace: PropTypes.func.isRequired,
   }).isRequired,
 };
 
@@ -115,6 +131,10 @@ const CharactersList = (() => {
   function mapStateToProps({ entities, domain: { charactersList }, main: { mode } }, { params }) {
     if (!charactersList || charactersList.pending) {
       return { ready: false };
+    }
+
+    if (!entities.games[params.game]) {
+      return { ready: true, data: undefined };
     }
 
     const data = {

@@ -36,7 +36,7 @@ export function fetchGames(component) {
         dispatch({
           type: types.FETCH_FAIL,
           component,
-          err: err.message,
+          err,
         });
       });
   };
@@ -87,6 +87,7 @@ export function fetchCharacter(char, component) {
         return response.json();
       })
       .then((character) => {
+        // console.log(character);
         const data = normalize(character, [charactersEntity]);
         dispatch({
           type: types.FETCH_SUCCESS,

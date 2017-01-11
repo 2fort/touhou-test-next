@@ -18,24 +18,30 @@ router.get('/games', async (req, res) => {
 router.get('/characters/:game', (req, res) => {
   Game.find({ slug: req.params.game }).lean().exec()
     .then((game) => {
+      if (!game[0]) {
+        throw new Error('404'); // game not found!
+      }
+
       return Character.find({ _game: game[0]._id }, 'name image slug wiki _game').populate('_game', 'title slug').exec();
     })
     .then((characters) => {
       // return setTimeout(() => res.json(characters), 1000);
       return res.json(characters);
     })
-    .catch((err) => {
-      return res.status(404).json(err);
+    .catch(() => {
+      return res.status(404).end();
     });
 });
 
 router.get('/character/:char', async (req, res) => {
   try {
-    const charInfo = (await Character.find({ slug: req.params.char })
-      .populate('_game')
-      .exec())[0]
-      .toObject();
+    let charInfo = await Character.find({ slug: req.params.char }).populate('_game').exec();
 
+    if (!charInfo[0]) {
+      throw new Error('404'); // character not found!
+    }
+
+    charInfo = charInfo[0].toObject();
     const allCharsFromGame = await Character.find({ _game: charInfo._game.id }, '_id slug').lean().exec();
 
     allCharsFromGame.forEach((charId, i) => {
@@ -46,8 +52,8 @@ router.get('/character/:char', async (req, res) => {
     });
 
     return res.json([charInfo]);
-  } catch (e) {
-    return res.json(e.message);
+  } catch (err) {
+    return res.status(404).end();
   }
 });
 
@@ -57,10 +63,10 @@ router.get('/characters', (req, res) => {
     .catch(err => res.status(404).json(err.message));
 });
 
-router.get('/exp', (req, res) => {
+/* router.get('/exp', (req, res) => {
   Character.find().skip(0).limit(10).exec()
     .then(games => res.json(games))
     .catch(err => console.log(err));
-});
+});*/
 
 module.exports = router;

@@ -41,8 +41,14 @@ class DomainClass {
             fetchedAt: action.fetchedAt,
           });
 
+        case types.FETCH_FAIL:
+          return Immutable.merge(state, {
+            pending: false,
+          });
+
         default:
-          console.log(`Reducer ${component} + can't find his component-specific action!`);
+          return null;
+          // console.log(`Reducer ${component} + can't find his component-specific action!`);
       }
     }
     return this.components[component].reducer(state, action);
