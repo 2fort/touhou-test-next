@@ -81,7 +81,7 @@ export function fetchCharacter(char, component) {
       component,
     });
 
-    fetch(`/api/charinfo/${char}`)
+    fetch(`/api/character/${char}`)
       .then((response) => {
         checkResponseStatus(response);
         return response.json();

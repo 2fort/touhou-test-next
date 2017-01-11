@@ -29,43 +29,7 @@ router.get('/characters/:game', (req, res) => {
     });
 });
 
-router.get('/character/:char', (req, res) => {
-  let character = {};
-
-  Character.find({ slug: req.params.char }).populate('_game').exec()
-    .then((response) => {
-      if (!response[0]) {
-        return Promise.reject(Error('404!'));
-      }
-
-      character = response[0].toObject();
-
-      return Promise.all([
-        Character.find({ _id: { $lt: character.id } }).sort({ _id: -1 }).limit(1).lean().exec(),
-        Character.find({ _id: { $gt: character.id } }).sort({ _id: 1 }).limit(1).lean().exec(),
-      ]);
-    })
-    .then((response) => {
-      const prevCharInfo = response[0][0];
-      const nextCharInfo = response[1][0];
-
-      // blank array === true, but blank array[0] === undefined
-      if (prevCharInfo && character._game.id === prevCharInfo._game.toString()) {
-        character.prevCharacter = prevCharInfo.slug;
-      }
-
-      if (nextCharInfo && character._game.id === nextCharInfo._game.toString()) {
-        character.nextCharacter = nextCharInfo.slug;
-      }
-
-      return res.json([character]);
-    })
-    .catch((err) => {
-      return res.status(404).json(err.message);
-    });
-});
-
-router.get('/charinfo/:char', async (req, res) => {
+router.get('/character/:char', async (req, res) => {
   try {
     const charInfo = (await Character.find({ slug: req.params.char })
       .populate('_game')
