@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import HelmetHead from '../../shared/HelmetHead';
+import HelmetHead from './components/HelmetHead';
 import Navbar from './components/Navbar';
 
 const Base = ({ children }) => (

@@ -1,6 +1,23 @@
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import NavButton from '../../../shared/NavButton';
 import { goPrevStep, goNextStep } from '../../../actions/testActions';
+
+const NavButton = ({ structure: { color, disabled }, onButtonClick, children }) => (
+  <div className="navigation">
+    <button disabled={disabled} type="button" className={color} onClick={onButtonClick}>
+      {children}
+    </button>
+  </div>
+);
+
+NavButton.propTypes = {
+  structure: PropTypes.shape({
+    color: PropTypes.string,
+    disabled: PropTypes.bool,
+  }),
+  onButtonClick: PropTypes.func,
+  children: PropTypes.node,
+};
 
 const PrevButton = (() => {
   function mapStateToProps({ domain: { test: { steps, activeStep } } }) {
@@ -58,4 +75,5 @@ const NextButton = (() => {
   return connect(mapStateToProps, mapDispatchToProps)(NavButton);
 })();
 
+export default NavButton;
 export { PrevButton, NextButton };

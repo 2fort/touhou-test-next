@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 import Breadcrumbs from './components/Breadcrumbs';
 import ModeButtons from './components/ModeButtons';
-import Loading from '../../shared/Loading';
+import Loading from '../Base/components/Loading';
 
 const Characters = ({ router, location, children, params }) => (
   <div className="simple-container">

@@ -6,7 +6,7 @@ import { ResultModal, Slider, TopButtons, CharacterImage, CharacterButtons } fro
 import { NextButton, PrevButton } from './components/NavButtons';
 import { fetchCharsAndBeginTest } from '../../actions/testActions';
 import TestCore from './TestCore';
-import Loading from '../../shared/Loading';
+import Loading from '../Base/components/Loading';
 
 class Test extends Component {
   componentDidMount() {
