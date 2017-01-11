@@ -1,12 +1,20 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
+
+import CharNavButton from './components/CharNavButton';
 import { fetchCharacter } from '../../actions/charactersActions';
 
 class SingleCharacter extends Component {
   componentDidMount() {
     this.props.actions.didMount();
     this.props.actions.getCharacter(this.props.params.char);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.char !== nextProps.params.char) {
+      this.props.actions.getCharacter(nextProps.params.char);
+    }
   }
 
   componentWillUnmount() {
@@ -23,14 +31,21 @@ class SingleCharacter extends Component {
         <Helmet title={character.name} />
 
         <h1 itemProp="name">{character.name}</h1>
-        <div className="singlechar-flex">
-          <div>
-            <img itemProp="image" alt="char" src={`/images/m/${character.image}`} />
+
+        <div className="singlechar-container">
+          <CharNavButton game={character._game} char={character.prevCharacter}>&nbsp;&lt;&nbsp;</CharNavButton>
+
+          <div className="singlechar-flex">
+            <div className="singlechar-img">
+              <img itemProp="image" alt="char" src={`/images/m/${character.image}`} />
+            </div>
+            <div className="singlechar-desc">
+              <p>Character info: <a itemProp="sameAs" href={character.wiki}>{character.wiki.substring(7)}</a></p>
+              <p>Illustration author: <a href={character.art.url}> {character.art.author}</a></p>
+            </div>
           </div>
-          <div>
-            <p>Character info: <a itemProp="sameAs" href={character.wiki}>{character.wiki.substring(7)}</a></p>
-            <p>Illustration author: <a href={character.art.url}> {character.art.author}</a></p>
-          </div>
+
+          <CharNavButton game={character._game} char={character.nextCharacter}>&nbsp;&gt;&nbsp;</CharNavButton>
         </div>
       </div>
     );

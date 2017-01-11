@@ -35,12 +35,16 @@ function mapStateToProps({ entities: { games, characters } }, ownProps) {
 
   if (paramsArray[0]) { // game
     const lvl2 = Object.values(games).filter(game => game.slug === paramsArray[0]);
-    structure.push({ name: lvl2[0].title, url: `${structure[0].url}/${paramsArray[0]}` });
+    if (lvl2[0]) { // if game was found
+      structure.push({ name: lvl2[0].title, url: `${structure[0].url}/${paramsArray[0]}` });
+    }
   }
 
   if (paramsArray[1]) { // char
     const lvl3 = Object.values(characters).filter(char => char.slug === paramsArray[1]);
-    structure.push({ name: lvl3[0].name, url: `${structure[1].url}/${paramsArray[1]}` });
+    if (lvl3[0]) { // if char was found
+      structure.push({ name: lvl3[0].name, url: `${structure[1].url}/${paramsArray[1]}` });
+    }
   }
 
   structure[structure.length - 1].url = '';
