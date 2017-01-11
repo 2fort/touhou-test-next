@@ -78,7 +78,7 @@ SingleCharacter.propTypes = {
 };
 
 function mapStateToProps({ domain: { singleCharacter }, entities: { characters } }) {
-  if (!singleCharacter || !singleCharacter.active || singleCharacter.pending) return { ready: false };
+  if (!singleCharacter || singleCharacter.pending) return { ready: false };
 
   const character = singleCharacter.visible.map(slug => characters[slug])[0];
   return { ready: true, character };

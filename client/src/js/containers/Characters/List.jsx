@@ -71,7 +71,7 @@ List.propTypes = {
 
 const GamesList = (() => {
   function mapStateToProps({ entities, domain: { gamesList }, main: { mode } }) {
-    if (!gamesList || !gamesList.active || gamesList.pending) {
+    if (!gamesList || gamesList.pending) {
       return { ready: false };
     }
 
@@ -113,7 +113,7 @@ const GamesList = (() => {
 
 const CharactersList = (() => {
   function mapStateToProps({ entities, domain: { charactersList }, main: { mode } }, { params }) {
-    if (!charactersList || !charactersList.active || charactersList.pending) {
+    if (!charactersList || charactersList.pending) {
       return { ready: false };
     }
 
