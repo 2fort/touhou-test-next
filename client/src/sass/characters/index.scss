@@ -6,10 +6,17 @@
   flex-wrap: wrap;
   align-items: baseline;
   overflow-x: auto;
+  padding: 0 1rem .5rem 1rem;
 
   p {
     padding: 0;
     margin: .2rem 0 0;
+  }
+
+  @media only screen and (max-width: 580px) {
+    & {
+      padding: 0 .5rem .5rem .5rem;
+    }
   }
 }
 
@@ -37,17 +44,19 @@
   }
 }
 
+.singlechar-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
 .singlechar-flex {
   display: flex;
+  flex: 1 1 99%;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   box-sizing: border-box;
-
-  img {
-    max-width: 100%;
-    height: auto;
-  }
 
   p {
     padding: 0 1.5rem;
@@ -60,12 +69,41 @@
   }
 }
 
+.singlechar-img {
+  flex: 1 1 50%;
+  
+  img {
+    max-width: 100%;
+    height: auto;
+    padding: 0 1rem;
+    box-sizing: border-box;
+  }
+
+  @media only screen and (max-width: 740px) {
+    & {
+      flex: 1 1 51%;
+      padding: 0;
+
+      img {
+        padding: 0;
+      }
+    }
+  }
+}
+
+.singlechar-desc {
+  flex: 1 1 50%;
+  word-break: break-all;
+}
+
 .flex-top {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: space-between;
-  margin-bottom: .5rem;
+  // margin-bottom: .5rem;
+  // margin-bottom: .5rem;
+  padding: 1rem 1rem .5rem 1rem;
 }
 
 .modebuttons {
@@ -75,15 +113,6 @@
 
 .td-centered {
   text-align: center;
-}
-
-.flex-loading {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  //min-height: inherit;
-  min-height: 150px;
 }
 
 table {
