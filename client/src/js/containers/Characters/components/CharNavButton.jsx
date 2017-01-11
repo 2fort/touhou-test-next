@@ -24,7 +24,7 @@ CharNavButton.defaultProps = {
 CharNavButton.propTypes = {
   game: PropTypes.string.isRequired,
   char: PropTypes.string,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.string.isRequired,
 };
 
 export default CharNavButton;

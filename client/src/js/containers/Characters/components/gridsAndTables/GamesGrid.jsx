@@ -24,8 +24,8 @@ const Grid = ({ entity, pathname }) => {
 };
 
 Grid.propTypes = {
-  entity: PropTypes.arrayOf(PropTypes.object),
-  pathname: PropTypes.string,
+  entity: PropTypes.arrayOf(PropTypes.object).isRequired,
+  pathname: PropTypes.string.isRequired,
 };
 
 export default Grid;

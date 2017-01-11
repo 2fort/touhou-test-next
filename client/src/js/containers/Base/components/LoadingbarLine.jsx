@@ -44,7 +44,7 @@ class LoadingbarLine extends Component {
 }
 
 LoadingbarLine.propTypes = {
-  active: PropTypes.bool,
+  active: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps({ domain }) {

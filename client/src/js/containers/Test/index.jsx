@@ -79,15 +79,14 @@ function mapDispatchToProps(dispatch) {
 
 Test.propTypes = {
   state: PropTypes.shape({
-    active: PropTypes.bool,
-    pending: PropTypes.bool,
-    inProgress: PropTypes.bool,
-  }),
+    pending: PropTypes.bool.isRequired,
+    inProgress: PropTypes.bool.isRequired,
+  }).isRequired,
   actions: PropTypes.shape({
-    didMount: PropTypes.func,
-    willUnmount: PropTypes.func,
-    fetchCharsAndBeginTest: PropTypes.func,
-  }),
+    didMount: PropTypes.func.isRequired,
+    willUnmount: PropTypes.func.isRequired,
+    fetchCharsAndBeginTest: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Test);

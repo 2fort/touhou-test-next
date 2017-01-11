@@ -12,8 +12,8 @@ const Home = ({ router }) => (
 
 Home.propTypes = {
   router: PropTypes.shape({
-    push: PropTypes.func,
-  }),
+    push: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default Home;

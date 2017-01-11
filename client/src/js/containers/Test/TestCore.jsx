@@ -49,7 +49,7 @@ function mapDispatchToProps(dispatch) {
 TestCore.propTypes = {
   swipeLeft: PropTypes.func.isRequired,
   swipeRight: PropTypes.func.isRequired,
-  children: PropTypes.node,
+  children: PropTypes.node.isRequired,
 };
 
 export default connect(null, mapDispatchToProps)(TestCore);

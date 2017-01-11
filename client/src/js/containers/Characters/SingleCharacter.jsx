@@ -22,9 +22,9 @@ class SingleCharacter extends Component {
   }
 
   render() {
-    const { character, state } = this.props;
+    const { character, ready } = this.props;
 
-    if (!state.active || state.pending) return null;
+    if (!ready) return null;
 
     return (
       <div itemScope itemType="http://schema.org/Person" className="singlechar">
@@ -52,18 +52,36 @@ class SingleCharacter extends Component {
   }
 }
 
+SingleCharacter.defaultProps = {
+  character: undefined,
+};
+
+SingleCharacter.propTypes = {
+  params: PropTypes.shape({
+    char: PropTypes.string.isRequired,
+  }).isRequired,
+  actions: PropTypes.shape({
+    didMount: PropTypes.func.isRequired,
+    willUnmount: PropTypes.func.isRequired,
+    getCharacter: PropTypes.func.isRequired,
+  }).isRequired,
+  ready: PropTypes.bool.isRequired,
+  character: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+    wiki: PropTypes.string.isRequired,
+    art: PropTypes.shape({
+      author: PropTypes.string.isRequired,
+      url: PropTypes.string.isRequired,
+    }).isRequired,
+  }),
+};
+
 function mapStateToProps({ domain: { singleCharacter }, entities: { characters } }) {
-  const state = { active: false, pending: false };
-
-  if (!singleCharacter) return { state };
-
-  state.active = singleCharacter.active;
-  state.pending = singleCharacter.pending;
-
-  if (!state.active || state.pending) return { state };
+  if (!singleCharacter || !singleCharacter.active || singleCharacter.pending) return { ready: false };
 
   const character = singleCharacter.visible.map(slug => characters[slug])[0];
-  return { character, state };
+  return { ready: true, character };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -88,29 +106,5 @@ function mapDispatchToProps(dispatch) {
     },
   };
 }
-
-SingleCharacter.propTypes = {
-  params: PropTypes.shape({
-    char: PropTypes.string,
-  }),
-  actions: PropTypes.shape({
-    didMount: PropTypes.func,
-    willUnmount: PropTypes.func,
-    getCharacter: PropTypes.func,
-  }),
-  state: PropTypes.shape({
-    active: PropTypes.bool,
-    pending: PropTypes.bool,
-  }),
-  character: PropTypes.shape({
-    name: PropTypes.string,
-    image: PropTypes.string,
-    wiki: PropTypes.string,
-    art: PropTypes.shape({
-      author: PropTypes.string,
-      url: PropTypes.string,
-    }),
-  }),
-};
 
 export default connect(mapStateToProps, mapDispatchToProps)(SingleCharacter);

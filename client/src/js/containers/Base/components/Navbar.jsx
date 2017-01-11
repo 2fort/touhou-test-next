@@ -60,7 +60,7 @@ class Navbar extends Component {
 Navbar.propTypes = {
   router: PropTypes.shape({
     isActive: PropTypes.func.isRequired,
-  }),
+  }).isRequired,
   onResetButtonClick: PropTypes.func,
 };
 

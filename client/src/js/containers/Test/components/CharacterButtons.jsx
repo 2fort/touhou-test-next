@@ -3,13 +3,12 @@ import { connect } from 'react-redux';
 import { answerGiven, openResultsWindow, goNextStep } from '../../../actions/testActions';
 
 const CharacterButtons = ({ structure, step, maxSteps, onButtonClick }) => {
-  const charButtons = structure.map((button, i) => {
+  const charButtons = structure.map((button) => {
     const color = (button.active) ? `${button.color} active` : button.color;
-
     return (
       <button
         type="button"
-        key={i}
+        key={button.name}
         disabled={button.disabled}
         className={color}
         onClick={e => onButtonClick(e.target.innerText, step, maxSteps)}
@@ -66,13 +65,13 @@ function mapDispatchToProps(dispatch) {
 
 CharacterButtons.propTypes = {
   structure: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string,
-    color: PropTypes.string,
-    passed: PropTypes.bool,
-    active: PropTypes.bool,
+    name: PropTypes.string.isRequired,
+    color: PropTypes.string.isRequired,
+    disabled: PropTypes.bool.isRequired,
+    active: PropTypes.bool.isRequired,
   })).isRequired,
-  step: PropTypes.number,
-  maxSteps: PropTypes.number,
+  step: PropTypes.number.isRequired,
+  maxSteps: PropTypes.number.isRequired,
   onButtonClick: PropTypes.func.isRequired,
 };
 

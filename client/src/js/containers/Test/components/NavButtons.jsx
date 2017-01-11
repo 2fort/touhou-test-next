@@ -12,11 +12,11 @@ const NavButton = ({ structure: { color, disabled }, onButtonClick, children }) 
 
 NavButton.propTypes = {
   structure: PropTypes.shape({
-    color: PropTypes.string,
-    disabled: PropTypes.bool,
-  }),
-  onButtonClick: PropTypes.func,
-  children: PropTypes.node,
+    color: PropTypes.string.isRequired,
+    disabled: PropTypes.bool.isRequired,
+  }).isRequired,
+  onButtonClick: PropTypes.func.isRequired,
+  children: PropTypes.string.isRequired,
 };
 
 const PrevButton = (() => {

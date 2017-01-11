@@ -49,13 +49,13 @@ class ModeButtons extends Component {
 
 ModeButtons.propTypes = {
   location: PropTypes.shape({
-    pathname: PropTypes.string,
-  }),
+    pathname: PropTypes.string.isRequired,
+  }).isRequired,
   router: PropTypes.shape({
     replace: PropTypes.func.isRequired,
-  }),
-  mode: PropTypes.string,
-  changeLayout: PropTypes.func,
+  }).isRequired,
+  mode: PropTypes.string.isRequired,
+  changeLayout: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ main: { mode } }) {

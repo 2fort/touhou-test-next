@@ -7,15 +7,20 @@ const Breadcrumbs = ({ structure, nothing }) => {
     return <div className="breadcrumbs">{' '}</div>;
   }
 
-  const breadcrumbs = structure.map((level, i) => {
+  const breadcrumbs = structure.map((level) => {
     if (level.url) {
-      return <Link key={i} to={level.url}>{level.name}</Link>;
+      return <Link key={level.name} to={level.url}>{level.name}</Link>;
     }
-    return <span key={i}>{level.name}</span>;
+    return <span key={level.name}>{level.name}</span>;
   })
   .reduce((prev, curr) => [prev, ' / ', curr]);
 
   return <div className="breadcrumbs">{breadcrumbs}</div>;
+};
+
+Breadcrumbs.defaultProps = {
+  structure: undefined,
+  nothing: false,
 };
 
 Breadcrumbs.propTypes = {

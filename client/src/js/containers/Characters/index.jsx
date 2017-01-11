@@ -18,17 +18,17 @@ const Characters = ({ router, location, children, params }) => (
 );
 
 Characters.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node.isRequired,
   params: PropTypes.shape({
     game: PropTypes.string,
     char: PropTypes.string,
-  }),
+  }).isRequired,
   location: PropTypes.shape({
-    pathname: PropTypes.string,
-  }),
+    pathname: PropTypes.string.isRequired,
+  }).isRequired,
   router: PropTypes.shape({
     replace: PropTypes.func.isRequired,
-  }),
+  }).isRequired,
 };
 
 export default Characters;

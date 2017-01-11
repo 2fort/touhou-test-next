@@ -48,21 +48,25 @@ class List extends Component {
   }
 }
 
+List.defaultProps = {
+  data: undefined,
+};
+
 List.propTypes = {
-  ready: PropTypes.bool,
+  ready: PropTypes.bool.isRequired,
   data: PropTypes.shape({
     entities: PropTypes.arrayOf(PropTypes.object),
     title: PropTypes.string,
     mode: PropTypes.string,
   }),
   actions: PropTypes.shape({
-    didMount: PropTypes.func,
-    willUnmount: PropTypes.func,
-    getData: PropTypes.func,
-  }),
+    didMount: PropTypes.func.isRequired,
+    willUnmount: PropTypes.func.isRequired,
+    getData: PropTypes.func.isRequired,
+  }).isRequired,
   location: PropTypes.shape({
-    pathname: PropTypes.string,
-  }),
+    pathname: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 const GamesList = (() => {

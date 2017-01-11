@@ -42,8 +42,8 @@ const Table = ({ entity, pathname }) => {
 };
 
 Table.propTypes = {
-  entity: PropTypes.arrayOf(PropTypes.object),
-  pathname: PropTypes.string,
+  entity: PropTypes.arrayOf(PropTypes.object).isRequired,
+  pathname: PropTypes.string.isRequired,
 };
 
 export default Table;

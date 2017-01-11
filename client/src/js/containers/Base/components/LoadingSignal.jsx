@@ -9,7 +9,7 @@ const LoadingSignal = ({ active }) => {
 };
 
 LoadingSignal.propTypes = {
-  active: PropTypes.bool,
+  active: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps({ domain }) {
