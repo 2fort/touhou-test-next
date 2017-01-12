@@ -3,14 +3,27 @@ const autoprefixer = require('autoprefixer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+// const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+
+function chunksSortModeExp(chunk1, chunk2, orders) {
+  const order1 = orders.indexOf(chunk1.names[0]);
+  const order2 = orders.indexOf(chunk2.names[0]);
+  if (order1 > order2) {
+    return 1;
+  } else if (order1 < order2) {
+    return -1;
+  }
+  return 0;
+}
 
 module.exports = {
 
   entry: {
-    app: ['./src/js/app.js'],
-    vendor: ['react', 'react-dom', 'redux', 'react-redux', 'react-router',
-      'react-document-title', 'react-modal', 'hammerjs'],
+    vendorCommon: ['react', 'react-dom', 'redux', 'react-redux', 'react-router', 'react-helmet'],
+    vendorApp: ['react-modal', 'hammerjs', 'react-helmet', 'redux-thunk', 'seamless-immutable', 'normalizr'],
+    vendorAdmin: ['react-bootstrap', 'immutability-helper', 'redux-form'],
+    app: ['./src/js/app.jsx'],
+    admin: ['./src-admin/js/app-admin.jsx'],
   },
 
   output: {
@@ -135,11 +148,28 @@ module.exports = {
         warnings: false,
       },
     }),*/
-    new LodashModuleReplacementPlugin,
+    // new LodashModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       title: 'Touhou | Comiket',
       template: './src/my-index.ejs',
+      chunks: ['vendorCommon', 'app', 'vendorApp'],
+      filename: 'index.html',
       inject: 'body',
+      chunksSortMode: (chunk1, chunk2) => {
+        const orders = ['vendorCommon', 'vendorApp', 'app'];
+        return chunksSortModeExp(chunk1, chunk2, orders);
+      },
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Admin | Touhou-test',
+      template: './src-admin/admin-index.ejs',
+      chunks: ['vendorCommon', 'vendorAdmin', 'admin'],
+      filename: 'admin.html',
+      inject: 'body',
+      chunksSortMode: (chunk1, chunk2) => {
+        const orders = ['vendorCommon', 'vendorAdmin', 'admin'];
+        return chunksSortModeExp(chunk1, chunk2, orders);
+      },
     }),
     new webpack.DefinePlugin({
       'process.env': {
@@ -147,7 +177,7 @@ module.exports = {
       },
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor', 'manifest'],
+      names: ['vendorAdmin', 'vendorApp', 'vendorCommon', 'manifest'],
       minChunks: Infinity,
     }),
     new InlineManifestWebpackPlugin({
