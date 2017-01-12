@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
+import NavbarHeader from './NavbarHeader';
 
-import NavbarHeader from '../components/Index/NavbarHeader';
+require('../../../../sass/admin/app.scss');
 
 const Index = ({ children }) => {
   return (

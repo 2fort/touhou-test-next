@@ -12,7 +12,7 @@ import configureStore from './store/configureStore';
 
 const store = configureStore();
 
-require('../sass/app.scss');
+
 
 render(
   <Provider store={store}>

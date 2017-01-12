@@ -14,9 +14,6 @@ module.exports = {
     app: [
       './src/js/app.jsx',
     ],
-    admin: [
-      './src-admin/js/app-admin.jsx',
-    ],
   },
 
   output: {
@@ -54,6 +51,36 @@ module.exports = {
           },
         ],
       },
+      /* {
+        test: /\.scss$/,
+        // exclude: /node_modules/,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'resolve-url-loader',
+            options: {
+              silent: true,
+            },
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+        ],
+      },*/
+      // ExtractTextPlugin can\'t extract css from async-loaded (require.ensure) component.
+      // Styles remains in js file and even not include in DOM.
+      // Replacing ExtractTextPlugin with ordinary loaders solves this problem, but if so - there is no separated css anymore
       {
         test: /\.scss$/,
         loader: ExtractTextPlugin.extract({
@@ -136,13 +163,6 @@ module.exports = {
       filename: 'index.html',
       inject: 'body',
     }),
-    new HtmlWebpackPlugin({
-      title: 'Admin | Touhou-test',
-      template: './src-admin/admin-index.ejs',
-      chunks: ['dev', 'admin'],
-      filename: 'admin.html',
-      inject: 'body',
-    }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('development'),
@@ -152,6 +172,7 @@ module.exports = {
     new webpack.NamedModulesPlugin(),
     new ExtractTextPlugin({
       filename: '[contenthash].[name].css',
+      // allChunks: true,
     }),
   ],
 
@@ -165,12 +186,13 @@ module.exports = {
     hot: true,
     contentBase: '/build',
     publicPath: '/',
-    historyApiFallback: {
+    /* historyApiFallback: {
       index: '/',
       rewrites: [
         { from: /\/admin/, to: '/admin.html' },
       ],
-    },
+    },*/
+    historyApiFallback: true,
     stats: 'minimal',
     port: 8081,
     proxy: {

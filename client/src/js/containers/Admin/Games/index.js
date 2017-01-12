@@ -2,8 +2,10 @@ import Edit from './Edit';
 import List from './List';
 import New from './New';
 
-module.exports = {
+const Games = {
   Edit,
   List,
   New,
 };
+
+export default Games;
