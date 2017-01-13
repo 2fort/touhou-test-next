@@ -172,7 +172,7 @@ module.exports = {
     new webpack.NamedModulesPlugin(),
     new ExtractTextPlugin({
       filename: '[contenthash].[name].css',
-      // allChunks: true,
+      allChunks: true,
     }),
   ],
 
