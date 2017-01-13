@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import NavbarHeader from '../components/Index/NavbarHeader';
+import NavbarHeader from './NavbarHeader';
 
 const Index = ({ children }) => {
   return (

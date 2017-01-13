@@ -15,7 +15,7 @@ module.exports = {
       './src/js/app.jsx',
     ],
     admin: [
-      './src-admin/js/app-admin.jsx',
+      './src/js/app-admin.jsx',
     ],
   },
 
@@ -131,14 +131,14 @@ module.exports = {
     // new LodashModuleReplacementPlugin, // _.snakeCase('SinGyoku') -> 'singyoku' instead of 'sin_gyoku', ?
     new HtmlWebpackPlugin({
       title: 'Touhou | Comiket',
-      template: './src/my-index.ejs',
+      template: './src/index.ejs',
       chunks: ['dev', 'app'],
       filename: 'index.html',
       inject: 'body',
     }),
     new HtmlWebpackPlugin({
       title: 'Admin | Touhou-test',
-      template: './src-admin/admin-index.ejs',
+      template: './src/index-admin.ejs',
       chunks: ['dev', 'admin'],
       filename: 'admin.html',
       inject: 'body',
