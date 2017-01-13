@@ -1,7 +1,8 @@
 import { createStore, applyMiddleware } from 'redux';
 import reduxThunk from 'redux-thunk';
+import rootReducer from '../reducers/admin';
 
-export default function configureStore(rootReducer) {
+export default function configureAdminStore() {
   let store = '';
   const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
 
