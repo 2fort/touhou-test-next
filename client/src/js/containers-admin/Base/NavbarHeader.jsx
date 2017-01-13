@@ -15,7 +15,7 @@ const NavbarHeader = ({ router }) => {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-            <IndexLinkContainer to="/admin"><NavItem eventKey={1} href="#">Link</NavItem></IndexLinkContainer>
+            <IndexLinkContainer to="/admin"><NavItem eventKey={1} href="#">Home</NavItem></IndexLinkContainer>
             <NavDropdown
               eventKey={2}
               title="Games"

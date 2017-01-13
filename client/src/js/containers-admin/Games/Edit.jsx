@@ -52,7 +52,7 @@ export default class Edit extends Component {
 class Form extends Component {
   constructor(props) {
     super(props);
-    this.state = { _id: '', prefix: '', title: '', year: '', file: {} };
+    this.state = { id: '', prefix: '', title: '', year: '', file: {} };
   }
 
   componentWillMount() {
@@ -120,7 +120,7 @@ class Form extends Component {
             <div className="col-sm-10">
               <input
                 name="id"
-                value={this.state._id}
+                value={this.state.id}
                 type="text"
                 className="form-control"
                 readOnly

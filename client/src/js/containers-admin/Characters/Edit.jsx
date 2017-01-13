@@ -32,7 +32,7 @@ class Form extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      _id: '',
+      id: '',
       name: '',
       image: '',
       art: {
@@ -40,7 +40,7 @@ class Form extends Component {
         url: '',
       },
       _game: {
-        _id: '',
+        id: '',
         title: '',
       },
       wiki: '',
@@ -102,7 +102,7 @@ class Form extends Component {
           <div className="form-group">
             <label htmlFor="id" className="col-sm-2 control-label">id</label>
             <div className="col-sm-10">
-              <input name="id" value={this.state._id} type="text" className="form-control" readOnly />
+              <input name="id" value={this.state.id} type="text" className="form-control" readOnly />
             </div>
           </div>
         </form>

@@ -25,13 +25,13 @@ export default class List extends Component {
         <td><img role="presentation" height={75} src={`/images/games/${game.cover}`} /></td>
         <td>{game.year}</td>
         <td>
-          <Link to={`/admin/games/show/${game._id}`}>
+          <Link to={`/admin/games/show/${game.id}`}>
             <i className="fa fa-eye fa-lg" aria-hidden="true" />
           </Link>{' '}
-          <Link to={`/admin/games/edit/${game._id}`}>
+          <Link to={`/admin/games/edit/${game.id}`}>
             <i className="fa fa-pencil fa-lg" aria-hidden="true" />
           </Link>{' '}
-          <Link to={`/admin/games/delete/${game._id}`}>
+          <Link to={`/admin/games/delete/${game.id}`}>
             <i className="fa fa-trash fa-lg" aria-hidden="true" />
           </Link>
         </td>

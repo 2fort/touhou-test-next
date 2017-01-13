@@ -49,13 +49,13 @@ const Table = ({ characters }) => {
       <td>{char.art.author}</td>
       <td className="toowide">{char.art.url}</td>
       <td>
-        <Link to={`/admin/characters/show/${char._id}`}>
+        <Link to={`/admin/characters/show/${char.id}`}>
           <i className="fa fa-eye fa-lg" aria-hidden="true" />
         </Link>{' '}
-        <Link to={`/admin/characters/edit/${char._id}`}>
+        <Link to={`/admin/characters/edit/${char.id}`}>
           <i className="fa fa-pencil fa-lg" aria-hidden="true" />
         </Link>{' '}
-        <Link to={`/admin/characters/delete/${char._id}`}>
+        <Link to={`/admin/characters/delete/${char.id}`}>
           <i className="fa fa-trash fa-lg" aria-hidden="true" />
         </Link>
       </td>
