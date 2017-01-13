@@ -13,10 +13,10 @@ domainStore.addComponent('SingleCharacter');
 domainStore.addComponent('Test', test.reducer, test.defaultState);
 
 const domain = combineReducers({
-  gamesList: (state, action) => domainStore.getComponent(state, action, 'GamesList'),
-  charactersList: (state, action) => domainStore.getComponent(state, action, 'CharactersList'),
-  singleCharacter: (state, action) => domainStore.getComponent(state, action, 'SingleCharacter'),
-  test: (state, action) => domainStore.getComponent(state, action, 'Test'),
+  gamesList: domainStore.getComponent('GamesList'),
+  charactersList: domainStore.getComponent('CharactersList'),
+  singleCharacter: domainStore.getComponent('SingleCharacter'),
+  test: domainStore.getComponent('Test'),
 });
 
 const rootReducer = combineReducers({

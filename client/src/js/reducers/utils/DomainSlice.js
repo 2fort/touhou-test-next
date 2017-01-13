@@ -28,8 +28,12 @@ export default class DomainSlice {
     };
   }
 
-  getComponent(state, action, component) {
-    if (component === action.component) {
+  getComponent(component) {
+    return (state, action) => {
+      if (!action.component || component !== action.component) {
+        return this.components[component].reducer(state, action);
+      }
+
       switch (action.type) {
         case types.CONTAINER_MOUNT: {
           const returnState = (state) || this.components[component].defaultState; // first-time mounting check
@@ -64,7 +68,6 @@ export default class DomainSlice {
           return null;
           // console.log(`Reducer ${component} + can't find his component-specific action!`);
       }
-    }
-    return this.components[component].reducer(state, action);
+    };
   }
 }
