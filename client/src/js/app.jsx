@@ -8,9 +8,10 @@ import browserHistory from 'react-router/lib/browserHistory';
 window.Perf = Perf;*/
 
 import routes from './routes';
+import appRootReducer from './reducers/app';
 import configureStore from './store/configureStore';
 
-const store = configureStore();
+const store = configureStore(appRootReducer);
 
 require('../sass/app.scss');
 

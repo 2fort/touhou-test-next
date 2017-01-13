@@ -2,14 +2,9 @@ import Immutable from 'seamless-immutable';
 import { combineReducers } from 'redux';
 
 import domain from './domain';
-import * as types from '../constants/ActionTypes';
+import * as types from '../../constants/ActionTypes';
 
-const initialState = Immutable({
-  mode: 'grid',
-  error: '',
-});
-
-function main(state = initialState, action) {
+function main(state = Immutable({ mode: 'grid', error: '' }), action) {
   switch (action.type) {
     case types.CHANGE_MODE:
       return Immutable.merge(state, { mode: action.mode });
