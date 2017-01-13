@@ -20,10 +20,11 @@ export default class DomainSlice {
     this.components = {};
   }
 
-  addComponent(componentName, reducer = defaultDomainReducer, defaultState = defaultDomainState) {
+  addComponent(componentName, reducer = defaultDomainReducer, defaultState) {
+    const finalState = (defaultState) ? Immutable.merge(defaultDomainState, defaultState) : defaultDomainState;
     this.components[componentName] = {
       reducer,
-      defaultState,
+      defaultState: finalState,
     };
   }
 

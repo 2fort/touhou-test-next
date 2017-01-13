@@ -1,33 +1,23 @@
-import Immutable from 'seamless-immutable';
 import { combineReducers } from 'redux';
+import DomainSlice from '../utils/DomainSlice';
 
-import domain from './domain';
-import * as types from '../../constants/ActionTypes';
+import main from './main';
+import entities from './entities';
+import test from './test';
 
-function main(state = Immutable({ mode: 'grid', error: '' }), action) {
-  switch (action.type) {
-    case types.CHANGE_MODE:
-      return Immutable.merge(state, { mode: action.mode });
+const domainStore = new DomainSlice();
 
-    case types.FETCH_FAIL:
-      return Immutable.merge(state, { error: action.err.message });
+domainStore.addComponent('GamesList');
+domainStore.addComponent('CharactersList');
+domainStore.addComponent('SingleCharacter');
+domainStore.addComponent('Test', test.reducer, test.defaultState);
 
-    default: {
-      return state;
-    }
-  }
-}
-
-function entities(state = Immutable({ games: {}, characters: {} }), action) {
-  switch (action.type) {
-    case types.FETCH_SUCCESS:
-      return Immutable.merge(state, action.entities, { deep: true });
-
-    default: {
-      return state;
-    }
-  }
-}
+const domain = combineReducers({
+  gamesList: (state, action) => domainStore.getComponent(state, action, 'GamesList'),
+  charactersList: (state, action) => domainStore.getComponent(state, action, 'CharactersList'),
+  singleCharacter: (state, action) => domainStore.getComponent(state, action, 'SingleCharacter'),
+  test: (state, action) => domainStore.getComponent(state, action, 'Test'),
+});
 
 const rootReducer = combineReducers({
   main,

@@ -1,15 +1,7 @@
 import Immutable from 'seamless-immutable';
-import { combineReducers } from 'redux';
-import DomainSlice, { defaultDomainState } from '../utils/DomainSlice';
 import * as types from '../../constants/ActionTypes';
 
-const domainStore = new DomainSlice();
-
-domainStore.addComponent('GamesList');
-domainStore.addComponent('CharactersList');
-domainStore.addComponent('SingleCharacter');
-
-const testState = Immutable.merge(defaultDomainState, {
+const defaultState = Immutable({
   steps: [],
   activeStep: 0,
   modalIsOpen: false,
@@ -17,7 +9,7 @@ const testState = Immutable.merge(defaultDomainState, {
   passedSteps: 0,
 });
 
-function test(state = null, action) {
+function reducer(state = null, action) {
   switch (action.type) {
     case types.TEST_BEGIN: {
       return Immutable.merge(state, {
@@ -60,11 +52,9 @@ function test(state = null, action) {
   }
 }
 
-domainStore.addComponent('Test', test, testState);
+const test = {
+  defaultState,
+  reducer,
+};
 
-export default combineReducers({
-  gamesList: (state, action) => domainStore.getComponent(state, action, 'GamesList'),
-  charactersList: (state, action) => domainStore.getComponent(state, action, 'CharactersList'),
-  singleCharacter: (state, action) => domainStore.getComponent(state, action, 'SingleCharacter'),
-  test: (state, action) => domainStore.getComponent(state, action, 'Test'),
-});
+export default test;
