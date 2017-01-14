@@ -19,11 +19,12 @@ function chunksSortModeExp(chunk1, chunk2, orders) {
 module.exports = {
 
   entry: {
-    vendorCommon: ['react', 'react-dom', 'redux', 'react-redux', 'react-router', 'react-helmet'],
-    vendorApp: ['react-modal', 'hammerjs', 'react-helmet', 'redux-thunk', 'seamless-immutable', 'normalizr'],
-    vendorAdmin: ['react-bootstrap', 'immutability-helper', 'redux-form'],
+    vendorCommon: ['react', 'react-dom', 'redux', 'react-redux', 'react-router', 'react-helmet',
+      'redux-thunk', 'seamless-immutable', 'normalizr'],
+    vendorApp: ['react-modal', 'hammerjs'],
+    // vendorAdmin: ['react-bootstrap', 'react-router-bootstrap', 'immutability-helper', 'redux-form'],
     app: ['./src/js/app.jsx'],
-    admin: ['./src-admin/js/app-admin.jsx'],
+    // admin: ['./src-admin/js/app-admin.jsx'],
   },
 
   output: {
@@ -151,8 +152,8 @@ module.exports = {
     // new LodashModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       title: 'Touhou | Comiket',
-      template: './src/my-index.ejs',
-      chunks: ['vendorCommon', 'app', 'vendorApp'],
+      template: './src/index.ejs',
+      chunks: ['vendorCommon', 'vendorApp', 'app'],
       filename: 'index.html',
       inject: 'body',
       chunksSortMode: (chunk1, chunk2) => {
@@ -160,29 +161,29 @@ module.exports = {
         return chunksSortModeExp(chunk1, chunk2, orders);
       },
     }),
-    new HtmlWebpackPlugin({
+    /* new HtmlWebpackPlugin({
       title: 'Admin | Touhou-test',
-      template: './src-admin/admin-index.ejs',
-      chunks: ['vendorCommon', 'vendorAdmin', 'admin'],
+      template: './src/index-admin.ejs',
+      chunks: ['vendorCommon', 'vendorAdmin', 'app'],
       filename: 'admin.html',
       inject: 'body',
       chunksSortMode: (chunk1, chunk2) => {
-        const orders = ['vendorCommon', 'vendorAdmin', 'admin'];
+        const orders = ['vendorCommon', 'vendorAdmin', 'app'];
         return chunksSortModeExp(chunk1, chunk2, orders);
       },
-    }),
+    }),*/
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
       },
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendorAdmin', 'vendorApp', 'vendorCommon', 'manifest'],
+      names: ['vendorAdmin', 'vendorApp', 'vendorCommon'],
       minChunks: Infinity,
     }),
-    new InlineManifestWebpackPlugin({
+    /*new InlineManifestWebpackPlugin({
       name: 'webpackManifest',
-    }),
+    }),*/
     new webpack.NamedModulesPlugin(),
     new webpack.LoaderOptionsPlugin({
       minimize: true,

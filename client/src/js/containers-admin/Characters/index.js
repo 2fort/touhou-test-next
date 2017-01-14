@@ -2,10 +2,16 @@ import Edit from './Edit';
 import List from './List';
 import New from './New';
 
-const Characters = {
+/* const Characters = {
   Edit,
   List,
   New,
 };
 
-export default Characters;
+export default Characters;*/
+
+module.exports = {
+  Edit,
+  List,
+  New,
+};

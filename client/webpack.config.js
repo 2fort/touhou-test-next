@@ -14,9 +14,6 @@ module.exports = {
     app: [
       './src/js/app.jsx',
     ],
-    admin: [
-      './src/js/app-admin.jsx',
-    ],
   },
 
   output: {
@@ -136,13 +133,13 @@ module.exports = {
       filename: 'index.html',
       inject: 'body',
     }),
-    new HtmlWebpackPlugin({
+    /* new HtmlWebpackPlugin({
       title: 'Admin | Touhou-test',
       template: './src/index-admin.ejs',
-      chunks: ['dev', 'admin'],
+      chunks: ['dev', 'app'],
       filename: 'admin.html',
       inject: 'body',
-    }),
+    }),*/
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('development'),
@@ -165,12 +162,13 @@ module.exports = {
     hot: true,
     contentBase: '/build',
     publicPath: '/',
-    historyApiFallback: {
+    historyApiFallback: true,
+    /* historyApiFallback: {
       index: '/',
       rewrites: [
         { from: /\/admin/, to: '/admin.html' },
       ],
-    },
+    },*/
     stats: 'minimal',
     port: 8081,
     proxy: {

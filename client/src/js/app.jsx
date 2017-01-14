@@ -8,9 +8,9 @@ import browserHistory from 'react-router/lib/browserHistory';
 window.Perf = Perf;*/
 
 import routes from './routes';
-import configureAppStore from './store/appStoreConfig';
+import configStore from './store/configStore';
 
-const store = configureAppStore();
+const store = configStore();
 
 require('../sass/app.scss');
 
