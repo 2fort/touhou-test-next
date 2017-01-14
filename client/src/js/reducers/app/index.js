@@ -5,18 +5,11 @@ import main from './main';
 import entities from './entities';
 import test from './test';
 
-const domainStore = new DomainSlice();
-
-domainStore.addComponent('GamesList');
-domainStore.addComponent('CharactersList');
-domainStore.addComponent('SingleCharacter');
-domainStore.addComponent('Test', test.reducer, test.defaultState);
-
 const domain = combineReducers({
-  gamesList: domainStore.getComponent('GamesList'),
-  charactersList: domainStore.getComponent('CharactersList'),
-  singleCharacter: domainStore.getComponent('SingleCharacter'),
-  test: domainStore.getComponent('Test'),
+  gamesList: DomainSlice('GamesList'),
+  charactersList: DomainSlice('CharactersList'),
+  singleCharacter: DomainSlice('SingleCharacter'),
+  test: DomainSlice('Test', test.reducer, test.defaultState),
 });
 
 const rootReducer = combineReducers({

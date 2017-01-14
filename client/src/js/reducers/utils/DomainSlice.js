@@ -15,59 +15,47 @@ export const defaultDomainState = Immutable({
   fetchedAt: 0,
 });
 
-export default class DomainSlice {
-  constructor() {
-    this.components = {};
-  }
+export default function DomainSlice(componentName, reducer = defaultDomainReducer, defaultState) {
+  const finalState = (defaultState) ? Immutable.merge(defaultDomainState, defaultState) : defaultDomainState;
 
-  addComponent(componentName, reducer = defaultDomainReducer, defaultState) {
-    const finalState = (defaultState) ? Immutable.merge(defaultDomainState, defaultState) : defaultDomainState;
-    this.components[componentName] = {
-      reducer,
-      defaultState: finalState,
-    };
-  }
+  return (state, action) => {
+    if (!action.component || componentName !== action.component) {
+      return reducer(state, action);
+    }
 
-  getComponent(component) {
-    return (state, action) => {
-      if (!action.component || component !== action.component) {
-        return this.components[component].reducer(state, action);
+    switch (action.type) {
+      case types.CONTAINER_MOUNT: {
+        const returnState = (state) || finalState; // first-time mounting check
+        return Immutable.merge(returnState, { active: true });
       }
 
-      switch (action.type) {
-        case types.CONTAINER_MOUNT: {
-          const returnState = (state) || this.components[component].defaultState; // first-time mounting check
-          return Immutable.merge(returnState, { active: true });
-        }
-
-        case types.CONTAINER_UNMOUNT: {
-          return Immutable.merge(state, { active: false });
-        }
-
-        case types.CONTAINER_DESTROY: {
-          return null;
-        }
-
-        case types.FETCH_BEGIN: {
-          return Immutable.merge(state, { pending: true });
-        }
-
-        case types.FETCH_SUCCESS:
-          return Immutable.merge(state, {
-            pending: false,
-            visible: action.visible,
-            fetchedAt: action.fetchedAt,
-          });
-
-        case types.FETCH_FAIL:
-          return Immutable.merge(state, {
-            pending: false,
-          });
-
-        default:
-          return null;
-          // console.log(`Reducer ${component} + can't find his component-specific action!`);
+      case types.CONTAINER_UNMOUNT: {
+        return Immutable.merge(state, { active: false });
       }
-    };
-  }
+
+      case types.CONTAINER_DESTROY: {
+        return null;
+      }
+
+      case types.FETCH_BEGIN: {
+        return Immutable.merge(state, { pending: true });
+      }
+
+      case types.FETCH_SUCCESS:
+        return Immutable.merge(state, {
+          pending: false,
+          visible: action.visible,
+          fetchedAt: action.fetchedAt,
+        });
+
+      case types.FETCH_FAIL:
+        return Immutable.merge(state, {
+          pending: false,
+        });
+
+      default:
+        return null;
+        // console.log(`Reducer ${component} + can't find his component-specific action!`);
+    }
+  };
 }
