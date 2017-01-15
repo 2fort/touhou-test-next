@@ -1,20 +1,22 @@
 import React, { PropTypes } from 'react';
 
 import NavbarHeader from './NavbarHeader';
+import Loading from '../../containers/Base/components/Loading';
 
-const Index = ({ children }) => {
+const Base = ({ children }) => {
   return (
     <div>
       <NavbarHeader />
       <div className="container">
         {children}
+        <Loading />
       </div>
     </div>
   );
 };
 
-Index.propTypes = {
-  children: PropTypes.node,
+Base.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
-export default Index;
+export default Base;

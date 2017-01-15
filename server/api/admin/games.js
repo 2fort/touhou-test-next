@@ -4,12 +4,8 @@ const Game = require('../../models/game');
 
 router.get('/', (req, res) => {
   Game.find().exec()
-    .then((games) => {
-      const send = games.map(game => {
-        return game;
-      });
-      return res.json(send);
-    })
+    .then(games => res.json(games))
+    //.then(games => setTimeout(() => res.json(games), 5000))
     .catch((err) => {
       return res.status(404).json(err);
     });
@@ -19,9 +15,7 @@ router.route('/edit/:id')
   .get((req, res) => {
     const id = req.params.id;
     Game.findById(id).exec()
-      .then((game) => {
-        return res.json(game);
-      })
+      .then(game => res.json(game))
       .catch((err) => {
         return res.status(404).json(err);
       });

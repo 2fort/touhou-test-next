@@ -1,23 +1,16 @@
 import { normalize } from 'normalizr';
-import { charactersEntity, gameEntity } from '../schemas/appSchemas';
+import { charactersEntity, gameEntity } from '../schemas/adminSchemas';
 import checkResponseStatus from './asyncHelpers';
 import * as types from '../constants/ActionTypes';
 
-export function changeMode(mode) {
-  return {
-    type: types.CHANGE_MODE,
-    mode,
-  };
-}
-
-export function fetchGames(component) {
+export function fetchAllGames(component) {
   return (dispatch) => {
     dispatch({
       type: types.FETCH_BEGIN,
       component,
     });
 
-    fetch('/api/games')
+    fetch('/api/admin/games')
       .then((response) => {
         checkResponseStatus(response);
         return response.json();
@@ -42,14 +35,14 @@ export function fetchGames(component) {
   };
 }
 
-export function fetchCharacters(game, component) {
+export function fetchAllCharacters(component) {
   return (dispatch) => {
     dispatch({
       type: types.FETCH_BEGIN,
       component,
     });
 
-    fetch(`/api/characters/${game}`)
+    fetch('/api/admin/characters')
       .then((response) => {
         checkResponseStatus(response);
         return response.json();
@@ -74,21 +67,20 @@ export function fetchCharacters(game, component) {
   };
 }
 
-export function fetchCharacter(char, component) {
+export function fetchOneGame(gameId, component) {
   return (dispatch) => {
     dispatch({
       type: types.FETCH_BEGIN,
       component,
     });
 
-    fetch(`/api/character/${char}`)
+    fetch(`/api/admin/games/edit/${gameId}`)
       .then((response) => {
         checkResponseStatus(response);
         return response.json();
       })
-      .then((character) => {
-        // console.log(character);
-        const data = normalize(character, [charactersEntity]);
+      .then((characters) => {
+        const data = normalize(characters, gameEntity);
         dispatch({
           type: types.FETCH_SUCCESS,
           component,

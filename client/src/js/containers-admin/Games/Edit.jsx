@@ -1,189 +1,114 @@
 import React, { Component, PropTypes } from 'react';
-import { Alert } from 'react-bootstrap';
+import { Field, reduxForm } from 'redux-form';
+import { connect } from 'react-redux';
 
-export default class Edit extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { successAlert: false, dangerAlert: '' };
-  }
+import { fetchOneGame } from '../../actions/adminActions';
+import { textField } from '../_sharedComponents/formFields';
+import { required, number } from '../_sharedComponents/validationFields';
 
-  handleSuccessMessage = () => {
-    this.setState({ successAlert: true });
-  }
-
-  handleDangerMessage = (message) => {
-    this.setState({ dangerAlert: message });
-  }
-
-  render() {
-    const { params, router } = this.props;
-
-    const successAlert = (
-      <Alert bsStyle="success" onDismiss={() => this.setState({ successAlert: false })}>
-        <p>Game information successfully updated. {this.state.successAlert}</p>
-      </Alert>
-    );
-
-    const dangerAlert = (
-      <Alert bsStyle="danger" onDismiss={() => this.setState({ dangerAlert: '' })}>
-        <p>Error: {this.state.dangerAlert}</p>
-      </Alert>
-    );
-
-    return (
-      <div>
-        {this.state.successAlert && successAlert}
-        {this.state.dangerAlert && dangerAlert}
-
-        <Form
-          id={params.id}
-          handleSuccessMessage={this.handleSuccessMessage}
-          handleDangerMessage={this.handleDangerMessage}
-        />
-
-        <button type="button" className="btn btn-default" onClick={() => router.goBack()} >
-          <span aria-hidden="true">&larr;</span> Back
-        </button>
-      </div>
-    );
-  }
-}
-
-class Form extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { id: '', prefix: '', title: '', year: '', file: {} };
-  }
-
+let GameEdit = class GameEdit extends Component {
   componentWillMount() {
-    fetch(`/api/admin/games/edit/${this.props.id}`)
-      .then((response) => {
-        if (response.status !== 200) {
-          return Promise.reject(Error(`${response.status}: ${response.statusText}`));
-        }
-        return response.json();
-      })
-      .then((game) => {
-        this.setState(game);
-      })
-      .catch((err) => {
-        this.props.handleDangerMessage(err.message);
-      });
+    this.props.actions.didMount();
+    this.props.actions.getData(this.props.params.id);
   }
 
-  handlePrefixChange = (e) => {
-    this.setState({ prefix: e.target.value });
-  }
-
-  handleTitleChange = (e) => {
-    this.setState({ title: e.target.value });
-  }
-
-  handleYearChange = (e) => {
-    this.setState({ year: e.target.value });
-  }
-
-  handleFileChange = (e) => {
-    this.setState({ year: e.target.files[0] });
-  }
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    fetch(`/api/admin/games/edit/${this.props.id}`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(this.state),
-    })
-      .then((response) => {
-        if (response.status !== 200) {
-          return Promise.reject(Error(`${response.status}: ${response.statusText}`));
-        }
-        return response.json();
-      })
-      .then((res) => {
-        this.props.handleSuccessMessage();
-      })
-      .catch((err) => {
-        this.props.handleDangerMessage(err.message);
-      });
+  componentWillUnmount() {
+    this.props.actions.willUnmount();
   }
 
   render() {
-    console.log(this.state);
+    const { initialValues, params, router, ready } = this.props;
+    const { handleSubmit, pristine, reset, submitting } = this.props;
+
+    if (!ready) return null;
+
     return (
       <div>
-        <form className="form-horizontal">
-          <div className="form-group">
-            <label htmlFor="id" className="col-sm-2 control-label">id</label>
-            <div className="col-sm-10">
-              <input
-                name="id"
-                value={this.state.id}
-                type="text"
-                className="form-control"
-                readOnly
-              />
-            </div>
-          </div>
-        </form>
+        <form className="form-horizontal" onSubmit={handleSubmit}>
+          <Field name="id" type="text" disabled component={textField} label="id" />
+          <Field name="prefix" type="text" component={textField} label="Prefix" />
+          <Field name="title" type="text" component={textField} label="Title" validate={[required]} />
+          <Field name="year" type="text" component={textField} label="Year" validate={[number]} />
 
-        <form className="form-horizontal" onSubmit={this.handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="prefix" className="col-sm-2 control-label">Prefix</label>
-            <div className="col-sm-10">
-              <input
-                name="prefix"
-                value={this.state.prefix}
-                type="text"
-                className="form-control"
-                onChange={this.handlePrefixChange}
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="title" className="col-sm-2 control-label">Title</label>
-            <div className="col-sm-10">
-              <input
-                name="title"
-                value={this.state.title}
-                type="text"
-                className="form-control"
-                onChange={this.handleTitleChange}
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="year" className="col-sm-2 control-label">Year</label>
-            <div className="col-sm-10">
-              <input
-                name="year"
-                value={this.state.year}
-                type="text"
-                className="form-control"
-                onChange={this.handleYearChange}
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="file" className="col-sm-2 control-label">Cover</label>
-            <div className="col-sm-10">
-              <input
-                name="cover"
-                type="file"
-                className="file"
-                onChange={this.handleFileChange}
-              />
-            </div>
-          </div>
           <div className="form-group">
             <div className="col-sm-offset-2 col-sm-10">
               <button type="submit" className="btn btn-primary">Edit</button>
             </div>
           </div>
         </form>
+
+        <button type="button" className="btn btn-default" onClick={router.goBack} >
+          <span aria-hidden="true">&larr;</span> Back
+        </button>
       </div>
     );
   }
+};
+
+GameEdit.defaultProps = {
+  initialValues: undefined,
+};
+
+GameEdit.propTypes = {
+  ready: PropTypes.bool.isRequired,
+  initialValues: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    prefix: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    year: PropTypes.number,
+    cover: PropTypes.string,
+  }),
+  params: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+  }).isRequired,
+  router: PropTypes.shape({
+    goBack: PropTypes.func.isRequired,
+  }).isRequired,
+
+  handleSubmit: PropTypes.func.isRequired,
+  pristine: PropTypes.bool.isRequired,
+  reset: PropTypes.func.isRequired,
+  submitting: PropTypes.bool.isRequired,
+
+  actions: PropTypes.shape({
+    didMount: PropTypes.func.isRequired,
+    willUnmount: PropTypes.func.isRequired,
+    getData: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
+GameEdit = reduxForm({
+  form: 'GameEditForm',
+})(GameEdit);
+
+function mapStateToProps({ domain: { gameEdit }, entities }) {
+  if (!gameEdit || gameEdit.pending) return { ready: false };
+
+  const initialValues = entities.games[gameEdit.visible];
+  return { ready: true, initialValues };
 }
+
+function mapDispatchToProps(dispatch) {
+  const component = 'GameEdit';
+  return {
+    actions: {
+      didMount: () => {
+        dispatch({
+          type: 'CONTAINER_MOUNT',
+          component,
+        });
+      },
+      willUnmount: () => {
+        dispatch({
+          type: 'CONTAINER_DESTROY',
+          component,
+        });
+      },
+      getData: (gameId) => {
+        dispatch(fetchOneGame(gameId, component));
+      },
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(GameEdit);

@@ -9,7 +9,7 @@ import configureAdminStore from './store/adminStoreConfig';
 
 const store = configureAdminStore();
 
-require('../sass/admin/index.scss');
+require('../sass/app-admin.scss');
 
 render(
   <Provider store={store}>

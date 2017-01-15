@@ -2,7 +2,7 @@
 
 @import 'utils/variables';
 @import 'utils/colors';
-// @import 'loading';
+@import 'loading';
 
 html {
   background-color: #f5f5f5;
@@ -83,27 +83,6 @@ button {
     flex-direction: row;
     flex-wrap: wrap;
     padding: 0 1rem;
-
-    .signal {
-      // border: 2px solid #1b98f8;
-      border: 2px solid #ebebeb;
-      border-radius: 30px;
-      height: 12px;
-      margin: .8rem .2rem;
-      opacity: 0;
-      width: 12px;
-      
-      margin-right: auto;
-      margin-left: 0;
-
-      animation: pulsate 1s ease-out;
-      animation-iteration-count: infinite;
-    }
-
-    .nav-noop {
-      margin-right: auto;
-      margin-left: 0;
-    }
 
     @keyframes pulsate {
       0% {
@@ -199,15 +178,6 @@ button {
       }
     }
   }
-}
-
-.flex-loading {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  //min-height: inherit;
-  min-height: 150px;
 }
 
 .navigation {

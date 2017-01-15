@@ -3,18 +3,24 @@ const _ = require('lodash');
 const Character = require('../../models/character');
 
 router.get('/', (req, res) => {
-  let offset = 0;
+  // let offset = 0;
 
-  if (req.query.start) {
+  /* if (req.query.start) {
     offset = Number(req.query.start);
-  }
+  }*/
 
-  Character.find().skip(offset).limit(10).populate('_game', 'title').exec()
+  /* Character.find().skip(offset).limit(10).populate('_game', 'title').exec()
     .then((characters) => {
       return res.json(characters);
     })
     .catch((err) => {
       return res.json(err);
+    });*/
+
+  Character.find().populate('_game', 'title').exec()
+    .then(characters => res.json(characters))
+    .catch((err) => {
+      return res.status(404).json(err);
     });
 });
 

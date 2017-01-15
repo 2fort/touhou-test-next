@@ -15,7 +15,7 @@ export const defaultDomainState = Immutable({
   fetchedAt: 0,
 });
 
-export default function DomainSlice(componentName, reducer = defaultDomainReducer, defaultState) {
+export default function domainSlice(componentName, reducer = defaultDomainReducer, defaultState) {
   const finalState = (defaultState) ? Immutable.merge(defaultDomainState, defaultState) : defaultDomainState;
 
   return (state, action) => {

@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 
-class LoadingbarLine extends Component {
+class LoadingLine extends Component {
   constructor(props) {
     super(props);
     this.state = { hidden: true };

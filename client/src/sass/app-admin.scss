@@ -2,7 +2,8 @@
 // @import '~bootstrap/dist/css/bootstrap-flex.min';
 // @import '~font-awesome/scss/font-awesome';
 
-@import 'bootstrap-custom';
+@import 'admin/bootstrap-custom';
+@import 'common/loading';
 
 html {
   font-family: Arial, Helvetica, sans-serif;

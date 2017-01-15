@@ -1,10 +1,11 @@
+import Table from './Table';
 import Edit from './Edit';
-import List from './List';
 import New from './New';
 
+
 const Games = {
+  Table,
   Edit,
-  List,
   New,
 };
 

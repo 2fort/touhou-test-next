@@ -1,5 +1,5 @@
 import { normalize } from 'normalizr';
-import { charactersEntity } from '../schemas/characters';
+import { charactersEntity } from '../schemas/appSchemas';
 import checkResponseStatus from './asyncHelpers';
 import * as types from '../constants/ActionTypes';
 
