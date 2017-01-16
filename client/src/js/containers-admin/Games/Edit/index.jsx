@@ -1,12 +1,10 @@
 import React, { Component, PropTypes } from 'react';
-import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 
-import { fetchOneGame } from '../../actions/adminActions';
-import { textField, imageField } from '../_sharedComponents/formFields';
-import { required, number } from '../_sharedComponents/validationFields';
+import { fetchOneGame } from '../../../actions/adminActions';
+import GameEditForm from './form';
 
-let GameEdit = class GameEdit extends Component {
+class GameEdit extends Component {
   componentWillMount() {
     this.props.actions.didMount();
     this.props.actions.getData(this.props.params.id);
@@ -16,37 +14,22 @@ let GameEdit = class GameEdit extends Component {
     this.props.actions.willUnmount();
   }
 
+  showResults = values =>
+    new Promise((resolve) => {
+      setTimeout(() => {  // simulate server latency
+        console.log(`You submitted:\n\n${JSON.stringify(values, null, 2)}`);
+        resolve();
+      }, 1500);
+    })
+
   render() {
-    const { initialValues, params, router, ready } = this.props;
-    const { handleSubmit, pristine, reset, submitting } = this.props;
+    const { ready, initialValues, router } = this.props;
 
     if (!ready) return null;
 
     return (
       <div>
-        <form className="form-horizontal" onSubmit={handleSubmit}>
-          <Field name="id" type="text" disabled component={textField} label="id" />
-          <Field name="prefix" type="text" component={textField} label="Prefix" />
-          <Field name="title" type="text" component={textField} label="Title" validate={[required]} />
-          <Field
-            name="image"
-            imgRoot="/images/games/"
-            currentImage={initialValues.cover}
-            type="file"
-            component={imageField}
-            label="Image"
-          />
-          <Field name="year" type="text" component={textField} label="Year" validate={[number]} />
-
-          <div className="form-group">
-            <div className="col-sm-offset-2 col-sm-10">
-              <button type="submit" className="btn btn-primary">Edit</button>{' '}
-              <button type="button" disabled={pristine || submitting} onClick={reset} className="btn btn-default">
-                Reset
-              </button>
-            </div>
-          </div>
-        </form>
+        <GameEditForm initialValues={initialValues} onSubmit={this.showResults} />
 
         <button type="button" className="btn btn-default" onClick={router.goBack} >
           <span aria-hidden="true">&larr;</span> Back
@@ -54,7 +37,7 @@ let GameEdit = class GameEdit extends Component {
       </div>
     );
   }
-};
+}
 
 GameEdit.defaultProps = {
   initialValues: undefined,
@@ -76,21 +59,12 @@ GameEdit.propTypes = {
     goBack: PropTypes.func.isRequired,
   }).isRequired,
 
-  handleSubmit: PropTypes.func.isRequired,
-  pristine: PropTypes.bool.isRequired,
-  reset: PropTypes.func.isRequired,
-  submitting: PropTypes.bool.isRequired,
-
   actions: PropTypes.shape({
     didMount: PropTypes.func.isRequired,
     willUnmount: PropTypes.func.isRequired,
     getData: PropTypes.func.isRequired,
   }).isRequired,
 };
-
-GameEdit = reduxForm({
-  form: 'GameEditForm',
-})(GameEdit);
 
 function mapStateToProps({ domain: { gameEdit }, entities }) {
   if (!gameEdit || gameEdit.pending) return { ready: false };
