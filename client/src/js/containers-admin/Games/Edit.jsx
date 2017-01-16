@@ -40,7 +40,10 @@ let GameEdit = class GameEdit extends Component {
 
           <div className="form-group">
             <div className="col-sm-offset-2 col-sm-10">
-              <button type="submit" className="btn btn-primary">Edit</button>
+              <button type="submit" className="btn btn-primary">Edit</button>{' '}
+              <button type="button" disabled={pristine || submitting} onClick={reset} className="btn btn-default">
+                Reset
+              </button>
             </div>
           </div>
         </form>

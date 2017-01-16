@@ -9,14 +9,14 @@ class TestCore extends Component {
   componentDidMount() {
     this.mc = new Hammer.Manager(findDOMNode(this));
     this.mc.add(new Hammer.Swipe({ direction: Hammer.DIRECTION_HORIZONTAL }));
-    this.mc.on('swipe', e => this.handlePan(e));
+    this.mc.on('swipe', this.handlePan);
   }
 
   componentWillUnmount() {
-    this.mc.off('swipe', e => this.handlePan(e));
+    this.mc.off('swipe', this.handlePan);
   }
 
-  handlePan(e) {
+  handlePan = (e) => {
     e.preventDefault();
 
     if (e.direction === Hammer.DIRECTION_LEFT) {
@@ -24,7 +24,7 @@ class TestCore extends Component {
     } else if (e.direction === Hammer.DIRECTION_RIGHT) {
       this.props.swipeRight();
     }
-  }
+  };
 
   render() {
     return (
