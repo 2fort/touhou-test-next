@@ -6,4 +6,6 @@ const charactersEntity = new schema.Entity('characters', {
   _game: gameEntity,
 });
 
-export { charactersEntity, gameEntity };
+const characterEntityOnly = new schema.Entity('characters');
+
+export { charactersEntity, characterEntityOnly, gameEntity };

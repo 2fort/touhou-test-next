@@ -25,9 +25,6 @@ class GamesTable extends Component {
         <td><img alt={game.title} height={75} src={`/images/games/${game.cover}`} /></td>
         <td>{game.year}</td>
         <td>
-          <Link to={`/admin/games/show/${game.id}`}>
-            <i className="fa fa-eye fa-lg" aria-hidden="true" />
-          </Link>{' '}
           <Link to={`/admin/games/edit/${game.id}`}>
             <i className="fa fa-pencil fa-lg" aria-hidden="true" />
           </Link>{' '}

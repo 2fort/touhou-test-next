@@ -27,9 +27,6 @@ class CharactersTable extends Component {
         <td>{char.art.author}</td>
         <td className="toowide">{char.art.url}</td>
         <td>
-          <Link to={`/admin/characters/show/${char.id}`}>
-            <i className="fa fa-eye fa-lg" aria-hidden="true" />
-          </Link>{' '}
           <Link to={`/admin/characters/edit/${char.id}`}>
             <i className="fa fa-pencil fa-lg" aria-hidden="true" />
           </Link>{' '}

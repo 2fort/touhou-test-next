@@ -32,7 +32,7 @@ router.route('/edit/:id')
       return res.status(404).json({ message: "Error: bad id"});
     }
 
-    Character.findById(req.params.id).populate('_game', 'title').exec()
+    Character.findById(id).exec()
       .then((character) => {
         return res.json(character);
       })

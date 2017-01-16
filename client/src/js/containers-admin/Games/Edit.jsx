@@ -3,7 +3,7 @@ import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 
 import { fetchOneGame } from '../../actions/adminActions';
-import { textField } from '../_sharedComponents/formFields';
+import { textField, imageField } from '../_sharedComponents/formFields';
 import { required, number } from '../_sharedComponents/validationFields';
 
 let GameEdit = class GameEdit extends Component {
@@ -28,6 +28,14 @@ let GameEdit = class GameEdit extends Component {
           <Field name="id" type="text" disabled component={textField} label="id" />
           <Field name="prefix" type="text" component={textField} label="Prefix" />
           <Field name="title" type="text" component={textField} label="Title" validate={[required]} />
+          <Field
+            name="image"
+            imgRoot="/images/games/"
+            currentImage={initialValues.cover}
+            type="file"
+            component={imageField}
+            label="Image"
+          />
           <Field name="year" type="text" component={textField} label="Year" validate={[number]} />
 
           <div className="form-group">
