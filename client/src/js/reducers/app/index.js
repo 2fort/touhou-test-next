@@ -3,7 +3,7 @@ import domainSlice from '../utils/domainSlice';
 
 import main from './main';
 import entities from '../shared/entities';
-import errors from '../shared/errors';
+import msg from '../shared/msg';
 import test from './test';
 
 const domain = combineReducers({
@@ -17,7 +17,7 @@ const rootReducer = combineReducers({
   main,
   domain,
   entities,
-  errors,
+  msg,
 });
 
 export default rootReducer;

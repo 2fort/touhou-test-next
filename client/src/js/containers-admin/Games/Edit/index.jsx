@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchOneGame } from '../../../actions/adminActions';
+import { fetchOneGame, editGame } from '../../../actions/adminActions';
 import GameEditForm from './form';
 
 class GameEdit extends Component {
@@ -14,22 +14,14 @@ class GameEdit extends Component {
     this.props.actions.willUnmount();
   }
 
-  showResults = values =>
-    new Promise((resolve) => {
-      setTimeout(() => {  // simulate server latency
-        console.log(`You submitted:\n\n${JSON.stringify(values, null, 2)}`);
-        resolve();
-      }, 1500);
-    })
-
   render() {
-    const { ready, initialValues, router } = this.props;
+    const { ready, initialValues, actions, router, params } = this.props;
 
     if (!ready) return null;
 
     return (
       <div>
-        <GameEditForm initialValues={initialValues} onSubmit={this.showResults} />
+        <GameEditForm initialValues={initialValues} onSubmit={actions.sendData(params.id)} />
 
         <button type="button" className="btn btn-default" onClick={router.goBack} >
           <span aria-hidden="true">&larr;</span> Back
@@ -63,6 +55,7 @@ GameEdit.propTypes = {
     didMount: PropTypes.func.isRequired,
     willUnmount: PropTypes.func.isRequired,
     getData: PropTypes.func.isRequired,
+    sendData: PropTypes.func.isRequired,
   }).isRequired,
 };
 
@@ -92,6 +85,8 @@ function mapDispatchToProps(dispatch) {
       getData: (gameId) => {
         dispatch(fetchOneGame(gameId, component));
       },
+      sendData: gameId => values =>
+        dispatch(editGame(gameId, values, component)),
     },
   };
 }

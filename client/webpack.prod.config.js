@@ -21,7 +21,7 @@ module.exports = {
   entry: {
     vendorCommon: ['react', 'react-dom', 'redux', 'react-redux', 'react-router', 'react-helmet'],
     vendorApp: ['react-modal', 'hammerjs', 'react-helmet', 'redux-thunk', 'seamless-immutable', 'normalizr'],
-    vendorAdmin: ['react-bootstrap', 'immutability-helper', 'redux-form'],
+    vendorAdmin: ['react-bootstrap', 'react-router-bootstrap', 'redux-form', 'time-stamp'],
     app: ['./src/js/app.jsx'],
     admin: ['./src-admin/js/app-admin.jsx'],
   },

@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
-import { reducer as formReducer } from 'redux-form'
+import { reducer as formReducer } from 'redux-form';
 import domainSlice from '../utils/domainSlice';
 
 import entities from '../shared/entities';
-import errors from '../shared/errors';
+import msg from '../shared/msg';
 
 const domain = combineReducers({
   gamesTable: domainSlice('GamesTable'),
@@ -15,7 +15,7 @@ const domain = combineReducers({
 const rootReducer = combineReducers({
   domain,
   entities,
-  errors,
+  msg,
   form: formReducer,
 });
 

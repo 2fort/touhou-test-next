@@ -25,7 +25,7 @@ router.route('/edit/:id')
     const update = req.body;
     update.slug = _.snakeCase(update.title);
 
-    Game.findByIdAndUpdate(id, req.body)
+    Game.findByIdAndUpdate(id, update, { new: true })
       .then((response) => {
         return res.json(response);
       })

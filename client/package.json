@@ -52,7 +52,6 @@
   "dependencies": {
     "bootstrap-sass": "^3.3.7",
     "hammerjs": "^2.0.8",
-    "immutability-helper": "^2.1.1",
     "lodash": "^4.17.4",
     "normalize-scss": "^6.0.0",
     "normalizr": "^3.0.2",
@@ -69,6 +68,7 @@
     "redux": "^3.6.0",
     "redux-form": "^6.4.3",
     "redux-thunk": "^2.1.0",
-    "seamless-immutable": "^7.0.1"
+    "seamless-immutable": "^7.0.1",
+    "time-stamp": "^1.0.1"
   }
 }
