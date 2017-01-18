@@ -1,5 +1,5 @@
 const MONGODB_ADDRESS = '';
 
-module.export = {
+module.exports = {
   MONGODB_ADDRESS,
 };

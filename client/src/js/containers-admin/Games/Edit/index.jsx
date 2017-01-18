@@ -15,13 +15,13 @@ class GameEdit extends Component {
   }
 
   render() {
-    const { ready, initialValues, actions, router, params } = this.props;
+    const { ready, initialValues, timestamp, actions, router, params } = this.props;
 
     if (!ready) return null;
 
     return (
       <div>
-        <GameEditForm initialValues={initialValues} onSubmit={actions.sendData(params.id)} />
+        <GameEditForm initialValues={initialValues} onSubmit={actions.sendData(params.id)} timestamp={timestamp} />
 
         <button type="button" className="btn btn-default" onClick={router.goBack} >
           <span aria-hidden="true">&larr;</span> Back
@@ -33,6 +33,7 @@ class GameEdit extends Component {
 
 GameEdit.defaultProps = {
   initialValues: undefined,
+  timestamp: undefined,
 };
 
 GameEdit.propTypes = {
@@ -44,6 +45,7 @@ GameEdit.propTypes = {
     year: PropTypes.number,
     cover: PropTypes.string,
   }),
+  timestamp: PropTypes.number,
   params: PropTypes.shape({
     id: PropTypes.string.isRequired,
   }).isRequired,
@@ -63,7 +65,7 @@ function mapStateToProps({ domain: { gameEdit }, entities }) {
   if (!gameEdit || gameEdit.pending) return { ready: false };
 
   const initialValues = entities.games[gameEdit.visible];
-  return { ready: true, initialValues };
+  return { ready: true, initialValues, timestamp: gameEdit.fetchedAt };
 }
 
 function mapDispatchToProps(dispatch) {

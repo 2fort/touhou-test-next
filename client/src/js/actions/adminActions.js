@@ -153,13 +153,19 @@ export function fetchOneCharacter(characterId, component) {
 }
 
 export function editGame(gameId, values, component) {
+  const formData = new FormData();
+  formData.append('prefix', values.prefix);
+  formData.append('title', values.title);
+  formData.append('year', values.year);
+
+  if (typeof values.cover === 'object' && values.cover[0]) {
+    formData.append('cover', values.cover[0], values.cover[0].name);
+  }
+
   return dispatch =>
     fetch(`/api/admin/games/edit/${gameId}`, {
       method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(values),
+      body: formData,
     })
     .then((response) => {
       checkResponseStatus(response);

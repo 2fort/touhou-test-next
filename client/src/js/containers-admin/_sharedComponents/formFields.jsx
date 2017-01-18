@@ -14,7 +14,7 @@ export const imageField = ({ input, label, imgRoot, currentImage, type, meta: { 
   <div className="form-group">
     <label htmlFor={input.name} className="col-sm-2 control-label">{label}</label>
     <div className="col-sm-10">
-      <img alt="character" src={imgRoot + currentImage} style={{ marginBottom: 5 }} />
+      <img alt={input.name} src={imgRoot + currentImage} style={{ marginBottom: 5 }} />
       <input
         {...input}
         type={type}

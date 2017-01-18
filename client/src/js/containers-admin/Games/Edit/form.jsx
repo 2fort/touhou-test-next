@@ -4,18 +4,19 @@ import { Field, reduxForm } from 'redux-form';
 import { textField, imageField } from '../../_sharedComponents/formFields';
 import { required, number } from '../../_sharedComponents/validationFields';
 
-const GameEditForm = ({ error, initialValues, handleSubmit, pristine, reset, submitting }) => (
+const GameEditForm = ({ error, initialValues, timestamp, handleSubmit, pristine, reset, submitting }) => (
   <form encType="multipart/form-data" className="form-horizontal" onSubmit={handleSubmit}>
     <Field name="id" type="text" disabled component={textField} label="id" />
     <Field name="prefix" type="text" component={textField} label="Prefix" />
     <Field name="title" type="text" component={textField} label="Title" validate={[required]} />
     <Field
-      name="image"
+      name="cover"
       imgRoot="/images/games/"
       currentImage={initialValues.cover}
       type="file"
       component={imageField}
-      label="Image"
+      label="Cover"
+      key={timestamp}
     />
     <Field name="year" type="text" component={textField} label="Year" validate={[number]} />
 
@@ -53,6 +54,7 @@ GameEditForm.propTypes = {
     year: PropTypes.number,
     cover: PropTypes.string,
   }).isRequired,
+  timestamp: PropTypes.number.isRequired,
 };
 
 export default reduxForm({
