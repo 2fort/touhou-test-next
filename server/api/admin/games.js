@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-}).single('cover');
+}).single('newcover');
 
 router.get('/', (req, res) => {
   Game.find().exec()
@@ -33,15 +33,15 @@ function resizeWithSharp(file) {
       .resize(150, 150)
       .max()
       .toFile('public/images/games/' + file.filename, (err) => {
-        if (err) reject(Error('Something wrong with sharp module'));
+        if (err) reject(Error(err));
         resolve(true);
       });
   });
 }
 
-function deleteTempImage(file) {
+function deleteImage(pathToFile) {
   return new Promise((resolve, reject) => {
-    fs.unlink(file.path, (err) => {
+    fs.unlink(pathToFile, (err) => {
       if (err) return reject(Error(err));
       return resolve(true);
     });
@@ -59,25 +59,26 @@ router.route('/edit/:id')
   })
   .post(upload, async (req, res) => {
     const id = req.params.id;
-    const update = req.body;
+    const update = Object.assign({}, req.body);
+
     update.slug = _.snakeCase(update.title);
 
     if (req.file) {
       try {
-        await resizeWithSharp(req.file);
         update.cover = req.file.filename;
-        await deleteTempImage(req.file);
+
+        await resizeWithSharp(req.file);
+        await deleteImage(req.file.path);
+        await deleteImage(`public/images/games/${req.body.cover}`);
       } catch (e) {
         return res.status(500).json(e);
       }
     }
 
-    // console.log(req.file);
-    // console.log(req.body);
-
     try {
-      const result = await Game.findByIdAndUpdate(id, update, { new: true });
-      return res.json(result);
+      const updatedData = await Game.findByIdAndUpdate(id, update, { new: true });
+
+      return res.json(updatedData);
     } catch (e) {
       return res.status(500).json(e);
     }

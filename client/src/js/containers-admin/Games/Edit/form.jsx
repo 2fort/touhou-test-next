@@ -9,8 +9,9 @@ const GameEditForm = ({ error, initialValues, timestamp, handleSubmit, pristine,
     <Field name="id" type="text" disabled component={textField} label="id" />
     <Field name="prefix" type="text" component={textField} label="Prefix" />
     <Field name="title" type="text" component={textField} label="Title" validate={[required]} />
+    <Field name="cover" type="hidden" component="input" />
     <Field
-      name="cover"
+      name="newcover"
       imgRoot="/images/games/"
       currentImage={initialValues.cover}
       type="file"

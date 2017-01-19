@@ -157,9 +157,10 @@ export function editGame(gameId, values, component) {
   formData.append('prefix', values.prefix);
   formData.append('title', values.title);
   formData.append('year', values.year);
+  formData.append('cover', values.cover);
 
-  if (typeof values.cover === 'object' && values.cover[0]) {
-    formData.append('cover', values.cover[0], values.cover[0].name);
+  if (values.newcover[0]) {
+    formData.append('newcover', values.newcover[0], values.newcover[0].name);
   }
 
   return dispatch =>
