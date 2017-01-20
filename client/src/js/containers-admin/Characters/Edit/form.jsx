@@ -15,7 +15,6 @@ const CharacterEditForm = ({ gamesData, initialValues, handleSubmit, pristine, r
       <Field name="name" type="text" component={textField} label="Name" validate={[required]} />
       <Field
         name="image"
-        imgRoot="/images/s/"
         currentImage={initialValues.image}
         type="file"
         component={imageField}

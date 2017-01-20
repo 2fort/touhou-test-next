@@ -4,6 +4,7 @@ import Helmet from 'react-helmet';
 
 import { TopContainer, Breadcrumbs, CharNavButton } from './components';
 import { fetchCharacter } from '../../actions/charactersActions';
+import { IMG_COMPRESSED } from '../../config';
 import Fetch404 from '../Base/Fetch404';
 
 class SingleCharacter extends Component {
@@ -44,7 +45,10 @@ class SingleCharacter extends Component {
 
             <div className="singlechar-flex">
               <div className="singlechar-img">
-                <img itemProp="image" alt="char" src={`/images/m/${character.image}`} />
+                {character.image
+                  ? <img itemProp="image" alt="char" src={IMG_COMPRESSED + character.image} />
+                  : <i className="fa fa-file-image-o fa-5x" aria-hidden="true" />
+                }
               </div>
               <div className="singlechar-desc">
                 <p>Character info: <a itemProp="sameAs" href={character.wiki}>{character.wiki.substring(7)}</a></p>

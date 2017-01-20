@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { IMG_THUMBNAIL } from '../../config';
 
 export const textField = ({ input, label, disabled, type, meta: { touched, error } }) => (
   <div className="form-group">
@@ -10,11 +11,13 @@ export const textField = ({ input, label, disabled, type, meta: { touched, error
   </div>
 );
 
-export const imageField = ({ input, label, imgRoot, currentImage, type, meta: { touched, error } }) => (
+export const imageField = ({ input, label, currentImage, type, meta: { touched, error } }) => (
   <div className="form-group">
     <label htmlFor={input.name} className="col-sm-2 control-label">{label}</label>
-    <div className="col-sm-10">
-      <img alt={input.name} src={imgRoot + currentImage} style={{ marginBottom: 5 }} />
+    <div className="col-sm-10 form-image">
+      {currentImage &&
+        <img alt={input.name} src={IMG_THUMBNAIL + currentImage} />
+      }
       <input
         {...input}
         type={type}

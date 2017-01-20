@@ -1,7 +1,8 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { fetchAllCharacters } from '../../actions/adminActions';
+import { IMG_THUMBNAIL } from '../../config';
 
 class CharactersTable extends Component {
   componentWillMount() {
@@ -21,7 +22,9 @@ class CharactersTable extends Component {
     const charsTable = charsArray.map((char, i) => (
       <tr key={char.name}>
         <td>{char.name}<br /><h6>{char.slug}</h6></td>
-        <td><img alt={char.name} src={`/images/s/${char.image}`} /></td>
+        <td className="table-image">
+          {char.image && <img alt={char.name} src={IMG_THUMBNAIL + char.image} />}
+        </td>
         <td><Link to={`/admin/games/edit/${char._game}`}>{gamesEntity[char._game].title}</Link></td>
         <td className="toowide">{char.wiki}</td>
         <td>{char.art.author}</td>

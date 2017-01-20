@@ -17,3 +17,18 @@ td {
     word-break: break-all;
   }
 }
+
+.table-image {
+  img {
+    max-width: 125px;
+    max-height: 75px;
+  }
+}
+
+.form-image {
+  img {
+    max-width: 250px;
+    max-height: 150px;
+    margin-bottom: 5px;
+  }
+}

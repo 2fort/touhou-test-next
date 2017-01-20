@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { IMG_COMPRESSED } from '../../../config';
 
 class CharacterImage extends Component {
   shouldComponentUpdate(nextProps) {
@@ -12,7 +13,10 @@ class CharacterImage extends Component {
     const { baseDir, image } = this.props.structure;
     return (
       <div className="character-image">
-        <img alt="character" src={baseDir + image} />
+        {image
+          ? <img alt="character" src={baseDir + image} />
+          : <i className="fa fa-file-image-o fa-5x" aria-hidden="true" />
+        }
       </div>
     );
   }
@@ -20,7 +24,7 @@ class CharacterImage extends Component {
 
 function mapStateToProps({ domain: { test: { steps, activeStep } } }) {
   const structure = {
-    baseDir: '/images/m/',
+    baseDir: IMG_COMPRESSED,
     image: steps[activeStep - 1].image,
   };
 

@@ -1,14 +1,17 @@
 import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
+import { IMG_THUMBNAIL } from '../../../../config';
 
 const Grid = ({ entity, pathname }) => {
   const data = entity.map(game => (
     <div key={game.title} className="flex-item">
-      <p>
-        <Link className="imagelink" to={`${pathname}/${game.slug}`}>
-          <img alt="char" src={`/images/games/${game.cover}`} />
-        </Link>
-      </p>
+      {game.cover &&
+        <p>
+          <Link className="imagelink" to={`${pathname}/${game.slug}`}>
+            <img alt="char" src={IMG_THUMBNAIL + game.cover} />
+          </Link>
+        </p>
+      }
       <p>
         <Link to={`${pathname}/${game.slug}`}>{game.title}</Link>
       </p>

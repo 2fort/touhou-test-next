@@ -159,7 +159,7 @@ export function editGame(gameId, values, component) {
   formData.append('year', values.year);
   formData.append('cover', values.cover);
 
-  if (values.newcover[0]) {
+  if (values.newcover && values.newcover[0]) {
     formData.append('newcover', values.newcover[0], values.newcover[0].name);
   }
 

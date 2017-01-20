@@ -71,6 +71,7 @@
 
 .singlechar-img {
   flex: 1 1 50%;
+  text-align: center;
   
   img {
     max-width: 100%;
@@ -113,6 +114,11 @@
 
 .td-centered {
   text-align: center;
+
+  img {
+    max-width: 150px;
+    max-height: 75px;
+  }
 }
 
 table {

@@ -1,11 +1,11 @@
 .vscode
 
-server/public/images/games/*
+server/public/images/l/*
 server/public/images/m/*
 server/public/images/s/*
 server/uploads/images/*
 
-!server/public/images/games/.gitkeep
+!server/public/images/l/.gitkeep
 !server/public/images/m/.gitkeep
 !server/public/images/s/.gitkeep
 !server/uploads/images/.gitkeep

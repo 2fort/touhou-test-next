@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { fetchAllGames } from '../../actions/adminActions';
+import { IMG_THUMBNAIL } from '../../config';
 
 class GamesTable extends Component {
   componentWillMount() {
@@ -22,7 +23,9 @@ class GamesTable extends Component {
       <tr key={game.title}>
         <td>{game.prefix}</td>
         <td>{game.title}<br /><h6>{game.slug}</h6></td>
-        <td><img alt={game.title} height={75} src={`/images/games/${game.cover}`} /></td>
+        <td className="table-image">
+          {game.cover && <img alt={game.title} src={IMG_THUMBNAIL + game.cover} />}
+        </td>
         <td>{game.year}</td>
         <td>
           <Link to={`/admin/games/edit/${game.id}`}>

@@ -12,7 +12,6 @@ const GameEditForm = ({ error, initialValues, timestamp, handleSubmit, pristine,
     <Field name="cover" type="hidden" component="input" />
     <Field
       name="newcover"
-      imgRoot="/images/games/"
       currentImage={initialValues.cover}
       type="file"
       component={imageField}

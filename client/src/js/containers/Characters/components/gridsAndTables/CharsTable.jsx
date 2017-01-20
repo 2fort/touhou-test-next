@@ -1,13 +1,16 @@
 import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
+import { IMG_THUMBNAIL } from '../../../../config';
 
 const Table = ({ entity, pathname }) => {
   const tableData = entity.map(char => (
     <tr key={char.name}>
       <td className="td-centered">
-        <Link className="imagelink" to={`${pathname}/${char.slug}`}>
-          <img alt="char" src={`/images/s/${char.image}`} />
-        </Link>
+        {char.image &&
+          <Link className="imagelink" to={`${pathname}/${char.slug}`}>
+            <img alt="char" src={IMG_THUMBNAIL + char.image} />
+          </Link>
+        }
       </td>
       <td>
         <Link to={`${pathname}/${char.slug}`}>
