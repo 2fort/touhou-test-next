@@ -1,5 +1,6 @@
 import { normalize } from 'normalizr';
 import { SubmissionError } from 'redux-form';
+import { browserHistory } from 'react-router';
 
 import { charactersEntity, characterEntityOnly, gameEntity } from '../schemas/adminSchemas';
 import checkResponseStatus from './asyncHelpers';
@@ -154,10 +155,12 @@ export function fetchOneCharacter(characterId, component) {
 
 export function editGame(gameId, values, component) {
   const formData = new FormData();
-  formData.append('prefix', values.prefix);
+
+  formData.append('prefix', values.prefix || '');
   formData.append('title', values.title);
-  formData.append('year', values.year);
-  formData.append('cover', values.cover);
+  formData.append('year', values.year || null);
+
+  formData.append('cover', values.cover || '');
 
   if (values.newcover && values.newcover[0]) {
     formData.append('newcover', values.newcover[0], values.newcover[0].name);
@@ -172,12 +175,12 @@ export function editGame(gameId, values, component) {
       checkResponseStatus(response);
       return response.json();
     })
-    .then((newGame) => {
+    .then((updatedGame) => {
       dispatch({
         type: types.SUBMIT_SUCCESS,
       });
 
-      const data = normalize(newGame, gameEntity);
+      const data = normalize(updatedGame, gameEntity);
 
       dispatch({
         type: types.FETCH_SUCCESS,
@@ -185,6 +188,41 @@ export function editGame(gameId, values, component) {
         entities: data.entities,
         visible: data.result,
         fetchedAt: Date.now(),
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: types.SUBMIT_FAIL,
+        err,
+      });
+      throw new SubmissionError({ _error: err.message });
+    });
+}
+
+export function newGame(values) {
+  const formData = new FormData();
+
+  formData.append('prefix', values.prefix || '');
+  formData.append('title', values.title);
+  formData.append('year', values.year || null);
+
+  if (values.cover && values.cover[0]) {
+    formData.append('cover', values.cover[0], values.cover[0].name);
+  }
+
+  return dispatch =>
+    fetch('/api/admin/games/new', {
+      method: 'post',
+      body: formData,
+    })
+    .then((response) => {
+      checkResponseStatus(response);
+
+      browserHistory.push('/admin/games');
+
+      dispatch({
+        type: types.SUBMIT_SUCCESS,
+        message: 'Game successfully created.',
       });
     })
     .catch((err) => {

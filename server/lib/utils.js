@@ -1,3 +1,4 @@
+const path = require('path');
 const fs = require('fs');
 const cpr = require('cpr');
 const sharp = require('sharp');
@@ -42,12 +43,20 @@ this.copyOneToMany = function copyOneToMany(sourceFolder, file, destinationArray
 };
 
 this.resizeWithSharp = function resizeWithSharp(fullPath, filename, width, height, saveFolder) {
-  return sharp(fullPath)
+  const fileExt = path.extname(filename).toLowerCase();
+
+  let sharpResize = sharp(fullPath)
       .resize(width, height)
       .max()
-      .withoutEnlargement()
-      .jpeg({ quality: 95 })
-      .toFile(saveFolder + filename);
+      .withoutEnlargement();
+
+  if (fileExt === '.jpeg' || fileExt === '.jpg') {
+    sharpResize = sharpResize.jpeg({ quality: 95 });
+  }
+
+  sharpResize = sharpResize.toFile(saveFolder + filename);
+
+  return sharpResize;
 };
 
 this.moveFile = function moveFile(oldPath, newPath) {
