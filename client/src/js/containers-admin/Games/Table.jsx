@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { fetchAllGames } from '../../actions/adminActions';
+import { fetchAllGames, deleteGame } from '../../actions/adminActions';
 import { IMG_THUMBNAIL } from '../../config';
 
 class GamesTable extends Component {
@@ -15,7 +15,7 @@ class GamesTable extends Component {
   }
 
   render() {
-    const { ready, gamesArray } = this.props;
+    const { ready, gamesArray, actions } = this.props;
 
     if (!ready) return null;
 
@@ -31,9 +31,9 @@ class GamesTable extends Component {
           <Link to={`/admin/games/edit/${game.id}`}>
             <i className="fa fa-pencil fa-lg" aria-hidden="true" />
           </Link>{' '}
-          <Link to={`/admin/games/delete/${game.id}`}>
+          <button type="button" className="btn btn-link" onClick={actions.delBtnHandler(game)} >
             <i className="fa fa-trash fa-lg" aria-hidden="true" />
-          </Link>
+          </button>
         </td>
       </tr>
     ));
@@ -73,6 +73,7 @@ GamesTable.propTypes = {
     didMount: PropTypes.func.isRequired,
     willUnmount: PropTypes.func.isRequired,
     getData: PropTypes.func.isRequired,
+    delBtnHandler: PropTypes.func.isRequired,
   }).isRequired,
 };
 
@@ -102,6 +103,9 @@ function mapDispatchToProps(dispatch) {
       },
       getData: () => {
         dispatch(fetchAllGames(component));
+      },
+      delBtnHandler: game => () => {
+        dispatch(deleteGame(game, component));
       },
     },
   };

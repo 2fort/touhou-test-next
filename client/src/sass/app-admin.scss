@@ -2,7 +2,7 @@
 // @import '~bootstrap/dist/css/bootstrap-flex.min';
 // @import '~font-awesome/scss/font-awesome';
 
-@import 'admin/bootstrap-custom';
+// @import 'admin/bootstrap-custom';
 @import 'common/loading';
 
 html {
@@ -31,4 +31,10 @@ td {
     max-height: 150px;
     margin-bottom: 5px;
   }
+}
+
+.sticky {
+  position: fixed;
+  width: inherit;
+  top: 20px;
 }

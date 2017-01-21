@@ -1,6 +1,6 @@
 import { normalize } from 'normalizr';
 import { charactersEntity } from '../schemas/appSchemas';
-import checkResponseStatus from './asyncHelpers';
+import request from './api';
 import * as types from '../constants/ActionTypes';
 
 function randomNumber(scopeLength) {
@@ -53,15 +53,10 @@ export function fetchCharsAndBeginTest(component, maxSteps) {
       component,
     });
 
-    fetch('/api/characters')
-      .then((response) => {
-        checkResponseStatus(response);
-        return response.json();
-      })
+    request('/api/characters')
       .then((characters) => {
-        const data = normalize(characters, [charactersEntity]);
-
-        const steps = generateTest(characters, maxSteps);
+        const data = normalize(characters.json, [charactersEntity]);
+        const steps = generateTest(characters.json, maxSteps);
 
         dispatch({
           type: types.TEST_BEGIN,

@@ -23,6 +23,7 @@ export const CONTAINER_DESTROY = 'CONTAINER_DESTROY';
 export const FETCH_BEGIN = 'FETCH_BEGIN';
 export const FETCH_SUCCESS = 'FETCH_SUCCESS';
 export const FETCH_FAIL = 'FETCH_FAIL';
+export const FETCH_MODIFY = 'FETCH_MODIFY';
 
 // form submit actions
 export const SUBMIT_FAIL = 'SUBMIT_FAIL';

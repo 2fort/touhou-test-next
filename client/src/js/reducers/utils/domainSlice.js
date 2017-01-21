@@ -48,6 +48,19 @@ export default function domainSlice(componentName, reducer = defaultDomainReduce
           fetchedAt: action.fetchedAt,
         });
 
+      case types.FETCH_MODIFY: {
+        const modVisible = Immutable.flatMap(state.visible, (value) => {
+          if (value === action.id) {
+            return [];
+          }
+          return value;
+        });
+
+        return Immutable.merge(state, {
+          visible: modVisible,
+        });
+      }
+
       case types.FETCH_FAIL:
         return Immutable.merge(state, {
           pending: false,

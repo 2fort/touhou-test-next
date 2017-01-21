@@ -91,8 +91,6 @@ router.post('/new', upload.single('cover'), async (req, res) => {
   newGame.slug = _.snakeCase(newGame.title);
   newGame.year = JSON.parse(newGame.year);
 
-  console.log(newGame);
-
   if (req.file) {
     try {
       newGame.cover = req.file.filename;
@@ -104,10 +102,12 @@ router.post('/new', upload.single('cover'), async (req, res) => {
         // move uploaded file to IMG_ORIG folder
         await utils.moveFile(req.file.path, config.IMG_ORIG + req.file.filename);
       } else {
-        // generate compressed image
-        await utils.resizeWithSharp(req.file.path, req.file.filename, null, 768, config.IMG_COMPRESSED);
-        // generate thumbnail image
-        await utils.resizeWithSharp(req.file.path, req.file.filename, 150, 150, config.IMG_THUMBNAIL);
+        await Promise.all([
+          // generate compressed image
+          utils.resizeWithSharp(req.file.path, req.file.filename, null, 768, config.IMG_COMPRESSED),
+          // generate thumbnail image
+          utils.resizeWithSharp(req.file.path, req.file.filename, 150, 150, config.IMG_THUMBNAIL),
+        ]);
         // move uploaded file to IMG_ORIG folder
         await utils.moveFile(req.file.path, config.IMG_ORIG + req.file.filename);
       }
@@ -118,10 +118,31 @@ router.post('/new', upload.single('cover'), async (req, res) => {
 
   try {
     await Game.create(newGame);
-    return res.json({ message: 'Game created' });
+    return res.end();
   } catch (e) {
     return res.status(500).json({ message: e.message });
   }
+});
+
+router.post('/del', (req, res) => {
+  // const id = req.body._id;
+  // console.log(req.body);
+
+  Game.findByIdAndRemove(req.body.id)
+    .then(() => {
+      if (req.body.cover) {
+        return utils.deleteMany([
+          config.IMG_ORIG + req.body.cover,
+          config.IMG_COMPRESSED + req.body.cover,
+          config.IMG_THUMBNAIL + req.body.cover,
+        ]);
+      }
+      return null;
+    })
+    .then(() => res.end())
+    .catch(e => res.status(500).json(e.message));
+
+  return res.end();
 });
 
 module.exports = router;

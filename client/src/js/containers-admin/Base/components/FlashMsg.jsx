@@ -25,11 +25,18 @@ class FlashMsg extends Component {
     if (!msg.text) return null;
 
     return (
-      <div className={`alert alert-${msg.type} alert-dismissible`} role="alert">
+      <div className={`alert alert-${msg.type} alert-dismissible sticky`} role="alert">
         <button type="button" className="close" aria-label="Close" onClick={popMsg}>
           <span aria-hidden="true">&times;</span>
         </button>
-        <strong>{timestamp('HH:mm:ss', msg.date)}: </strong>{msg.text}
+        <div className="pull-left">
+          {msg.status && <strong>{msg.status}: </strong>}
+          {msg.text}
+        </div>
+        <div className="pull-right">
+          {timestamp('HH:mm:ss', msg.date)}
+        </div>
+        &nbsp;
       </div>
     );
   }

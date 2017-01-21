@@ -1,6 +1,6 @@
 import { normalize } from 'normalizr';
 import { charactersEntity, gameEntity } from '../schemas/appSchemas';
-import checkResponseStatus from './asyncHelpers';
+import request from './api';
 import * as types from '../constants/ActionTypes';
 
 export function changeMode(mode) {
@@ -17,13 +17,9 @@ export function fetchGames(component) {
       component,
     });
 
-    fetch('/api/games')
-      .then((response) => {
-        checkResponseStatus(response);
-        return response.json();
-      })
+    request('/api/games')
       .then((games) => {
-        const data = normalize(games, [gameEntity]);
+        const data = normalize(games.json, [gameEntity]);
         dispatch({
           type: types.FETCH_SUCCESS,
           component,
@@ -49,13 +45,9 @@ export function fetchCharacters(game, component) {
       component,
     });
 
-    fetch(`/api/characters/${game}`)
-      .then((response) => {
-        checkResponseStatus(response);
-        return response.json();
-      })
+    request(`/api/characters/${game}`)
       .then((characters) => {
-        const data = normalize(characters, [charactersEntity]);
+        const data = normalize(characters.json, [charactersEntity]);
         dispatch({
           type: types.FETCH_SUCCESS,
           component,
@@ -81,14 +73,9 @@ export function fetchCharacter(char, component) {
       component,
     });
 
-    fetch(`/api/character/${char}`)
-      .then((response) => {
-        checkResponseStatus(response);
-        return response.json();
-      })
+    request(`/api/character/${char}`)
       .then((character) => {
-        // console.log(character);
-        const data = normalize(character, [charactersEntity]);
+        const data = normalize(character.json, [charactersEntity]);
         dispatch({
           type: types.FETCH_SUCCESS,
           component,

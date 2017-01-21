@@ -3,8 +3,8 @@ import { SubmissionError } from 'redux-form';
 import { browserHistory } from 'react-router';
 
 import { charactersEntity, characterEntityOnly, gameEntity } from '../schemas/adminSchemas';
-import checkResponseStatus from './asyncHelpers';
 import * as types from '../constants/ActionTypes';
+import request from '../actions/api';
 
 export function flushMsg() {
   return {
@@ -19,13 +19,9 @@ export function fetchAllGames(component) {
       component,
     });
 
-    fetch('/api/admin/games')
-      .then((response) => {
-        checkResponseStatus(response);
-        return response.json();
-      })
+    request('/api/admin/games')
       .then((games) => {
-        const data = normalize(games, [gameEntity]);
+        const data = normalize(games.json, [gameEntity]);
         dispatch({
           type: types.FETCH_SUCCESS,
           component,
@@ -51,13 +47,9 @@ export function fetchAllCharacters(component) {
       component,
     });
 
-    fetch('/api/admin/characters')
-      .then((response) => {
-        checkResponseStatus(response);
-        return response.json();
-      })
+    request('/api/admin/characters')
       .then((characters) => {
-        const data = normalize(characters, [charactersEntity]);
+        const data = normalize(characters.json, [charactersEntity]);
         dispatch({
           type: types.FETCH_SUCCESS,
           component,
@@ -83,13 +75,9 @@ export function fetchOneGame(gameId, component) {
       component,
     });
 
-    fetch(`/api/admin/games/edit/${gameId}`)
-      .then((response) => {
-        checkResponseStatus(response);
-        return response.json();
-      })
+    request(`/api/admin/games/edit/${gameId}`)
       .then((game) => {
-        const data = normalize(game, gameEntity);
+        const data = normalize(game.json, gameEntity);
         dispatch({
           type: types.FETCH_SUCCESS,
           component,
@@ -108,7 +96,6 @@ export function fetchOneGame(gameId, component) {
   };
 }
 
-
 export function fetchOneCharacter(characterId, component) {
   return (dispatch) => {
     dispatch({
@@ -116,25 +103,17 @@ export function fetchOneCharacter(characterId, component) {
       component,
     });
 
-    fetch('/api/admin/games')
-      .then((response) => {
-        checkResponseStatus(response);
-        return response.json();
-      })
+    request('/api/admin/games')
       .then((games) => {
-        const data = normalize(games, [gameEntity]);
+        const data = normalize(games.json, [gameEntity]);
         dispatch({
           type: types.FETCH_SUCCESS,
           entities: data.entities,
         });
-        return fetch(`/api/admin/characters/edit/${characterId}`);
-      })
-      .then((response) => {
-        checkResponseStatus(response);
-        return response.json();
+        return request(`/api/admin/characters/edit/${characterId}`);
       })
       .then((characters) => {
-        const data = normalize(characters, characterEntityOnly);
+        const data = normalize(characters.json, characterEntityOnly);
         dispatch({
           type: types.FETCH_SUCCESS,
           component,
@@ -167,20 +146,18 @@ export function editGame(gameId, values, component) {
   }
 
   return dispatch =>
-    fetch(`/api/admin/games/edit/${gameId}`, {
+    request(`/api/admin/games/edit/${gameId}`, {
       method: 'post',
       body: formData,
-    })
-    .then((response) => {
-      checkResponseStatus(response);
-      return response.json();
     })
     .then((updatedGame) => {
       dispatch({
         type: types.SUBMIT_SUCCESS,
+        status: updatedGame.status,
+        message: 'Game successfully updated.',
       });
 
-      const data = normalize(updatedGame, gameEntity);
+      const data = normalize(updatedGame.json, gameEntity);
 
       dispatch({
         type: types.FETCH_SUCCESS,
@@ -195,7 +172,7 @@ export function editGame(gameId, values, component) {
         type: types.SUBMIT_FAIL,
         err,
       });
-      throw new SubmissionError({ _error: err.message });
+      throw new SubmissionError();
     });
 }
 
@@ -211,17 +188,15 @@ export function newGame(values) {
   }
 
   return dispatch =>
-    fetch('/api/admin/games/new', {
+    request('/api/admin/games/new', {
       method: 'post',
       body: formData,
     })
     .then((response) => {
-      checkResponseStatus(response);
-
       browserHistory.push('/admin/games');
-
       dispatch({
         type: types.SUBMIT_SUCCESS,
+        status: response.status,
         message: 'Game successfully created.',
       });
     })
@@ -230,6 +205,36 @@ export function newGame(values) {
         type: types.SUBMIT_FAIL,
         err,
       });
-      throw new SubmissionError({ _error: err.message });
+      throw new SubmissionError(); // submitFailed: true;
+    });
+}
+
+export function deleteGame(game, component) {
+  return dispatch =>
+    request('/api/admin/games/del', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(game),
+    })
+    .then((response) => {
+      dispatch({
+        type: types.FETCH_MODIFY,
+        id: game.id,
+        component,
+      });
+
+      dispatch({
+        type: types.SUBMIT_SUCCESS,
+        status: response.status,
+        message: 'Game successfully deleted',
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: types.SUBMIT_FAIL,
+        err,
+      });
     });
 }
