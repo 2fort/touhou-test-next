@@ -8,7 +8,7 @@ import Home from './containers-admin/Base/Home';
 import Games from './containers-admin/Games/Table';
 import Characters from './containers-admin/Characters';
 
-module.exports = (
+export default (
   <Route path="/admin" component={Index}>
     <IndexRoute component={Home} />
     <Route path="games" component={Games} />

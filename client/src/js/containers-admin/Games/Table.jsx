@@ -147,7 +147,7 @@ function mapDispatchToProps(dispatch) {
       },
 
       deleteGameBtnHandler: game => () => {
-        dispatch(deleteGame(game, component))
+        dispatch(deleteGame(game))
           .then(() => dispatch(fetchAllGames(component)));
       },
 
