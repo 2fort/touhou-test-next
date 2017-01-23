@@ -4,10 +4,15 @@
 
 // @import 'admin/bootstrap-custom';
 @import 'common/loading';
+@import '~react-progress-bar-plus/lib/progress-bar';
 
 html {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
+}
+
+.main-container {
+  margin-top: 70px;
 }
 
 td {
@@ -37,4 +42,5 @@ td {
   position: fixed;
   width: inherit;
   top: 20px;
+  z-index: 1050;
 }

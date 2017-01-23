@@ -4,7 +4,7 @@ import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
 const NavbarHeader = ({ router }) => (
-  <Navbar inverse collapseOnSelect>
+  <Navbar fixedTop inverse collapseOnSelect>
     <div className="container">
       <Navbar.Header>
         <Navbar.Brand>
@@ -15,16 +15,7 @@ const NavbarHeader = ({ router }) => (
       <Navbar.Collapse>
         <Nav>
           <IndexLinkContainer to="/admin"><NavItem eventKey={1} href="#">Home</NavItem></IndexLinkContainer>
-          <NavDropdown
-            eventKey={2}
-            title="Games"
-            id="basic-nav-dropdown"
-            active={router.isActive('/admin/games')}
-          >
-            <LinkContainer onlyActiveOnIndex to="/admin/games"><MenuItem eventKey={2.1}>List</MenuItem></LinkContainer>
-            <MenuItem divider />
-            <LinkContainer to="/admin/games/new"><MenuItem eventKey={2.2}>Add new</MenuItem></LinkContainer>
-          </NavDropdown>
+          <IndexLinkContainer to="/admin/games"><NavItem eventKey={2} href="#">Games</NavItem></IndexLinkContainer>
           <NavDropdown
             eventKey={3}
             title="Characters"

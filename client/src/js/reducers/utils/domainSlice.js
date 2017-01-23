@@ -16,7 +16,7 @@ export const defaultDomainState = Immutable({
 });
 
 export default function domainSlice(componentName, reducer = defaultDomainReducer, defaultState) {
-  const finalState = (defaultState) ? Immutable.merge(defaultDomainState, defaultState) : defaultDomainState;
+  const initState = (defaultState) ? Immutable.merge(defaultDomainState, defaultState) : defaultDomainState;
 
   return (state, action) => {
     if (!action.component || componentName !== action.component) {
@@ -25,7 +25,7 @@ export default function domainSlice(componentName, reducer = defaultDomainReduce
 
     switch (action.type) {
       case types.CONTAINER_MOUNT: {
-        const returnState = (state) || finalState; // first-time mounting check
+        const returnState = (state) || initState; // first-time mounting check
         return Immutable.merge(returnState, { active: true });
       }
 
@@ -47,19 +47,6 @@ export default function domainSlice(componentName, reducer = defaultDomainReduce
           visible: action.visible,
           fetchedAt: action.fetchedAt,
         });
-
-      case types.FETCH_MODIFY: {
-        const modVisible = Immutable.flatMap(state.visible, (value) => {
-          if (value === action.id) {
-            return [];
-          }
-          return value;
-        });
-
-        return Immutable.merge(state, {
-          visible: modVisible,
-        });
-      }
 
       case types.FETCH_FAIL:
         return Immutable.merge(state, {

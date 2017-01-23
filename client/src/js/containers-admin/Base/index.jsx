@@ -2,15 +2,15 @@ import React, { PropTypes } from 'react';
 
 import NavbarHeader from './components/NavbarHeader';
 import FlashMsg from './components/FlashMsg';
-import Loading from '../../containers/Base/components/Loading';
+import LoadingLine from './components/LoadingLine';
 
 const Base = ({ children }) => (
   <div>
+    <LoadingLine />
     <NavbarHeader />
-    <div className="container">
+    <div className="container main-container">
       <FlashMsg />
       {children}
-      <Loading />
     </div>
   </div>
 );
