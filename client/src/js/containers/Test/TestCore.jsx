@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom';
 import { connect } from 'react-redux';
 import Hammer from 'hammerjs';
 
-import { goNextStep, goPrevStep } from '../../actions/testActions';
+import { goNextStep, goPrevStep } from './duck';
 
 class TestCore extends Component {
   componentDidMount() {

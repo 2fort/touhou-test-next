@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { setStep } from '../../../actions/testActions';
+import { setStep } from '../duck';
 
 const Slider = ({ structure: { value, max }, onSliderMove }) => (
   <div className="myslider">

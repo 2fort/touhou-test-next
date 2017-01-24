@@ -2,31 +2,35 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import timestamp from 'time-stamp';
-import { flushMsg } from '../../../actions/adminActions';
+import { del } from '../../../ducks/flashMessage';
 
 class FlashMsg extends Component {
   componentWillReceiveProps(nextProps) {
     const { msg, location } = this.props;
 
     if (msg.text && location.pathname !== nextProps.location.pathname) {
-      this.props.popMsg();
+      this.props.dispatch(del());
     }
   }
 
   componentWillUnmount() {
     if (this.props.msg.text) {
-      this.props.popMsg();
+      this.props.dispatch(del());
     }
   }
 
+  closeBtnHandler = () => {
+    this.props.dispatch(del());
+  }
+
   render() {
-    const { msg, popMsg } = this.props;
+    const { msg } = this.props;
 
     if (!msg.text) return null;
 
     return (
       <div className={`alert alert-${msg.type} alert-dismissible sticky`} role="alert">
-        <button type="button" className="close" aria-label="Close" onClick={popMsg}>
+        <button type="button" className="close" aria-label="Close" onClick={this.closeBtnHandler}>
           <span aria-hidden="true">&times;</span>
         </button>
         <div className="pull-left">
@@ -48,22 +52,14 @@ FlashMsg.propTypes = {
     type: PropTypes.string,
     date: PropTypes.date,
   }).isRequired,
-  popMsg: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
 };
 
-function mapStateToProps({ msg }) {
-  return { msg };
+function mapStateToProps({ flashMessage }) {
+  return { msg: flashMessage };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    popMsg: () => {
-      dispatch(flushMsg());
-    },
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(FlashMsg));
+export default connect(mapStateToProps)(withRouter(FlashMsg));

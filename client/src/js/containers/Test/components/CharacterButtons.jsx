@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { answerGiven, openResultsWindow, goNextStep } from '../../../actions/testActions';
+import { answerGiven, openResultsWindow, goNextStep } from '../duck';
 
 const CharacterButtons = ({ structure, step, maxSteps, onButtonClick }) => {
   const charButtons = structure.map((button) => {

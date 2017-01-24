@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React, { PropTypes, Component } from 'react';
 import { Link, withRouter } from 'react-router';
-import { resetTest } from '../../../actions/testActions';
+import { resetTest } from '../../Test/duck';
 import LoadingSignal from './LoadingSignal';
 
 const NavLink = props => <Link activeClassName="active" {...props} />;
@@ -20,8 +20,12 @@ class Navbar extends Component {
     this.setState({ expanded: false });
   }
 
+  resetBtnHandler = () => {
+    this.props.dispatch(resetTest(20));
+  }
+
   render() {
-    const { router, onResetButtonClick } = this.props;
+    const { router } = this.props;
 
     const inButton = this.state.expanded ? 'show' : 'hide';
 
@@ -33,7 +37,7 @@ class Navbar extends Component {
             &nbsp;<LoadingSignal />
 
             {router.isActive('/test') &&
-              <button type="button" className="reload" title="Reset" onClick={onResetButtonClick}>
+              <button type="button" className="reload" title="Reset" onClick={this.resetBtnHandler}>
                 <i className="fa fa-fw fa-lg fa-refresh" aria-hidden="true" />
                 <span className="mobile-hide"> Reset</span>
               </button>
@@ -61,15 +65,7 @@ Navbar.propTypes = {
   router: PropTypes.shape({
     isActive: PropTypes.func.isRequired,
   }).isRequired,
-  onResetButtonClick: PropTypes.func,
+  dispatch: PropTypes.func,
 };
 
-function mapDispatchToProps(dispatch) {
-  return {
-    onResetButtonClick: () => {
-      dispatch(resetTest());
-    },
-  };
-}
-
-export default connect(null, mapDispatchToProps)(withRouter(Navbar));
+export default connect()(withRouter(Navbar));

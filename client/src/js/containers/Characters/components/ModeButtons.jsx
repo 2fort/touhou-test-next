@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import { changeMode } from '../../../actions/charactersActions';
+import { changeMode } from '../../Base/duck';
 
 class ModeButtons extends Component {
   componentWillMount() {
@@ -58,7 +58,7 @@ ModeButtons.propTypes = {
   changeLayout: PropTypes.func.isRequired,
 };
 
-function mapStateToProps({ main: { mode } }) {
+function mapStateToProps({ base: { mode } }) {
   return { mode };
 }
 

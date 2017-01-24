@@ -1,24 +1,20 @@
 import React, { Component, PropTypes } from 'react';
-import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
+import Helmet from 'react-helmet';
 
 import { ResultModal, Slider, TopButtons, CharacterImage, CharacterButtons } from './components';
 import { NextButton, PrevButton } from './components/NavButtons';
-import { fetchCharsAndBeginTest } from '../../actions/testActions';
 import TestCore from './TestCore';
 import Loading from '../Base/components/Loading';
 
+import { domainHoc } from '../../ducks/domain';
+import { fetchCharsAndBeginTest } from './duck';
+
 class Test extends Component {
   componentDidMount() {
-    this.props.actions.didMount();
-
     if (!this.props.state.inProgress) {
-      this.props.actions.fetchCharsAndBeginTest(20);
+      this.props.fetchCharsAndBeginTest(20);
     }
-  }
-
-  componentWillUnmount() {
-    this.props.actions.willUnmount();
   }
 
   render() {
@@ -54,39 +50,15 @@ function mapStateToProps({ domain: { test } }) {
   return { state };
 }
 
-function mapDispatchToProps(dispatch) {
-  const component = 'Test';
-  return {
-    actions: {
-      didMount: () => {
-        dispatch({
-          type: 'CONTAINER_MOUNT',
-          component,
-        });
-      },
-      willUnmount: () => {
-        dispatch({
-          type: 'CONTAINER_UNMOUNT',
-          component,
-        });
-      },
-      fetchCharsAndBeginTest: (maxSteps) => {
-        dispatch(fetchCharsAndBeginTest(component, maxSteps));
-      },
-    },
-  };
-}
-
 Test.propTypes = {
   state: PropTypes.shape({
     pending: PropTypes.bool.isRequired,
     inProgress: PropTypes.bool.isRequired,
   }).isRequired,
-  actions: PropTypes.shape({
-    didMount: PropTypes.func.isRequired,
-    willUnmount: PropTypes.func.isRequired,
-    fetchCharsAndBeginTest: PropTypes.func.isRequired,
-  }).isRequired,
+  fetchCharsAndBeginTest: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Test);
+export default
+  connect(mapStateToProps, { fetchCharsAndBeginTest })(
+    domainHoc({ name: 'Test', persist: true })(Test),
+  );

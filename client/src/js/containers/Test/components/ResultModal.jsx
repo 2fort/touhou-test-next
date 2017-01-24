@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Modal from 'react-modal';
-import { closeResultsWindow, resetTest } from '../../../actions/testActions';
+import { closeResultsWindow, resetTest } from '../duck';
 
 class TestResultModal extends Component {
   shouldComponentUpdate(nextProps) {

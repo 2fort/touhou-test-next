@@ -5,9 +5,9 @@ import Router from 'react-router/lib/Router';
 import browserHistory from 'react-router/lib/browserHistory';
 
 import routes from './routes-admin';
-import configureAdminStore from './store/adminStoreConfig';
+import configureStore from './store-admin';
 
-const store = configureAdminStore();
+const store = configureStore();
 
 require('../sass/app-admin.scss');
 

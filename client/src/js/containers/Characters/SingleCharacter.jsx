@@ -3,24 +3,21 @@ import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 
 import { TopContainer, Breadcrumbs, CharNavButton } from './components';
-import { fetchCharacter } from '../../actions/charactersActions';
 import { IMG_COMPRESSED } from '../../config';
-import Fetch404 from '../Base/Fetch404';
+import Fetch404 from '../Base/components/Fetch404';
+
+import { domainHoc } from '../../ducks/domain';
+import fetchCharacter from './SingleCharacter.duck';
 
 class SingleCharacter extends Component {
   componentDidMount() {
-    this.props.actions.didMount();
-    this.props.actions.getCharacter(this.props.params.char);
+    this.props.fetchCharacter(this.props.params.char);
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.params.char !== nextProps.params.char) {
-      this.props.actions.getCharacter(nextProps.params.char);
+      this.props.fetchCharacter(nextProps.params.char);
     }
-  }
-
-  componentWillUnmount() {
-    this.props.actions.willUnmount();
   }
 
   render() {
@@ -72,11 +69,7 @@ SingleCharacter.propTypes = {
   params: PropTypes.shape({
     char: PropTypes.string.isRequired,
   }).isRequired,
-  actions: PropTypes.shape({
-    didMount: PropTypes.func.isRequired,
-    willUnmount: PropTypes.func.isRequired,
-    getCharacter: PropTypes.func.isRequired,
-  }).isRequired,
+  fetchCharacter: PropTypes.func.isRequired,
   ready: PropTypes.bool.isRequired,
   character: PropTypes.shape({
     name: PropTypes.string.isRequired,
@@ -96,27 +89,7 @@ function mapStateToProps({ domain: { singleCharacter }, entities: { characters }
   return { ready: true, character };
 }
 
-function mapDispatchToProps(dispatch) {
-  const component = 'SingleCharacter';
-  return {
-    actions: {
-      didMount: () => {
-        dispatch({
-          type: 'CONTAINER_MOUNT',
-          component,
-        });
-      },
-      willUnmount: () => {
-        dispatch({
-          type: 'CONTAINER_DESTROY',
-          component,
-        });
-      },
-      getCharacter: (char) => {
-        dispatch(fetchCharacter(char, component));
-      },
-    },
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SingleCharacter);
+export default
+  connect(mapStateToProps, { fetchCharacter })(
+    domainHoc({ name: 'SingleCharacter' })(SingleCharacter),
+  );

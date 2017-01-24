@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { goPrevStep, goNextStep } from '../../../actions/testActions';
+import { goPrevStep, goNextStep } from '../duck';
 
 const NavButton = ({ structure: { color, disabled }, onButtonClick, children }) => (
   <div className="navigation">
