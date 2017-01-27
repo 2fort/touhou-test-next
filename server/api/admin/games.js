@@ -21,7 +21,7 @@ router.route('/')
         newGame.cover = await controller.dealWithFile(req.file);
       }
       await Game.create(newGame);
-      return res.status(201).end();
+      return res.status(201).json({ message: 'Game successfully created.' });
     } catch (e) {
       return res.status(500).json({ message: e.message });
     }
@@ -42,7 +42,7 @@ router.route('/:id')
         await controller.deleteAllImg(staleData.cover);
       }
 
-      return res.end();
+      return res.status(200).json({ message: 'Game successfully updated.' });
     } catch (e) {
       return res.status(500).json({ message: e.message });
     }
@@ -54,7 +54,7 @@ router.route('/:id')
       if (deletedGame.cover) {
         await controller.deleteAllImg(deletedGame.cover);
       }
-      return res.end();
+      return res.status(200).json({ message: 'Game successfully deleted' });
     } catch (e) {
       return res.status(500).json({ message: e.message });
     }

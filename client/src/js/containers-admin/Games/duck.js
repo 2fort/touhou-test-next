@@ -1,11 +1,8 @@
-import { SubmissionError } from 'redux-form';
 import Immutable from 'seamless-immutable';
 import { gameEntity } from '../../schemas/adminSchemas';
-import request from '../../api';
 
 import { generateComponent } from '../../ducks/domain';
-import * as flashMessageActions from '../../ducks/flashMessage';
-import fetchAndSave from '../../actions/fetchAndSave';
+import fetchAndSave, { formSubmit } from '../../actions/fetchAndSave';
 
 const componentName = 'GamesTable';
 const NEW_GAME_MODAL_OPEN = `${componentName}/NEW_GAME_MODAL_OPEN`;
@@ -39,43 +36,17 @@ export function fetchAllGames() {
 
 export function newGame(values) {
   return dispatch =>
-    request(route, {
-      method: 'POST',
-      body: values,
-    })
-    .then((response) => {
-      dispatch(flashMessageActions.add(response.status, 'Game successfully created.', 0));
-    })
-    .catch((err) => {
-      throw new SubmissionError({ _error: err.message });
-    });
+    dispatch(formSubmit(route, { method: 'POST', body: values }));
 }
 
 export function editGame(id, values) {
   return dispatch =>
-    request(`${route}/${id}`, {
-      method: 'PATCH',
-      body: values,
-    })
-    .then((response) => {
-      dispatch(flashMessageActions.add(response.status, 'Game successfully updated.', 0));
-    })
-    .catch((err) => {
-      throw new SubmissionError({ _error: err.message });
-    });
+    dispatch(formSubmit(`${route}/${id}`, { method: 'PATCH', body: values }));
 }
 
 export function deleteGame(id) {
   return dispatch =>
-    request(`${route}/${id}`, {
-      method: 'DELETE',
-    })
-    .then((response) => {
-      dispatch(flashMessageActions.add(response.status, 'Game successfully deleted', 0));
-    })
-    .catch((err) => {
-      dispatch(flashMessageActions.add(err.status, err.message, 3));
-    });
+    dispatch(formSubmit(`${route}/${id}`, { method: 'DELETE' }));
 }
 
 const defaultState = Immutable({

@@ -20,7 +20,7 @@ function parseJSON(response) {
     // 1) 200-299 OK response with json from server
     // 2) error (400-500, etc.) response from server with json payload
     // 3) error response from server without json payload
-    // 4) error response from fetch (like 404) if server is not unreachable
+    // 4) error response from fetch (like 404) if server is unreachable
     response.json()
       // 1), 2)
       .then(json => resolve({

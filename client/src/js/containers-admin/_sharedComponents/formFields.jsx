@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 
-
-export const textField = ({ input, label, disabled, type, meta: { touched, error } }) => (
+export const textField = ({ input, label, type, meta: { touched, error }, disabled }) => (
   <div className="form-group">
     <label htmlFor={input.name} className="col-sm-2 control-label">{label}</label>
     <div className="col-sm-10">
@@ -10,6 +9,21 @@ export const textField = ({ input, label, disabled, type, meta: { touched, error
     </div>
   </div>
 );
+
+textField.defaultProps = {
+  disabled: false,
+};
+
+textField.propTypes = {
+  input: PropTypes.object.isRequired,
+  label: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  meta: PropTypes.shape({
+    touched: PropTypes.bool,
+    error: PropTypes.string,
+  }).isRequired,
+  disabled: PropTypes.bool,
+};
 
 export class imageField extends Component {
   addImgBtnHandler = () => {
@@ -30,11 +44,11 @@ export class imageField extends Component {
   }
 
   render() {
-    const { input, label, currentImage, type, meta: { touched, error } } = this.props;
+    const { input, label, type, meta: { touched, error }, currentImage } = this.props;
 
     const imageBlock = (
       <div>
-        <img alt="cover" src={this.props.currentImage} />
+        <img alt="cover" src={currentImage} />
         <br />
         <button type="button" className="btn btn-primary" onClick={this.addImgBtnHandler}>Replace</button>
         {' '}
@@ -66,3 +80,20 @@ export class imageField extends Component {
     );
   }
 }
+
+imageField.defaultProps = {
+  currentImage: '',
+};
+
+imageField.propTypes = {
+  input: PropTypes.object.isRequired,
+  label: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  meta: PropTypes.shape({
+    touched: PropTypes.bool,
+    error: PropTypes.string,
+  }).isRequired,
+  currentImage: PropTypes.string,
+  addImgPreview: PropTypes.func.isRequired,
+  removeImgPreview: PropTypes.func.isRequired,
+};

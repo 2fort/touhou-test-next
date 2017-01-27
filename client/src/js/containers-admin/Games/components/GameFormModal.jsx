@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, propTypes } from 'redux-form';
 
 import { textField, imageField } from '../../_sharedComponents/formFields';
 import { required, number } from '../../_sharedComponents/validationFields';
@@ -99,8 +99,6 @@ GameFormModal.propTypes = {
   title: PropTypes.string.isRequired,
   buttonName: PropTypes.string.isRequired,
   hide: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-  submitting: PropTypes.bool.isRequired,
   initialValues: PropTypes.shape({
     id: PropTypes.string,
     prefix: PropTypes.string,
@@ -108,8 +106,7 @@ GameFormModal.propTypes = {
     cover: PropTypes.string,
     year: PropTypes.number,
   }),
-  error: PropTypes.string,
-  reset: PropTypes.func.isRequired,
+  ...propTypes,
 };
 
 export default reduxForm({

@@ -1,4 +1,5 @@
 import { normalize } from 'normalizr';
+import { SubmissionError } from 'redux-form';
 import request from '../api';
 
 import * as entitiesActions from '../ducks/entities';
@@ -46,4 +47,16 @@ export function fetchManyAndSave(mainReq, restReqs, component) {
         dispatch(flashMessageActions.add(err.status, err.message, 3));
       });
   };
+}
+
+export function formSubmit(route, options) {
+  return dispatch =>
+    request(route, options)
+    .then((response) => {
+      const message = response.json ? response.json.message : response.statusText;
+      dispatch(flashMessageActions.add(response.status, message, 0));
+    })
+    .catch((err) => {
+      throw new SubmissionError({ _error: err.message });
+    });
 }
