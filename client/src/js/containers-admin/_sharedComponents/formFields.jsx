@@ -1,5 +1,5 @@
-import React, { PropTypes } from 'react';
-import { IMG_THUMBNAIL } from '../../config';
+import React, { Component, PropTypes } from 'react';
+
 
 export const textField = ({ input, label, disabled, type, meta: { touched, error } }) => (
   <div className="form-group">
@@ -11,19 +11,58 @@ export const textField = ({ input, label, disabled, type, meta: { touched, error
   </div>
 );
 
-export const imageField = ({ input, label, currentImage, type, meta: { touched, error } }) => (
-  <div className="form-group">
-    <label htmlFor={input.name} className="col-sm-2 control-label">{label}</label>
-    <div className="col-sm-10 form-image">
-      {currentImage &&
-        <img alt={input.name} src={IMG_THUMBNAIL + currentImage} />
-      }
-      <input
-        {...input}
-        type={type}
-        className="pure-input-2-3"
-      />
-      {touched && (error && <span>{error}</span>)}
-    </div>
-  </div>
-);
+export class imageField extends Component {
+  addImgBtnHandler = () => {
+    this.fileInput.click();
+  }
+
+  removeImgBtnHandler = () => {
+    this.props.removeImgPreview();
+    this.props.input.onChange({});
+  }
+
+  fileSelectHandler = (e) => {
+    const files = e.target.files;
+    if (files[0]) {
+      this.props.input.onChange(e.target.files);
+      this.props.addImgPreview(e.target.files[0]);
+    }
+  }
+
+  render() {
+    const { input, label, currentImage, type, meta: { touched, error } } = this.props;
+
+    const imageBlock = (
+      <div>
+        <img alt="cover" src={this.props.currentImage} />
+        <br />
+        <button type="button" className="btn btn-primary" onClick={this.addImgBtnHandler}>Replace</button>
+        {' '}
+        <button type="button" className="btn btn-danger" onClick={this.removeImgBtnHandler}>Remove</button>
+      </div>
+    );
+
+    return (
+      <div className="form-group">
+        <label htmlFor={input.name} className="col-sm-2 control-label">{label}</label>
+        <div className="col-sm-10 form-image">
+          <input
+            {...input}
+            type={type}
+            className="pure-input-2-3"
+            style={{ display: 'none' }}
+            onChange={this.fileSelectHandler}
+            ref={(file) => { this.fileInput = file; }}
+          />
+
+          {this.props.currentImage
+            ? imageBlock
+            : <button type="button" className="btn btn-primary" onClick={this.addImgBtnHandler}>Add</button>
+          }
+
+          {touched && (error && <span>{error}</span>)}
+        </div>
+      </div>
+    );
+  }
+}

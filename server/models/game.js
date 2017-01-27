@@ -1,13 +1,22 @@
 const mongoose = require('mongoose');
 
 const schema = new mongoose.Schema({
-  prefix: String,
+  prefix: {
+    type: String,
+    default: '',
+  },
   title: {
     type: String,
     required: true,
   },
-  year: Number,
-  cover: String,
+  year: {
+    type: Number,
+    default: null,
+  },
+  cover: {
+    type: String,
+    default: '',
+  },
   slug: String,
 });
 

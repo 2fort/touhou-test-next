@@ -21,22 +21,37 @@ class GamesTable extends Component {
     this.props.actions.editGameModalOpen(game);
   }
 
-  deleteGameBtnHandler = game => () => {
-    this.props.actions.deleteGame(game)
+  deleteGameBtnHandler = id => () => {
+    this.props.actions.deleteGame(id)
       .then(() => this.props.actions.fetchAllGames());
+  }
+
+  prepareFormData = (values) => {
+    const newValues = Object.assign({}, values);
+    const formData = new FormData();
+
+    if (newValues.fileCover) {
+      newValues.cover = '';
+    }
+
+    // we have a file!
+    if (newValues.fileCover && newValues.fileCover[0]) {
+      formData.append('cover', newValues.fileCover[0], newValues.fileCover[0].name);
+    }
+
+    // delete all unnecessary fields
+    delete newValues.id;
+    delete newValues.slug;
+    delete newValues.fileCover;
+
+    formData.append('payload', JSON.stringify(newValues));
+
+    return formData;
   }
 
   newGameModalSubmit = (values) => {
     const { actions } = this.props;
-    const newValues = new FormData();
-
-    newValues.append('prefix', values.prefix || '');
-    newValues.append('title', values.title);
-    newValues.append('year', values.year || null);
-
-    if (values.cover && values.cover[0]) {
-      newValues.append('cover', values.cover[0], values.cover[0].name);
-    }
+    const newValues = this.prepareFormData(values);
 
     return actions.newGame(newValues)
       .then(() => actions.fetchAllGames())
@@ -45,18 +60,9 @@ class GamesTable extends Component {
 
   editGameModalSubmit = (values) => {
     const { actions } = this.props;
-    const newValues = new FormData();
+    const newValues = this.prepareFormData(values);
 
-    newValues.append('id', values.id);
-    newValues.append('prefix', values.prefix || '');
-    newValues.append('title', values.title);
-    newValues.append('year', values.year || null);
-
-    if (values.cover && typeof values.cover === 'object' && values.cover[0]) {
-      newValues.append('cover', values.cover[0], values.cover[0].name);
-    }
-
-    return actions.editGame(newValues)
+    return actions.editGame(values.id, newValues)
       .then(() => actions.fetchAllGames())
       .then(() => actions.editGameModalClose());
   }
@@ -94,7 +100,7 @@ class GamesTable extends Component {
                     <i className="fa fa-pencil fa-lg" aria-hidden="true" />
                   </button>
                   {' '}
-                  <button type="button" className="btn btn-default" onClick={this.deleteGameBtnHandler(game)}>
+                  <button type="button" className="btn btn-default" onClick={this.deleteGameBtnHandler(game.id)}>
                     <i className="fa fa-trash fa-lg" aria-hidden="true" />
                   </button>
                 </td>

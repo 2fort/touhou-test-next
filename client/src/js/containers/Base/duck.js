@@ -1,8 +1,7 @@
 import Immutable from 'seamless-immutable';
-import { componentName } from '../Base';
 
 // App Base actions
-export const CHANGE_MODE = `${componentName}/CHANGE_MODE`;
+export const CHANGE_MODE = 'Base/CHANGE_MODE';
 
 export function changeMode(mode) {
   return { type: CHANGE_MODE, mode };

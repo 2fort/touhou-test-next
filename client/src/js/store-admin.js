@@ -3,12 +3,12 @@ import reduxThunk from 'redux-thunk';
 import { reducer as formReducer } from 'redux-form';
 
 import { domainSlice, entities, flashMessage } from './ducks';
-import games from './containers-admin/Games/duck';
+import gamesTable from './containers-admin/Games/duck';
+import charactersTable from './containers-admin/Characters/duck';
 
 const domain = combineReducers({
-  gamesTable: domainSlice('GamesTable', games.reducer, games.defaultState),
-  // charactersTable: domainSlice('CharactersTable'),
-  // characterEdit: domainSlice('CharacterEdit'),
+  gamesTable: domainSlice('GamesTable', gamesTable.reducer, gamesTable.defaultState),
+  charactersTable: domainSlice('charactersTable', charactersTable.reducer, charactersTable.defaultState),
 });
 
 const rootReducer = combineReducers({

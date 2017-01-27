@@ -1,136 +1,63 @@
 const router = require('express').Router();
-const path = require('path');
-const multer = require('multer');
-const _ = require('lodash');
-const shortid = require('shortid');
 const Game = require('../../models/game');
-const utils = require('../../lib/utils');
-const config = require('../../config');
+const controller = require('../../controller/admin');
+const multer = require('../../controller/multer');
 
-const storage = multer.diskStorage({
-  destination: config.UPLOAD_TEMP,
-  filename: (req, file, cb) => {
-    cb(null, shortid.generate() + path.extname(file.originalname).toLowerCase());
-  },
-});
+const upload = multer.single('cover');
 
-const upload = multer({
-  storage,
-});
+router.route('/')
+  .get((req, res) => {
+    Game.find().exec()
+      .then(games => res.json(games))
+      // .then(games => setTimeout(() => res.json(games), 5000))
+      .catch(e => res.status(404).json({ message: e.message }));
+  })
 
-router.get('/', (req, res) => {
-  Game.find().exec()
-    .then(games => res.json(games))
-    // .then(games => setTimeout(() => res.json(games), 5000))
-    .catch(err => res.status(404).json(err));
-});
+  .post(upload, async (req, res) => {
+    const newGame = controller.dealWithPayload(req.body.payload);
 
-router.post('/edit', upload.single('cover'), async (req, res) => {
-  // save FormData to new object
-  const update = Object.assign({}, req.body);
-  // generate slug from title
-  update.slug = _.snakeCase(update.title);
-  // 'null' => null
-  update.year = JSON.parse(update.year);
-
-  if (req.file) {
     try {
-      // add filename of new cover to update object
-      update.cover = req.file.filename;
-
-      // if uploaded image has a .svg extension
-      if (path.extname(req.file.filename) === '.svg') {
-        // just copy it to COMPRESSED and THUMBNAIL folders
-        await utils.copyOneToMany(config.UPLOAD_TEMP, req.file.filename, [config.IMG_COMPRESSED, config.IMG_THUMBNAIL]);
-        // move uploaded file to IMG_ORIG folder
-        await utils.moveFile(req.file.path, config.IMG_ORIG + req.file.filename);
-      } else {
-        // generate compressed image
-        await utils.resizeWithSharp(req.file.path, req.file.filename, null, 768, config.IMG_COMPRESSED);
-        // generate thumbnail image
-        await utils.resizeWithSharp(req.file.path, req.file.filename, 150, 150, config.IMG_THUMBNAIL);
-        // move uploaded file to IMG_ORIG folder
-        await utils.moveFile(req.file.path, config.IMG_ORIG + req.file.filename);
+      if (req.file) {
+        newGame.cover = await controller.dealWithFile(req.file);
       }
+      await Game.create(newGame);
+      return res.status(201).end();
     } catch (e) {
       return res.status(500).json({ message: e.message });
     }
-  }
+  });
 
-  try {
-    const staleData = await Game.findByIdAndUpdate(update.id, update);
-
-    // if game had cover previosely, delete it from all folders
-    if (update.cover && staleData.cover) {
-      const files = [
-        config.IMG_ORIG + staleData.cover,
-        config.IMG_COMPRESSED + staleData.cover,
-        config.IMG_THUMBNAIL + staleData.cover,
-      ];
-
-      await utils.deleteMany(files);
-    }
-
-    return res.end();
-  } catch (e) {
-    return res.status(500).json({ message: e.message });
-  }
-});
-
-router.post('/new', upload.single('cover'), async (req, res) => {
-  const newGame = Object.assign({}, req.body);
-  newGame.slug = _.snakeCase(newGame.title);
-  newGame.year = JSON.parse(newGame.year);
-
-  if (req.file) {
+router.route('/:id')
+  .patch(upload, async (req, res) => {
     try {
-      newGame.cover = req.file.filename;
+      const update = controller.dealWithPayload(req.body.payload);
 
-      // if uploaded image has a .svg extension
-      if (path.extname(req.file.filename) === '.svg') {
-        // just copy it to COMPRESSED and THUMBNAIL folders
-        await utils.copyOneToMany(config.UPLOAD_TEMP, req.file.filename, [config.IMG_COMPRESSED, config.IMG_THUMBNAIL]);
-        // move uploaded file to IMG_ORIG folder
-        await utils.moveFile(req.file.path, config.IMG_ORIG + req.file.filename);
-      } else {
-        await Promise.all([
-          // generate compressed image
-          utils.resizeWithSharp(req.file.path, req.file.filename, null, 768, config.IMG_COMPRESSED),
-          // generate thumbnail image
-          utils.resizeWithSharp(req.file.path, req.file.filename, 150, 150, config.IMG_THUMBNAIL),
-        ]);
-        // move uploaded file to IMG_ORIG folder
-        await utils.moveFile(req.file.path, config.IMG_ORIG + req.file.filename);
+      if (req.file) {
+        update.cover = await controller.dealWithFile(req.file);
       }
+
+      const staleData = await Game.findByIdAndUpdate(req.params.id, update);
+
+      if (staleData.cover && staleData.cover !== update.cover) {
+        await controller.deleteAllImg(staleData.cover);
+      }
+
+      return res.end();
     } catch (e) {
       return res.status(500).json({ message: e.message });
     }
-  }
+  })
 
-  try {
-    await Game.create(newGame);
-    return res.end();
-  } catch (e) {
-    return res.status(500).json({ message: e.message });
-  }
-});
-
-router.post('/del', (req, res) => {
-  Game.findByIdAndRemove(req.body.id)
-    .then(() => {
-      if (req.body.cover) {
-        return utils.deleteMany([
-          config.IMG_ORIG + req.body.cover,
-          config.IMG_COMPRESSED + req.body.cover,
-          config.IMG_THUMBNAIL + req.body.cover,
-        ]);
+  .delete(async (req, res) => {
+    try {
+      const deletedGame = await Game.findByIdAndRemove(req.params.id);
+      if (deletedGame.cover) {
+        await controller.deleteAllImg(deletedGame.cover);
       }
-      return null;
-    })
-    .then(() => res.end())
-    .catch(e => res.status(500).json(e.message));
-
-  return res.end();
-});
+      return res.end();
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
+    }
+  });
 
 module.exports = router;

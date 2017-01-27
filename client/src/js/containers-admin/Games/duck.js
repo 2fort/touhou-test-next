@@ -14,6 +14,7 @@ const EDIT_GAME_MODAL_OPEN = `${componentName}/EDIT_GAME_MODAL_OPEN`;
 const EDIT_GAME_MODAL_CLOSE = `${componentName}/EDIT_GAME_MODAL_CLOSE`;
 
 const component = generateComponent(componentName);
+const route = '/api/admin/games';
 
 export function newGameModalOpen() {
   return { type: NEW_GAME_MODAL_OPEN };
@@ -33,27 +34,13 @@ export function editGameModalClose() {
 
 export function fetchAllGames() {
   return dispatch =>
-    dispatch(fetchAndSave('/api/admin/games', [gameEntity], component));
-}
-
-export function editGame(values) {
-  return dispatch =>
-    request('/api/admin/games/edit', {
-      method: 'post',
-      body: values,
-    })
-    .then((response) => {
-      dispatch(flashMessageActions.add(response.status, 'Game successfully updated.', 0));
-    })
-    .catch((err) => {
-      throw new SubmissionError({ _error: err.message });
-    });
+    dispatch(fetchAndSave(route, [gameEntity], component));
 }
 
 export function newGame(values) {
   return dispatch =>
-    request('/api/admin/games/new', {
-      method: 'post',
+    request(route, {
+      method: 'POST',
       body: values,
     })
     .then((response) => {
@@ -64,14 +51,24 @@ export function newGame(values) {
     });
 }
 
-export function deleteGame(game) {
+export function editGame(id, values) {
   return dispatch =>
-    request('/api/admin/games/del', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(game),
+    request(`${route}/${id}`, {
+      method: 'PATCH',
+      body: values,
+    })
+    .then((response) => {
+      dispatch(flashMessageActions.add(response.status, 'Game successfully updated.', 0));
+    })
+    .catch((err) => {
+      throw new SubmissionError({ _error: err.message });
+    });
+}
+
+export function deleteGame(id) {
+  return dispatch =>
+    request(`${route}/${id}`, {
+      method: 'DELETE',
     })
     .then((response) => {
       dispatch(flashMessageActions.add(response.status, 'Game successfully deleted', 0));

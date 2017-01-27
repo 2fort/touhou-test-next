@@ -16,21 +16,10 @@ const NavbarHeader = ({ router }) => (
         <Nav>
           <IndexLinkContainer to="/admin"><NavItem eventKey={1} href="#">Home</NavItem></IndexLinkContainer>
           <IndexLinkContainer to="/admin/games"><NavItem eventKey={2} href="#">Games</NavItem></IndexLinkContainer>
-          <NavDropdown
-            eventKey={3}
-            title="Characters"
-            id="basic-nav-dropdown"
-            active={router.isActive('/admin/characters')}
-          >
-            <LinkContainer onlyActiveOnIndex to="/admin/characters">
-              <MenuItem eventKey={3.1}>List</MenuItem>
-            </LinkContainer>
-            <MenuItem divider />
-            <LinkContainer to="/admin/characters/new"><MenuItem eventKey={3.2}>Add new</MenuItem></LinkContainer>
-          </NavDropdown>
+          <IndexLinkContainer to="/admin/characters"><NavItem eventKey={3} href="#">Characters</NavItem></IndexLinkContainer>
         </Nav>
         <Nav pullRight>
-          <NavItem eventKey={4} href="/" onClick={() => { window.location = '/'; }}>Back to site</NavItem>
+          <NavItem eventKey={4} href="/" onClick={() => { window.location = '/'; }}>Back to app</NavItem>
         </Nav>
       </Navbar.Collapse>
     </div>

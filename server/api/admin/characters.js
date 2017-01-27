@@ -3,47 +3,27 @@ const _ = require('lodash');
 const Character = require('../../models/character');
 
 router.get('/', (req, res) => {
-  // let offset = 0;
-
-  /* if (req.query.start) {
-    offset = Number(req.query.start);
-  }*/
-
-  /* Character.find().skip(offset).limit(10).populate('_game', 'title').exec()
-    .then((characters) => {
-      return res.json(characters);
-    })
-    .catch((err) => {
-      return res.json(err);
-    });*/
-
   Character.find().populate('_game', 'title').exec()
     .then(characters => res.json(characters))
-    .catch((err) => {
-      return res.status(404).json(err);
-    });
+    .catch(err => res.status(404).json({ message: err.message }));
 });
 
-router.route('/edit/:id')
-  .get((req, res) => {
-    const id = req.params.id;
+router.post('/new', (req, res) => {
+  return res.status(201).end();
+});
 
-    if (!id) {
-      return res.status(404).json({ message: "Error: bad id"});
-    }
+router.post('/edit', (req, res) => {
+  /* Character.findByIdAndUpdate(req.params.id, req.body).exec()
+    .then(() => res.end())
+    .catch(err => res.status(500).json({ message: err.message }));*/
+  return res.end();
+});
 
-    Character.findById(id).exec()
-      .then((character) => {
-        return res.json(character);
-      })
-      .catch((err) => {
-        return res.status(404).json({ message: "Not found"});
-      });
-  })
-  .post((req, res) => {
-    Character.findByIdAndUpdate(req.params.id, req.body).exec()
-      .then()
-      .catch();
-  });
+router.post('/del', (req, res) => {
+  /* Character.findByIdAndUpdate(req.params.id, req.body).exec()
+    .then(() => res.end())
+    .catch(err => res.status(500).json({ message: err.message }));*/
+  return res.end();
+});
 
 module.exports = router;
