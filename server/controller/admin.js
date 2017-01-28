@@ -1,18 +1,6 @@
 const path = require('path');
-const _ = require('lodash');
 const utils = require('../lib/utils');
 const config = require('../config');
-
-this.dealWithPayload = function dealWithPayload(payload) {
-  // parse payload
-  const data = JSON.parse(payload);
-  // generate slug from title
-  data.slug = _.snakeCase(data.title);
-  // if year exist, it will be like '1998' or 'null'
-  data.year = data.year && JSON.parse(data.year);
-
-  return data;
-};
 
 this.dealWithFile = async function dealWithFile(file) {
   // if uploaded image has a .svg extension

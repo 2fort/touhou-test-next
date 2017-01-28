@@ -10,6 +10,7 @@ const CONTAINER_DESTROY = 'CONTAINER_DESTROY';
 const FETCH_BEGIN = 'FETCH_BEGIN';
 const FETCH_SUCCESS = 'FETCH_SUCCESS';
 const FETCH_FAIL = 'FETCH_FAIL';
+const ADD_VISIBLE = 'ADD_VISIBLE';
 
 export const domainHoc = hoc;
 
@@ -31,8 +32,12 @@ export function generateComponent(component) {
       { type: FETCH_BEGIN, component }
     ),
 
-    fetchSuccess: visible => (
-      { type: FETCH_SUCCESS, component, visible, fetchedAt: Date.now() }
+    addVisible: visible => (
+      { type: ADD_VISIBLE, component, visible, fetchedAt: new Date() }
+    ),
+
+    fetchSuccess: () => (
+      { type: FETCH_SUCCESS, component }
     ),
 
     fetchFail: () => (
@@ -81,13 +86,13 @@ export default function domainSlice(componentName, reducer = defaultDomainReduce
         return Immutable.merge(state, { pending: true });
       }
 
-      case FETCH_SUCCESS:
+      case ADD_VISIBLE:
         return Immutable.merge(state, {
-          pending: false,
           visible: action.visible,
           fetchedAt: action.fetchedAt,
         });
 
+      case FETCH_SUCCESS:
       case FETCH_FAIL:
         return Immutable.merge(state, {
           pending: false,

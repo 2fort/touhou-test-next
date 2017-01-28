@@ -1,4 +1,4 @@
-/* @import '~bootstrap/scss/bootstrap-flex'; */
+// @import '~bootstrap/scss/bootstrap-flex';
 // @import '~bootstrap/dist/css/bootstrap-flex.min';
 // @import '~font-awesome/scss/font-awesome';
 
@@ -20,6 +20,10 @@ td {
     max-width: 200px;
     // overflow-wrap: break-word;
     word-break: break-all;
+  }
+
+  &.tooshort {
+    min-width: 115px;
   }
 }
 

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const utils = require('./utils');
 
 const schema = new mongoose.Schema({
   prefix: {
@@ -26,19 +27,28 @@ const schema = new mongoose.Schema({
 });*/
 
 schema.set('toJSON', {
-  transform: function (doc, ret, options) {
-    delete ret._id;
-    delete ret.__v;
-  },
+  transform: utils.noUnderscoreDangle,
   virtuals: true,
 });
 
 schema.set('toObject', {
-  transform: function (doc, ret, options) {
-    delete ret._id;
-    delete ret.__v;
-  },
+  transform: utils.noUnderscoreDangle,
   virtuals: true,
+});
+
+schema.pre('save', function saveHook(next) {
+  this.slug = utils.makeSlug(this.title);
+  // if year exist, it will be like '1998' or 'null'
+  this.year = this.year && JSON.parse(this.year);
+  return next();
+});
+
+schema.pre('findOneAndUpdate', function updateHook(next) {
+  this.getUpdate().slug = utils.makeSlug(this.getUpdate().title);
+
+  const year = this.getUpdate().year;
+  this.getUpdate().year = year && JSON.parse(year);
+  return next();
 });
 
 module.exports = mongoose.model('Game', schema);

@@ -1,9 +1,10 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 import { domainHoc } from '../../ducks/domain';
 import * as ownActions from './duck';
+import { prepareFormData } from '../_sharedComponents/utils';
 import { IMG_THUMBNAIL } from '../../config';
 
 import CharFormModal from './components/CharFormModal';
@@ -14,46 +15,34 @@ class CharactersTable extends Component {
   }
 
   newCharBtnHandler = () => {
-    this.props.actions.newCharModalOpen();
+    this.props.actions.fetchAllGames()
+      .then(() => { this.props.actions.newCharModalOpen(); });
   }
 
   editCharBtnHandler = char => () => {
-    this.props.actions.editCharModalOpen(char);
+    this.props.actions.fetchAllGames()
+      .then(() => { this.props.actions.editCharModalOpen(char); });
   }
 
-  deleteCharBtnHandler = char => () => {
-    this.props.actions.deleteCharacter(char)
+  deleteCharBtnHandler = id => () => {
+    this.props.actions.deleteCharacter(id)
       .then(() => this.props.actions.fetchAllCharacters());
   }
 
-  newCharModalSubmit = (values) => {
-    const { actions } = this.props;
-    const newValues = new FormData();
+  newCharModalSubmit = ({ fileImage, ...values }) => {
+    const formDataValues = prepareFormData(values, fileImage, 'image');
 
-    newValues.append('payload', JSON.stringify(values));
-
-    if (values.image && values.image[0]) {
-      newValues.append('image', values.image[0], values.image[0].name);
-    }
-
-    return actions.newGame(newValues)
-      .then(() => actions.fetchAllGames())
-      .then(() => actions.newGameModalClose());
+    return this.props.actions.newCharacter(formDataValues)
+      .then(() => this.props.actions.fetchAllCharacters())
+      .then(() => this.props.actions.newCharModalClose());
   }
 
-  editCharModalSubmit = (values) => {
-    const { actions } = this.props;
-    const newValues = new FormData();
+  editCharModalSubmit = ({ fileImage, ...values }) => {
+    const formDataValues = prepareFormData(values, fileImage, 'image');
 
-    newValues.append('payload', JSON.stringify(values));
-
-    if (values.cover && typeof values.cover === 'object' && values.cover[0]) {
-      newValues.append('cover', values.cover[0], values.cover[0].name);
-    }
-
-    return actions.editGame(newValues)
-      .then(() => actions.fetchAllGames())
-      .then(() => actions.editGameModalClose());
+    return this.props.actions.editCharacter(values.id, formDataValues)
+      .then(() => this.props.actions.fetchAllCharacters())
+      .then(() => this.props.actions.editCharModalClose());
   }
 
   render() {
@@ -61,30 +50,30 @@ class CharactersTable extends Component {
 
     return (
       <div>
+        <button type="button" className="btn btn-primary" onClick={this.newCharBtnHandler}>
+          Add new character
+        </button>
+
         <table className="table table-striped">
           <thead>
             <tr>
-              <th>name / slug</th>
-              <th>image</th>
-              <th>game</th>
-              <th>wiki</th>
-              <th>art author</th>
-              <th>art url</th>
-              <th>actions</th>
+              <th>#</th>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Game</th>
+              <th>Actions</th>
             </tr>
             {charsArray[0] && charsArray.map((char, i) => (
               <tr key={char.name}>
-                <td>{char.name}<br /><h6>{char.slug}</h6></td>
+                <td><strong>{i + 1}</strong></td>
                 <td className="table-image">
                   {char.image && <img alt={char.name} src={IMG_THUMBNAIL + char.image} />}
                 </td>
+                <td>{char.name}</td>
                 <td>
                   {char._game && gamesList[char._game].title}
                 </td>
-                <td className="toowide">{char.wiki}</td>
-                <td>{char.art.author}</td>
-                <td className="toowide">{char.art.url}</td>
-                <td>
+                <td className="tooshort">
                   <button type="button" className="btn btn-default" onClick={this.editCharBtnHandler(char)}>
                     <i className="fa fa-pencil fa-lg" aria-hidden="true" />
                   </button>
@@ -100,20 +89,22 @@ class CharactersTable extends Component {
 
         {modals.newCharModalVisible &&
           <CharFormModal
-            onSubmit={this.newGameModalSubmit}
+            onSubmit={this.newCharModalSubmit}
             hide={actions.newCharModalClose}
             title="New Character"
             buttonName="Create"
+            gamesList={gamesList}
           />
         }
 
         {modals.editCharModalVisible &&
           <CharFormModal
             initialValues={modals.editFormInitValues}
-            onSubmit={this.editGameModalSubmit}
+            onSubmit={this.editCharModalSubmit}
             hide={actions.editCharModalClose}
             title="Edit Character"
             buttonName="Edit"
+            gamesList={gamesList}
           />
         }
       </div>
@@ -123,7 +114,7 @@ class CharactersTable extends Component {
 
 CharactersTable.defaultProps = {
   charsArray: [],
-  gamesList: [],
+  gamesList: {},
   modals: {},
 };
 
@@ -141,6 +132,7 @@ CharactersTable.propTypes = {
     editCharModalOpen: PropTypes.func.isRequired,
     editCharModalClose: PropTypes.func.isRequired,
     fetchAllCharacters: PropTypes.func.isRequired,
+    fetchAllGames: PropTypes.func.isRequired,
     editCharacter: PropTypes.func.isRequired,
     newCharacter: PropTypes.func.isRequired,
     deleteCharacter: PropTypes.func.isRequired,
@@ -148,12 +140,19 @@ CharactersTable.propTypes = {
 };
 
 function mapStateToProps({ entities, domain: { charactersTable } }) {
-  if (!charactersTable || charactersTable.pending) return { ready: false };
+  if (!charactersTable) return { };
 
   const charsArray = charactersTable.visible.map(char => entities.characters[char]);
-  // const charsArray = charactersArray.map(char => ({ ...char, gameTitle: entities.games[char._game].title }));
 
-  return { ready: true, charsArray, gamesList: entities.games };
+  return {
+    charsArray,
+    gamesList: entities.games,
+    modals: {
+      newCharModalVisible: charactersTable.newCharModalVisible,
+      editCharModalVisible: charactersTable.editCharModalVisible,
+      editFormInitValues: charactersTable.editFormInitValues,
+    },
+  };
 }
 
 function mapDispatchToProps(dispatch) {

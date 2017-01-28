@@ -6,20 +6,23 @@ const multer = require('../../controller/multer');
 const upload = multer.single('cover');
 
 router.route('/')
-  .get((req, res) => {
-    Game.find().exec()
-      .then(games => res.json(games))
-      // .then(games => setTimeout(() => res.json(games), 5000))
-      .catch(e => res.status(404).json({ message: e.message }));
+  .get(async (req, res) => {
+    try {
+      const games = await Game.find().exec();
+      return res.json(games);
+    } catch (e) {
+      return res.status(404).json({ message: e.message });
+    }
   })
 
   .post(upload, async (req, res) => {
-    const newGame = controller.dealWithPayload(req.body.payload);
-
     try {
+      const newGame = JSON.parse(req.body.payload);
+
       if (req.file) {
         newGame.cover = await controller.dealWithFile(req.file);
       }
+
       await Game.create(newGame);
       return res.status(201).json({ message: 'Game successfully created.' });
     } catch (e) {
@@ -30,7 +33,7 @@ router.route('/')
 router.route('/:id')
   .patch(upload, async (req, res) => {
     try {
-      const update = controller.dealWithPayload(req.body.payload);
+      const update = JSON.parse(req.body.payload);
 
       if (req.file) {
         update.cover = await controller.dealWithFile(req.file);

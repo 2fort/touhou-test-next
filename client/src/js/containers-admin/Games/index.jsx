@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import { domainHoc } from '../../ducks/domain';
 import * as ownActions from './duck';
+import { prepareFormData } from '../_sharedComponents/utils';
 import { IMG_THUMBNAIL } from '../../config';
 
 import GameFormModal from './components/GameFormModal';
@@ -26,45 +27,20 @@ class GamesTable extends Component {
       .then(() => this.props.actions.fetchAllGames());
   }
 
-  prepareFormData = (values) => {
-    const newValues = Object.assign({}, values);
-    const formData = new FormData();
+  newGameModalSubmit = ({ fileCover, ...values }) => {
+    const formDataValues = prepareFormData(values, fileCover, 'cover');
 
-    if (newValues.fileCover) {
-      newValues.cover = '';
-    }
-
-    // we have a file!
-    if (newValues.fileCover && newValues.fileCover[0]) {
-      formData.append('cover', newValues.fileCover[0], newValues.fileCover[0].name);
-    }
-
-    // delete all unnecessary fields
-    delete newValues.id;
-    delete newValues.slug;
-    delete newValues.fileCover;
-
-    formData.append('payload', JSON.stringify(newValues));
-
-    return formData;
+    return this.props.actions.newGame(formDataValues)
+      .then(() => this.props.actions.fetchAllGames())
+      .then(() => this.props.actions.newGameModalClose());
   }
 
-  newGameModalSubmit = (values) => {
-    const { actions } = this.props;
-    const newValues = this.prepareFormData(values);
+  editGameModalSubmit = ({ fileCover, ...values }) => {
+    const formDataValues = prepareFormData(values, fileCover, 'cover');
 
-    return actions.newGame(newValues)
-      .then(() => actions.fetchAllGames())
-      .then(() => actions.newGameModalClose());
-  }
-
-  editGameModalSubmit = (values) => {
-    const { actions } = this.props;
-    const newValues = this.prepareFormData(values);
-
-    return actions.editGame(values.id, newValues)
-      .then(() => actions.fetchAllGames())
-      .then(() => actions.editGameModalClose());
+    return this.props.actions.editGame(values.id, formDataValues)
+      .then(() => this.props.actions.fetchAllGames())
+      .then(() => this.props.actions.editGameModalClose());
   }
 
   render() {
@@ -81,19 +57,19 @@ class GamesTable extends Component {
             <tr>
               <th>#</th>
               <th>Cover</th>
+              <th>Title</th>
               <th>Prefix</th>
-              <th>Title / Slug</th>
               <th>Year</th>
               <th>Actions</th>
             </tr>
             {gamesArray[0] && gamesArray.map((game, i) => (
               <tr key={game.title}>
-                <td><strong>{i}</strong></td>
+                <td><strong>{i + 1}</strong></td>
                 <td className="table-image">
                   {game.cover && <img alt={game.title} className="img-thumbnail" src={IMG_THUMBNAIL + game.cover} />}
                 </td>
+                <td>{game.title}</td>
                 <td>{game.prefix}</td>
-                <td>{game.title}<br /><h6>{game.slug}</h6></td>
                 <td>{game.year}</td>
                 <td>
                   <button type="button" className="btn btn-default" onClick={this.editGameBtnHandler(game)}>

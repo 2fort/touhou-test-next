@@ -1,11 +1,8 @@
-import { SubmissionError } from 'redux-form';
 import Immutable from 'seamless-immutable';
 import { gameEntity, charactersEntity } from '../../schemas/adminSchemas';
-import request from '../../api';
 
 import { generateComponent } from '../../ducks/domain';
-import * as flashMessageActions from '../../ducks/flashMessage';
-import fetchAndSave from '../../actions/fetchAndSave';
+import fetchAndSave, { formSubmit } from '../../actions/fetchAndSave';
 
 const componentName = 'CharactersTable';
 const NEW_CHAR_MODAL_OPEN = `${componentName}/NEW_CHAR_MODAL_OPEN`;
@@ -14,6 +11,23 @@ const EDIT_CHAR_MODAL_OPEN = `${componentName}/EDIT_CHAR_MODAL_OPEN`;
 const EDIT_CHAR_MODAL_CLOSE = `${componentName}/EDIT_CHAR_MODAL_CLOSE`;
 
 const component = generateComponent(componentName);
+const route = '/api/admin/characters';
+
+export function newCharModalOpen() {
+  return { type: NEW_CHAR_MODAL_OPEN };
+}
+
+export function newCharModalClose() {
+  return { type: NEW_CHAR_MODAL_CLOSE };
+}
+
+export function editCharModalOpen(initValues) {
+  return { type: EDIT_CHAR_MODAL_OPEN, initValues };
+}
+
+export function editCharModalClose() {
+  return { type: EDIT_CHAR_MODAL_CLOSE };
+}
 
 export function fetchAllCharacters() {
   return dispatch =>
@@ -22,52 +36,22 @@ export function fetchAllCharacters() {
 
 export function fetchAllGames() {
   return dispatch =>
-    dispatch(fetchAndSave('/api/admin/games', [gameEntity], component));
+    dispatch(fetchAndSave('/api/admin/games', [gameEntity], component, false));
 }
 
 export function newCharacter(values) {
   return dispatch =>
-    request('/api/admin/characters/new', {
-      method: 'post',
-      body: values,
-    })
-    .then((response) => {
-      dispatch(flashMessageActions.add(response.status, 'Character successfully created.', 0));
-    })
-    .catch((err) => {
-      throw new SubmissionError({ _error: err.message });
-    });
+    dispatch(formSubmit(route, { method: 'POST', body: values }));
 }
 
-export function editCharacter(values) {
+export function editCharacter(id, values) {
   return dispatch =>
-    request('/api/admin/characters/edit', {
-      method: 'post',
-      body: values,
-    })
-    .then((response) => {
-      dispatch(flashMessageActions.add(response.status, 'Character successfully updated.', 0));
-    })
-    .catch((err) => {
-      throw new SubmissionError({ _error: err.message });
-    });
+    dispatch(formSubmit(`${route}/${id}`, { method: 'PATCH', body: values }));
 }
 
-export function deleteCharacter(game) {
+export function deleteCharacter(id) {
   return dispatch =>
-    request('/api/admin/characters/del', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(game),
-    })
-    .then((response) => {
-      dispatch(flashMessageActions.add(response.status, 'Game successfully deleted', 0));
-    })
-    .catch((err) => {
-      dispatch(flashMessageActions.add(err.status, err.message, 3));
-    });
+    dispatch(formSubmit(`${route}/${id}`, { method: 'DELETE' }));
 }
 
 const defaultState = Immutable({

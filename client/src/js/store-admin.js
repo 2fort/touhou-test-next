@@ -8,7 +8,7 @@ import charactersTable from './containers-admin/Characters/duck';
 
 const domain = combineReducers({
   gamesTable: domainSlice('GamesTable', gamesTable.reducer, gamesTable.defaultState),
-  charactersTable: domainSlice('charactersTable', charactersTable.reducer, charactersTable.defaultState),
+  charactersTable: domainSlice('CharactersTable', charactersTable.reducer, charactersTable.defaultState),
 });
 
 const rootReducer = combineReducers({

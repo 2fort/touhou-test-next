@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, propTypes } from 'redux-form';
 
 import { textField, imageField } from '../../_sharedComponents/formFields';
-import { required, number } from '../../_sharedComponents/validationFields';
+import { required } from '../../_sharedComponents/validationFields';
 
-const CharFormModal = ({ title, buttonName, gamesData, hide, handleSubmit, submitting, initialValues, error }) => {
-  const gameOptions = gamesData.map(game => (
+const CharFormModal = ({ title, buttonName, gamesList, hide, handleSubmit, submitting, initialValues, error, reset }) => {
+  const gameOptions = Object.values(gamesList).map(game => (
     <option key={game.title} value={game.id}>{game.title}</option>
   ));
   return (
@@ -21,7 +21,7 @@ const CharFormModal = ({ title, buttonName, gamesData, hide, handleSubmit, submi
             <Field name="id" type="hidden" component="input" />
             <Field name="name" type="text" component={textField} label="Name" validate={[required]} />
             <Field
-              name="image"
+              name="fileImage"
               currentImage={initialValues.image}
               type="file"
               component={imageField}
@@ -48,10 +48,11 @@ const CharFormModal = ({ title, buttonName, gamesData, hide, handleSubmit, submi
           </Modal.Body>
 
           <Modal.Footer>
-            <Button onClick={hide}>Cancel</Button>
             <Button type="submit" disabled={submitting} bsStyle="primary">
               {submitting && <i className="fa fa-spinner fa-spin" />} {buttonName}
             </Button>
+            {initialValues.name && <Button onClick={reset}>Reset</Button>}
+            <Button onClick={hide}>Cancel</Button>
           </Modal.Footer>
         </form>
       </Modal>
@@ -62,26 +63,26 @@ const CharFormModal = ({ title, buttonName, gamesData, hide, handleSubmit, submi
 CharFormModal.defaultProps = {
   initialValues: {},
   error: '',
+  gamesList: {},
 };
 
 CharFormModal.propTypes = {
   title: PropTypes.string.isRequired,
   buttonName: PropTypes.string.isRequired,
+  gamesList: PropTypes.objectOf(PropTypes.object),
   hide: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-  submitting: PropTypes.bool.isRequired,
   initialValues: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
+    id: PropTypes.string,
+    name: PropTypes.string,
+    image: PropTypes.string,
     _game: PropTypes.string,
     art: PropTypes.shape({
       author: PropTypes.string,
       url: PropTypes.string,
     }),
-    wiki: PropTypes.number,
+    wiki: PropTypes.string,
   }),
-  error: PropTypes.string,
+  ...propTypes,
 };
 
 export default reduxForm({

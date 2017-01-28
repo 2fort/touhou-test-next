@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const utils = require('./utils');
+
 const Schema = mongoose.Schema;
 
 const schema = new mongoose.Schema({
@@ -9,20 +11,26 @@ const schema = new mongoose.Schema({
   },
   image: {
     type: String,
-    required: true,
+    default: '',
   },
   art: {
     author: {
       type: String,
-      required: true,
+      default: '',
     },
     url: {
       type: String,
-      required: true,
+      default: '',
     },
   },
-  wiki: String,
-  slug: String,
+  wiki: {
+    type: String,
+    default: '',
+  },
+  slug: {
+    type: String,
+    default: '',
+  },
   _game: {
     type: Schema.Types.ObjectId,
     ref: 'Game',
@@ -30,19 +38,23 @@ const schema = new mongoose.Schema({
 });
 
 schema.set('toJSON', {
-  transform: function (doc, ret, options) {
-    delete ret._id;
-    delete ret.__v;
-  },
+  transform: utils.noUnderscoreDangle,
   virtuals: true,
 });
 
 schema.set('toObject', {
-  transform: function (doc, ret, options) {
-    delete ret._id;
-    delete ret.__v;
-  },
-  virtuals: true ,
+  transform: utils.noUnderscoreDangle,
+  virtuals: true,
+});
+
+schema.pre('save', function saveHook(next) {
+  this.slug = utils.makeSlug(this.name);
+  return next();
+});
+
+schema.pre('findOneAndUpdate', function updateHook(next) {
+  this.getUpdate().slug = utils.makeSlug(this.getUpdate().name);
+  return next();
 });
 
 module.exports = mongoose.model('Character', schema);

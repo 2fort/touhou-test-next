@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { IMG_THUMBNAIL } from '../../config';
 
 export const textField = ({ input, label, type, meta: { touched, error }, disabled }) => (
   <div className="form-group">
@@ -26,29 +27,51 @@ textField.propTypes = {
 };
 
 export class imageField extends Component {
+  constructor(props) {
+    super(props);
+    this.initialImage = props.currentImage ? IMG_THUMBNAIL + props.currentImage : '';
+    this.state = { imgPreview: this.initialImage };
+  }
+
+  componentWillReceiveProps = (newProps) => {
+    if (!this.props.meta.pristine && newProps.meta.pristine) {
+      this.revokeImgPreview();
+      this.setState({ imgPreview: this.initialImage });
+    }
+  }
+
+  revokeImgPreview = () => {
+    const { imgPreview } = this.state;
+    if (imgPreview && imgPreview.substring(0, 4) === 'blob') {
+      window.URL.revokeObjectURL(this.state.imgPreview);
+    }
+  }
+
   addImgBtnHandler = () => {
     this.fileInput.click();
   }
 
   removeImgBtnHandler = () => {
-    this.props.removeImgPreview();
+    this.revokeImgPreview();
+    this.setState({ imgPreview: '' });
     this.props.input.onChange({});
   }
 
   fileSelectHandler = (e) => {
+    this.revokeImgPreview();
     const files = e.target.files;
     if (files[0]) {
-      this.props.input.onChange(e.target.files);
-      this.props.addImgPreview(e.target.files[0]);
+      this.props.input.onChange(files);
+      this.setState({ imgPreview: window.URL.createObjectURL(files[0]) });
     }
   }
 
   render() {
-    const { input, label, type, meta: { touched, error }, currentImage } = this.props;
+    const { input, label, type, meta: { touched, error } } = this.props;
 
     const imageBlock = (
       <div>
-        <img alt="cover" src={currentImage} />
+        <img alt="preview" src={this.state.imgPreview} />
         <br />
         <button type="button" className="btn btn-primary" onClick={this.addImgBtnHandler}>Replace</button>
         {' '}
@@ -69,7 +92,7 @@ export class imageField extends Component {
             ref={(file) => { this.fileInput = file; }}
           />
 
-          {this.props.currentImage
+          {this.state.imgPreview
             ? imageBlock
             : <button type="button" className="btn btn-primary" onClick={this.addImgBtnHandler}>Add</button>
           }
@@ -92,8 +115,7 @@ imageField.propTypes = {
   meta: PropTypes.shape({
     touched: PropTypes.bool,
     error: PropTypes.string,
+    pristine: PropTypes.bool,
   }).isRequired,
   currentImage: PropTypes.string,
-  addImgPreview: PropTypes.func.isRequired,
-  removeImgPreview: PropTypes.func.isRequired,
 };
