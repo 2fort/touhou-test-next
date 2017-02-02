@@ -105,9 +105,15 @@ class GamesTable extends Component {
               <th><Sort field="year">Year</Sort></th>
               <th>Actions</th>
             </tr>
+          </thead>
+          <tbody>
             {gamesArray[0] && gamesArray.map((game, i) => (
               <tr key={game.id}>
-                <td><Link to={`/characters/${game.slug}`} title={game.id}>{`...${game.id.substr(-7, 7)}`}</Link></td>
+                <td>
+                  <Link target="_blank" to={`/characters/${game.slug}`} title={game.id}>
+                    {`...${game.id.substr(-7, 7)}`}
+                  </Link>
+                </td>
                 <td>
                   <button type="button" className="btn btn-link">
                     <i className="fa fa-sort-asc" aria-hidden="true" />
@@ -118,7 +124,7 @@ class GamesTable extends Component {
                   </button>
                 </td>
                 <td className="table-image">
-                  {game.cover && <img alt={game.title} className="img-thumbnail" src={IMG_THUMBNAIL + game.cover} />}
+                  {game.cover && <img alt={game.title} src={IMG_THUMBNAIL + game.cover} />}
                 </td>
                 <td>{game.title}</td>
                 <td>{game.prefix}</td>
@@ -134,7 +140,7 @@ class GamesTable extends Component {
                 </td>
               </tr>
             ))}
-          </thead>
+          </tbody>
         </table>
 
         <Pagination page={query.page} limit={query.limit} total={total} setPage={this.setQuery(component.setPage)} />

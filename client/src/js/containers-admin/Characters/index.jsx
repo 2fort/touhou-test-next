@@ -63,6 +63,8 @@ class CharactersTable extends Component {
               <th>Game</th>
               <th>Actions</th>
             </tr>
+          </thead>
+          <tbody>
             {charsArray[0] && charsArray.map((char, i) => (
               <tr key={char.name}>
                 <td><strong>{i + 1}</strong></td>
@@ -84,7 +86,7 @@ class CharactersTable extends Component {
                 </td>
               </tr>
             ))}
-          </thead>
+          </tbody>
         </table>
 
         {modals.newCharModalVisible &&
