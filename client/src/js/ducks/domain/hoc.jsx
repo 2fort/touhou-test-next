@@ -24,7 +24,7 @@ export default childOptions => (ComposedComponent) => {
     }
 
     render() {
-      return <ComposedComponent {...this.props} />;
+      return <ComposedComponent component={this.props.component} {...this.props} />;
     }
   }
 

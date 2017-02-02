@@ -13,14 +13,34 @@ import Pagination from '../Base/components/Pagination';
 
 class GamesTable extends Component {
   componentWillMount() {
+    const { sort, filter, page, limit } = this.props.location.query;
+
+    const query = Object.assign(
+      {}, sort && { sort }, filter && { filter }, page && { page: Number(page) }, limit && { limit: Number(limit) },
+    );
+
+    if (Object.keys(query).length > 0) {
+      this.props.component.setQuery(query);
+      this.props.actions.updateQueryString();
+    } else {
+      this.props.actions.updateQueryString();
+    }
+
     this.props.actions.fetchGames();
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.location.search !== nextProps.location.search) {
-      this.props.actions.fetchGames(nextProps.location.search);
+  componentWillReceiveProps(newProps) {
+    if (newProps.location.search === '') {
+      // this.props.component.setQuery({ sort: '_id', filter: {}, page: 1, limit: 10 });
+      this.props.actions.updateQueryString();
     }
   }
+
+  setQuery = queryFunc => (...args) => {
+    queryFunc(...args);
+    this.props.actions.updateQueryString();
+    this.props.actions.fetchGames();
+  };
 
   newGameBtnHandler = () => {
     this.props.actions.newGameModalOpen();
@@ -52,7 +72,9 @@ class GamesTable extends Component {
   }
 
   render() {
-    const { gamesArray, actions, modals, total } = this.props;
+    const { gamesArray, actions, modals, total, query, component } = this.props;
+
+    const Sort = props => <SortButton reduxField={query.sort} setSort={this.setQuery(component.setSort)} {...props} />;
 
     return (
       <div>
@@ -61,17 +83,17 @@ class GamesTable extends Component {
         </button>
         <br />
 
-        <Pagination total={total} />
+        <Pagination page={query.page} limit={query.limit} total={total} setPage={this.setQuery(component.setPage)} />
 
         <table className="table table-striped games-table">
           <thead>
             <tr>
-              <th><SortButton field="_id" def>ID</SortButton></th>
+              <th><Sort field="_id" def>ID</Sort></th>
               <th>Order</th>
               <th>Cover</th>
-              <th><SortButton field="title">Title</SortButton></th>
-              <th><SortButton field="prefix">Prefix</SortButton></th>
-              <th><SortButton field="year">Year</SortButton></th>
+              <th><Sort field="title">Title</Sort></th>
+              <th><Sort field="prefix">Prefix</Sort></th>
+              <th><Sort field="year">Year</Sort></th>
               <th>Actions</th>
             </tr>
             {gamesArray[0] && gamesArray.map((game, i) => (
@@ -106,7 +128,7 @@ class GamesTable extends Component {
           </thead>
         </table>
 
-        <Pagination total={total} />
+        <Pagination page={query.page} limit={query.limit} total={total} setPage={this.setQuery(component.setPage)} />
 
         {modals.newGameModalVisible &&
           <GameFormModal
@@ -135,6 +157,7 @@ GamesTable.defaultProps = {
   gamesArray: [],
   modals: {},
   total: 0,
+  query: {},
 };
 
 GamesTable.propTypes = {
@@ -154,20 +177,25 @@ GamesTable.propTypes = {
     editGame: PropTypes.func.isRequired,
     newGame: PropTypes.func.isRequired,
     deleteGame: PropTypes.func.isRequired,
+    updateQueryString: PropTypes.func.isRequired,
   }).isRequired,
+  component: PropTypes.shape({
+    setSort: PropTypes.func.isRequired,
+    setQuery: PropTypes.func.isRequired,
+  }).isRequired,
+  query: PropTypes.shape({
+    page: PropTypes.number,
+    limit: PropTypes.number,
+    sort: PropTypes.string,
+    filter: PropTypes.any,
+  }),
   location: PropTypes.shape({
-    query: PropTypes.shape({
-      page: PropTypes.string,
-      limit: PropTypes.string,
-      sort: PropTypes.string,
-      filter: PropTypes.any,
-    }),
-    search: PropTypes.string,
+    query: PropTypes.object,
   }).isRequired,
 };
 
 function mapStateToProps({ domain: { gamesTable }, entities: { games } }) {
-  if (!gamesTable) return {};
+  if (!gamesTable) return { };
 
   const gamesArray = gamesTable.visible.map(id => games[id]);
 
@@ -179,22 +207,12 @@ function mapStateToProps({ domain: { gamesTable }, entities: { games } }) {
       editFormInitValues: gamesTable.editFormInitValues,
     },
     total: gamesTable.total,
+    query: gamesTable.query,
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const { fetchGames, ...duckActions } = ownActions;
-  const actions = bindActionCreators(duckActions, dispatch);
-
-  const add = {
-    fetchGames: (search = ownProps.location.search) => {
-      dispatch(fetchGames(search));
-    },
-  };
-
-  Object.assign(actions, add);
-
-  return { actions };
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(ownActions, dispatch) };
 }
 
 export default

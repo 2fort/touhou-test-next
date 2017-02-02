@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Immutable from 'seamless-immutable';
 import hoc from './hoc';
 
@@ -11,6 +12,11 @@ const FETCH_BEGIN = 'FETCH_BEGIN';
 const FETCH_SUCCESS = 'FETCH_SUCCESS';
 const FETCH_FAIL = 'FETCH_FAIL';
 const ADD_VISIBLE = 'ADD_VISIBLE';
+const SET_SORT = 'SET_SORT';
+const SET_FILTER = 'SET_FILTER';
+const SET_PAGE = 'SET_PAGE';
+const SET_LIMIT = 'SET_LIMIT';
+const SET_QUERY = 'SET_QUERY';
 
 export const domainHoc = hoc;
 
@@ -43,6 +49,29 @@ export function generateComponent(component) {
     fetchFail: () => (
       { type: FETCH_FAIL, component }
     ),
+
+    setSort: field => (
+      { type: SET_SORT, component, field }
+    ),
+
+    setFilter: filter => (
+      { type: SET_FILTER, component, filter }
+    ),
+
+    setPage: page => (
+      { type: SET_PAGE, component, page }
+    ),
+
+    setLimit: limit => (
+      { type: SET_LIMIT, component, limit }
+    ),
+
+    setQuery: query => (
+      { type: SET_QUERY, component, query }
+    ),
+
+    getState: () => (dispatch, getState) =>
+      getState().domain[_.lowerFirst(component)],
   };
 }
 
@@ -59,10 +88,16 @@ const defaultDomainState = Immutable({
   visible: [],
   fetchedAt: 0,
   total: 0,
+  query: {
+    sort: '',
+    filter: {},
+    page: 1,
+    limit: 10,
+  },
 });
 
 export default function domainSlice(componentName, reducer = defaultDomainReducer, defaultState) {
-  const initState = (defaultState) ? Immutable.merge(defaultDomainState, defaultState) : defaultDomainState;
+  const initState = (defaultState) ? Immutable.merge(defaultDomainState, defaultState, { deep: true }) : defaultDomainState;
 
   return (state, action) => {
     if (!action.component || componentName !== action.component) {
@@ -93,6 +128,21 @@ export default function domainSlice(componentName, reducer = defaultDomainReduce
       case FETCH_SUCCESS:
       case FETCH_FAIL:
         return Immutable.merge(state, { pending: false });
+
+      case SET_SORT:
+        return Immutable.merge(state, { query: { sort: action.field } }, { deep: true });
+
+      case SET_FILTER:
+        return Immutable.merge(state, { query: { filter: action.filter } }, { deep: true });
+
+      case SET_PAGE:
+        return Immutable.merge(state, { query: { page: action.page } }, { deep: true });
+
+      case SET_LIMIT:
+        return Immutable.merge(state, { query: { limit: action.limit } }, { deep: true });
+
+      case SET_QUERY:
+        return Immutable.merge(state, { query: action.query }, { deep: true });
 
       default:
         throw new Error(`${action.component} + ${componentName} match, but action not found`);

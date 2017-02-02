@@ -1,4 +1,6 @@
 import Immutable from 'seamless-immutable';
+import { browserHistory } from 'react-router';
+import { stringify } from 'qs';
 import { gameEntity } from '../../schemas/adminSchemas';
 
 import { generateComponent } from '../../ducks/domain';
@@ -29,9 +31,19 @@ export function editGameModalClose() {
   return { type: EDIT_GAME_MODAL_CLOSE };
 }
 
-export function fetchGames(queryString) {
-  return dispatch =>
-    dispatch(fetchAndSave(route + queryString, [gameEntity], component));
+export function updateQueryString() {
+  return (dispatch) => {
+    const query = dispatch(component.getState()).query;
+    const { pathname } = browserHistory.getCurrentLocation();
+    browserHistory.push(`${pathname}?${stringify(query)}`);
+  };
+}
+
+export function fetchGames() {
+  return (dispatch) => {
+    const query = dispatch(component.getState()).query;
+    dispatch(fetchAndSave(`${route}?${stringify(query)}`, [gameEntity], component));
+  };
 }
 
 export function newGame(values) {
@@ -53,6 +65,9 @@ const defaultState = Immutable({
   newGameModalVisible: false,
   editGameModalVisible: false,
   editFormInitValues: {},
+  query: {
+    sort: '_id',
+  },
 });
 
 function reducer(state = null, action) {

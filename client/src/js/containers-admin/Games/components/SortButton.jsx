@@ -1,54 +1,39 @@
 import React, { Component, PropTypes } from 'react';
-import { withRouter } from 'react-router';
 
-function chooseIcon(field, query, def) {
+function chooseIcon(field, reduxField) {
   const ascIcon = <i className="fa fa-sort-asc" aria-hidden="true" />;
   const descIcon = <i className="fa fa-sort-desc" aria-hidden="true" />;
 
-  if (!query.sort) {
-    if (def) return ascIcon;
+  if (reduxField !== field && reduxField !== `-${field}`) {
     return '';
   }
 
-  if (query.sort !== field && query.sort !== `-${field}`) {
-    return '';
-  }
-
-  if (query.sort.substr(0, 1) === '-') {
+  if (reduxField.substr(0, 1) === '-') {
     return descIcon;
   }
 
   return ascIcon;
 }
 
-class SortButton extends Component {
+class SortButtonExp extends Component {
   sort = () => {
-    const { router: { replace }, location: { pathname, query }, field, def } = this.props;
+    const { field, reduxField, setSort } = this.props;
 
-    if (!query.sort) {
-      if (def) {
-        replace({ pathname, query: { ...query, sort: `-${field}` } });
-      } else {
-        replace({ pathname, query: { ...query, sort: field } });
-      }
+    if (field === reduxField) {
+      setSort(`-${field}`);
+      return;
+    } else if (field === `-${reduxField}`) {
+      setSort(field);
       return;
     }
 
-    if (query.sort === field) {
-      replace({ pathname, query: { ...query, sort: `-${field}` } });
-      return;
-    } else if (query.sort === `-${field}`) {
-      replace({ pathname, query: { ...query, sort: field } });
-      return;
-    }
-
-    replace({ pathname, query: { ...query, sort: field } });
+    setSort(field);
   }
 
   render() {
-    const { location: { query }, field, children, def } = this.props;
+    const { field, reduxField, children } = this.props;
 
-    const icon = chooseIcon(field, query, def);
+    const icon = chooseIcon(field, reduxField);
 
     return (
       <button type="button" className="blank" onClick={this.sort}>
@@ -58,20 +43,15 @@ class SortButton extends Component {
   }
 }
 
-SortButton.defaultProps = {
-  def: false,
+SortButtonExp.defaultProps = {
+  reduxField: '',
 };
 
-SortButton.propTypes = {
-  def: PropTypes.bool,
+SortButtonExp.propTypes = {
   field: PropTypes.string.isRequired,
+  reduxField: PropTypes.string,
   children: PropTypes.string.isRequired,
-  location: PropTypes.shape({
-    query: PropTypes.object.isRequired,
-  }).isRequired,
-  router: PropTypes.shape({
-    replace: PropTypes.func.isRequired,
-  }).isRequired,
+  setSort: PropTypes.func.isRequired,
 };
 
-export default withRouter(SortButton);
+export default SortButtonExp;

@@ -39,6 +39,18 @@ this.queryParams = function queryParams(query) {
     filter: query.filter || {},
   };
 
+  Object.keys(params.filter).forEach((key) => {
+    // convert strings to numbers if possible
+    if (!isNaN(Number(params.filter[key]))) {
+      params.filter[key] = Number(params.filter[key]);
+    }
+
+    // convert strings to regex for partial search
+    if (typeof params.filter[key] === 'string') {
+      params.filter[key] = new RegExp(params.filter[key], 'i');
+    }
+  });
+
   params.skip = (params.page - 1) * params.limit;
 
   return params;
