@@ -6,16 +6,16 @@ const multer = require('../../controller/multer');
 const upload = multer.single('image');
 
 router.route('/')
-  .get(async (req, res) => {
+  .get(async (req, res, next) => {
     try {
       const characters = await Character.find().populate('_game', 'title').exec();
       return res.json(characters);
     } catch (e) {
-      return res.status(404).json({ message: e.message });
+      return next(e);
     }
   })
 
-  .post(upload, async (req, res) => {
+  .post(upload, async (req, res, next) => {
     try {
       const newCharacter = JSON.parse(req.body.payload);
 
@@ -26,13 +26,13 @@ router.route('/')
       await Character.create(newCharacter);
       return res.status(201).json({ message: 'Character successfully created' });
     } catch (e) {
-      return res.status(500).json({ message: e.message });
+      return next(e);
     }
   });
 
 
 router.route('/:id')
-  .patch(upload, async (req, res) => {
+  .patch(upload, async (req, res, next) => {
     try {
       const update = JSON.parse(req.body.payload);
 
@@ -48,11 +48,11 @@ router.route('/:id')
 
       return res.status(200).json({ message: 'Character successfully updated.' });
     } catch (e) {
-      return res.status(500).json({ message: e.message });
+      return next(e);
     }
   })
 
-  .delete(async (req, res) => {
+  .delete(async (req, res, next) => {
     try {
       const deletedCharacter = await Character.findByIdAndRemove(req.params.id);
       if (deletedCharacter.image) {
@@ -60,7 +60,7 @@ router.route('/:id')
       }
       return res.status(200).json({ message: 'Character successfully deleted' });
     } catch (e) {
-      return res.status(500).json({ message: e.message });
+      return next(e);
     }
   });
 

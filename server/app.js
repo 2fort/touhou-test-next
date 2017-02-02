@@ -18,4 +18,13 @@ app.use(bodyParser.json());
 
 app.use('/api', require('./api'));
 
+function errorHandler(err, req, res, next) {
+  if (res.headersSent) {
+    return next(err);
+  }
+  return res.status(500).json({ message: err.message });
+}
+
+app.use(errorHandler);
+
 app.listen(8082, () => console.log('api server running at port 8082'));

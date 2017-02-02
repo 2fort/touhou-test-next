@@ -5,17 +5,17 @@ const Character = require('../models/character');
 router.use('/import', require('./import'));
 router.use('/admin', require('./admin'));
 
-router.get('/games', async (req, res) => {
+router.get('/games', async (req, res, next) => {
   try {
     const games = await Game.find({}, 'prefix title year cover slug').exec();
     return res.json(games);
     // return setTimeout(() => res.json(games), 5000);
   } catch (e) {
-    return res.json({ message: e.message });
+    return next(e);
   }
 });
 
-router.get('/characters/:game', (req, res) => {
+router.get('/characters/:game', (req, res, next) => {
   Game.find({ slug: req.params.game }).lean().exec()
     .then((game) => {
       if (!game[0]) {
@@ -24,16 +24,11 @@ router.get('/characters/:game', (req, res) => {
 
       return Character.find({ _game: game[0]._id }, 'name image slug wiki _game').populate('_game', 'title slug').exec();
     })
-    .then((characters) => {
-      // return setTimeout(() => res.json(characters), 1000);
-      return res.json(characters);
-    })
-    .catch(() => {
-      return res.status(404).end();
-    });
+    .then(characters => res.json(characters))  // setTimeout(() => res.json(characters), 1000);
+    .catch(e => next(e));
 });
 
-router.get('/character/:char', async (req, res) => {
+router.get('/character/:char', async (req, res, next) => {
   try {
     let charInfo = await Character.find({ slug: req.params.char }).populate('_game').exec();
 
@@ -52,21 +47,15 @@ router.get('/character/:char', async (req, res) => {
     });
 
     return res.json([charInfo]);
-  } catch (err) {
-    return res.status(404).end();
+  } catch (e) {
+    return next(e);
   }
 });
 
-router.get('/characters', (req, res) => {
+router.get('/characters', (req, res, next) => {
   Character.find({}, 'name image slug').exec()
     .then(characters => res.json(characters))
-    .catch(err => res.status(404).json(err.message));
+    .catch(e => next(e));
 });
-
-/* router.get('/exp', (req, res) => {
-  Character.find().skip(0).limit(10).exec()
-    .then(games => res.json(games))
-    .catch(err => console.log(err));
-});*/
 
 module.exports = router;

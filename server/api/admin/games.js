@@ -6,7 +6,7 @@ const multer = require('../../controller/multer');
 const upload = multer.single('cover');
 
 router.route('/')
-  .get(async (req, res) => {
+  .get(async (req, res, next) => {
     const params = controller.queryParams(req.query);
     try {
       const games =
@@ -21,11 +21,11 @@ router.route('/')
 
       return res.json(games);
     } catch (e) {
-      return res.status(404).json({ message: e.message });
+      return next(e);
     }
   })
 
-  .post(upload, async (req, res) => {
+  .post(upload, async (req, res, next) => {
     try {
       const newGame = JSON.parse(req.body.payload);
 
@@ -36,12 +36,12 @@ router.route('/')
       await Game.create(newGame);
       return res.status(201).json({ message: 'Game successfully created.' });
     } catch (e) {
-      return res.status(500).json({ message: e.message });
+      return next(e);
     }
   });
 
 router.route('/:id')
-  .patch(upload, async (req, res) => {
+  .patch(upload, async (req, res, next) => {
     try {
       const update = JSON.parse(req.body.payload);
 
@@ -57,11 +57,11 @@ router.route('/:id')
 
       return res.status(200).json({ message: 'Game successfully updated.' });
     } catch (e) {
-      return res.status(500).json({ message: e.message });
+      return next(e);
     }
   })
 
-  .delete(async (req, res) => {
+  .delete(async (req, res, next) => {
     try {
       const deletedGame = await Game.findByIdAndRemove(req.params.id);
       if (deletedGame.cover) {
@@ -69,7 +69,7 @@ router.route('/:id')
       }
       return res.status(200).json({ message: 'Game successfully deleted' });
     } catch (e) {
-      return res.status(500).json({ message: e.message });
+      return next(e);
     }
   });
 
