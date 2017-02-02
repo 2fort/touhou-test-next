@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 
 import { domainHoc } from '../../ducks/domain';
 import * as ownActions from './duck';
@@ -10,6 +11,7 @@ import { IMG_THUMBNAIL } from '../../config';
 import GameFormModal from './components/GameFormModal';
 import SortButton from './components/SortButton';
 import Pagination from '../Base/components/Pagination';
+import LimitSelect from './components/LimitSelect';
 
 class GamesTable extends Component {
   componentWillMount() {
@@ -81,9 +83,16 @@ class GamesTable extends Component {
         <button type="button" className="btn btn-primary" onClick={this.newGameBtnHandler}>
           Add new game
         </button>
-        <br />
 
-        <Pagination page={query.page} limit={query.limit} total={total} setPage={this.setQuery(component.setPage)} />
+        <div className="form-inline">
+          <div className="form-group">
+            <Pagination page={query.page} limit={query.limit} total={total} setPage={this.setQuery(component.setPage)} />
+          </div>
+          <div className="form-group">
+            <label style={{ marginLeft: '15px' }} htmlFor="limit">Games per page: </label> {' '}
+            <LimitSelect setLimit={this.setQuery(component.setLimit)} limit={query.limit} />
+          </div>
+        </div>
 
         <table className="table table-striped games-table">
           <thead>
@@ -98,7 +107,7 @@ class GamesTable extends Component {
             </tr>
             {gamesArray[0] && gamesArray.map((game, i) => (
               <tr key={game.id}>
-                <td><span title={game.id}>{`...${game.id.substr(-7, 7)}`}</span></td>
+                <td><Link to={`/characters/${game.slug}`} title={game.id}>{`...${game.id.substr(-7, 7)}`}</Link></td>
                 <td>
                   <button type="button" className="btn btn-link">
                     <i className="fa fa-sort-asc" aria-hidden="true" />
