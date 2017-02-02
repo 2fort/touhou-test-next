@@ -7,8 +7,18 @@ const upload = multer.single('cover');
 
 router.route('/')
   .get(async (req, res) => {
+    const params = controller.queryParams(req.query);
     try {
-      const games = await Game.find().exec();
+      const games =
+        await Game.find(params.filter)
+          .skip(params.skip)
+          .limit(params.limit)
+          .sort(params.sort)
+          .exec();
+
+      const count = await Game.count({});
+      res.set({ 'X-Total-Count': count });
+
       return res.json(games);
     } catch (e) {
       return res.status(404).json({ message: e.message });

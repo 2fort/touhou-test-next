@@ -29,9 +29,9 @@ export function editGameModalClose() {
   return { type: EDIT_GAME_MODAL_CLOSE };
 }
 
-export function fetchAllGames() {
+export function fetchGames(queryString) {
   return dispatch =>
-    dispatch(fetchAndSave(route, [gameEntity], component));
+    dispatch(fetchAndSave(route + queryString, [gameEntity], component));
 }
 
 export function newGame(values) {

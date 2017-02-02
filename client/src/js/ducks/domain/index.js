@@ -32,8 +32,8 @@ export function generateComponent(component) {
       { type: FETCH_BEGIN, component }
     ),
 
-    addVisible: visible => (
-      { type: ADD_VISIBLE, component, visible, fetchedAt: new Date() }
+    addVisible: (visible, total = 0) => (
+      { type: ADD_VISIBLE, component, visible, total: Number(total) }
     ),
 
     fetchSuccess: () => (
@@ -58,6 +58,7 @@ const defaultDomainState = Immutable({
   pending: false,
   visible: [],
   fetchedAt: 0,
+  total: 0,
 });
 
 export default function domainSlice(componentName, reducer = defaultDomainReducer, defaultState) {
@@ -87,16 +88,11 @@ export default function domainSlice(componentName, reducer = defaultDomainReduce
       }
 
       case ADD_VISIBLE:
-        return Immutable.merge(state, {
-          visible: action.visible,
-          fetchedAt: action.fetchedAt,
-        });
+        return Immutable.merge(state, { visible: action.visible, total: action.total, fetchedAt: new Date() });
 
       case FETCH_SUCCESS:
       case FETCH_FAIL:
-        return Immutable.merge(state, {
-          pending: false,
-        });
+        return Immutable.merge(state, { pending: false });
 
       default:
         throw new Error(`${action.component} + ${componentName} match, but action not found`);

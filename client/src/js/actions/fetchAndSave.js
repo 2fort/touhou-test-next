@@ -15,11 +15,10 @@ export default function (url, schema, component, saveVisible = true) {
         dispatch(entitiesActions.addEntities(data.entities));
 
         if (saveVisible) {
-          dispatch(component.addVisible(data.result));
+          dispatch(component.addVisible(data.result, response.headers.total));
         }
 
         dispatch(component.fetchSuccess());
-
         return response.json;
       })
       .catch((err) => {
@@ -29,7 +28,7 @@ export default function (url, schema, component, saveVisible = true) {
   };
 }
 
-export function fetchAndSaveUnnamed(url, schema) {
+export function fetchAndSaveEntities(url, schema) {
   return dispatch =>
     request(url)
       .then((response) => {

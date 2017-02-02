@@ -1,9 +1,9 @@
-import React, { PropTypes } from 'react';
-import { Link, withRouter } from 'react-router';
-import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import React from 'react';
+import { Link } from 'react-router';
+import { IndexLinkContainer } from 'react-router-bootstrap';
+import { Navbar, Nav, NavItem } from 'react-bootstrap';
 
-const NavbarHeader = ({ router }) => (
+const NavbarHeader = () => (
   <Navbar fixedTop inverse collapseOnSelect>
     <div className="container">
       <Navbar.Header>
@@ -26,10 +26,4 @@ const NavbarHeader = ({ router }) => (
   </Navbar>
 );
 
-NavbarHeader.propTypes = {
-  router: PropTypes.shape({
-    isActive: PropTypes.func.isRequired,
-  }).isRequired,
-};
-
-export default withRouter(NavbarHeader);
+export default NavbarHeader;

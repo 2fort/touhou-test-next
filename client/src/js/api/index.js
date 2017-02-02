@@ -14,6 +14,9 @@ function parseJSON(response) {
     ok: response.ok,
     status: response.status,
     statusText: response.statusText,
+    headers: {
+      total: response.headers.get('X-Total-Count'),
+    },
   };
   return new Promise(resolve =>
     // at this point response can be:
@@ -23,11 +26,7 @@ function parseJSON(response) {
     // 4) error response from fetch (like 404) if server is unreachable
     response.json()
       // 1), 2)
-      .then(json => resolve({
-        ok: response.ok,
-        status: response.status,
-        json,
-      }))
+      .then(json => resolve({ json, ...remember }))
       // 3), 4)
       .catch(() => resolve(remember)),
     );

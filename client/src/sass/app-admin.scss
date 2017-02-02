@@ -48,3 +48,40 @@ td {
   top: 20px;
   z-index: 1050;
 }
+
+button {
+  &.blank {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+}
+
+span {
+  &.sort {
+    border-bottom: 1px dotted black; 
+    font-weight: bold;
+  }
+}
+
+.games-table {
+  table {
+    width: 100%;
+    table-layout: fixed;
+  }
+  
+  td:nth-child(1),
+  td:nth-child(2),
+  td:nth-child(5),
+  td:nth-child(6)
+  td:nth-child(7) {
+    width: 10%;
+  }
+  td:nth-child(3) {
+    width: 15%;
+  }
+  td:nth-child(4) {
+    width: 35%;
+  } 
+}

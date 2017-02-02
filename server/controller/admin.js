@@ -30,3 +30,16 @@ this.deleteAllImg = function deleteAllImg(image) {
   ];
   return utils.deleteMany(paths);
 };
+
+this.queryParams = function queryParams(query) {
+  const params = {
+    page: Number(query.page) || 1,
+    limit: Number(query.limit) || 10,
+    sort: query.sort || '',
+    filter: query.filter || {},
+  };
+
+  params.skip = (params.page - 1) * params.limit;
+
+  return params;
+};
