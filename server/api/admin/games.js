@@ -9,12 +9,36 @@ router.route('/')
   .get(async (req, res, next) => {
     const params = controller.queryParams(req.query);
     try {
-      const games =
-        await Game.find(params.filter)
-          .skip(params.skip)
-          .limit(params.limit)
-          .sort(params.sort)
-          .exec();
+      const games = await Game
+        .aggregate()
+        .match(params.filter)
+        .lookup({
+          from: 'characters',
+          localField: '_id',
+          foreignField: '_game',
+          as: 'chars',
+        })
+        .append({
+          $addFields: {
+            chars: { $size: '$chars' },
+            id: '$_id',
+          },
+        })
+        .project({
+          _id: 0,
+          prefix: 1,
+          title: 1,
+          slug: 1,
+          year: 1,
+          cover: 1,
+          order: 1,
+          chars: 1,
+          id: 1,
+        })
+        .sort(params.sort)
+        .skip(params.skip)
+        .limit(params.limit)
+        .exec();
 
       if (Object.keys(params.filter).length > 0) {
         res.set({ 'X-Total-Count': games.length });

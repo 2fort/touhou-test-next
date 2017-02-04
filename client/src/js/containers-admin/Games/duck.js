@@ -35,7 +35,7 @@ export function updateQueryString() {
   return (dispatch) => {
     const query = dispatch(component.getState()).query;
     const { pathname } = browserHistory.getCurrentLocation();
-    browserHistory.push(`${pathname}?${stringify(query)}`);
+    browserHistory.push(`${pathname}?${stringify(query, { encode: false })}`);
   };
 }
 

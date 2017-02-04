@@ -111,24 +111,39 @@ class GamesTable extends Component {
         <table className="table table-striped games-table">
           <thead>
             <tr>
-              <th><Sort field="_id">ID</Sort></th>
-              <th><Sort field="order">Order</Sort></th>
-              <th>Cover</th>
-              <th><Sort field="title">Title</Sort></th>
-              <th><Sort field="prefix">Prefix</Sort></th>
-              <th><Sort field="year">Year</Sort></th>
-              <th>Actions</th>
+              <th>
+                <Sort field="title">Title</Sort>
+              </th>
+              <th className="text-center">
+                <Sort field="order">Order</Sort>
+              </th>
+              <th className="text-center">
+                <Sort field="chars">Chars #</Sort>
+              </th>
+              <th className="text-center">
+                Cover
+              </th>
+              <th className="text-center">
+                <Sort field="prefix">Prefix</Sort>
+              </th>
+              <th className="text-center">
+                <Sort field="year">Year</Sort>
+              </th>
+              <th className="text-center">
+                <Sort field="_id">ID</Sort>
+              </th>
+              <th>
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
             {gamesArray[0] && gamesArray.map((game, i) => (
               <tr key={game.id}>
                 <td>
-                  <Link target="_blank" to={`/characters/${game.slug}`} title={game.id}>
-                    {`${game.id.substr(-10, 10)}`}
-                  </Link>
+                  <Link to={`/admin/games/${game.id}`}>{game.title}</Link>
                 </td>
-                <td>
+                <td className="text-center">
                   <button type="button" className="btn btn-link" onClick={this.swapOrderBtnHandler(game.id, game.order - 1)}>
                     <i className="fa fa-sort-asc" aria-hidden="true" />
                   </button>
@@ -137,13 +152,26 @@ class GamesTable extends Component {
                     <i className="fa fa-sort-desc" aria-hidden="true" />
                   </button>
                 </td>
-                <td className="table-image">
+                <td className="text-center">
+                  {game.chars}
+                </td>
+                <td className="text-center table-image">
                   {game.cover && <img alt={game.title} src={IMG_THUMBNAIL + game.cover} />}
                 </td>
-                <td>{game.title}</td>
-                <td>{game.prefix}</td>
-                <td>{game.year}</td>
+                <td className="text-center">
+                  {game.prefix}
+                </td>
+                <td className="text-center">
+                  {game.year}
+                </td>
+                <td className="text-center">
+                  <span title={game.id}>{game.id.substr(-11, 11)}</span>
+                </td>
                 <td>
+                  <Link target="_blank" className="btn btn-default" to={`/characters/${game.slug}`}>
+                    <i className="fa fa-eye" aria-hidden="true" />
+                  </Link>
+                  {' '}
                   <button type="button" className="btn btn-default" onClick={this.editGameBtnHandler(game)}>
                     <i className="fa fa-pencil fa-lg" aria-hidden="true" />
                   </button>
@@ -190,7 +218,16 @@ GamesTable.defaultProps = {
 };
 
 GamesTable.propTypes = {
-  gamesArray: PropTypes.arrayOf(PropTypes.object),
+  gamesArray: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    slug: PropTypes.string.isRequired,
+    prefix: PropTypes.string,
+    year: PropTypes.number,
+    cover: PropTypes.string,
+    order: PropTypes.number.isRequired,
+    chars: PropTypes.number,
+  })),
   modals: PropTypes.shape({
     newGameModalVisible: PropTypes.bool,
     editGameModalVisible: PropTypes.bool,
@@ -217,10 +254,15 @@ GamesTable.propTypes = {
     page: PropTypes.number,
     limit: PropTypes.number,
     sort: PropTypes.string,
-    filter: PropTypes.any,
+    filter: PropTypes.objectOf(PropTypes.any),
   }),
   location: PropTypes.shape({
-    query: PropTypes.object,
+    query: PropTypes.shape({
+      page: PropTypes.string,
+      limit: PropTypes.string,
+      sort: PropTypes.string,
+      filter: PropTypes.objectOf(PropTypes.string),
+    }),
   }).isRequired,
 };
 
