@@ -7,7 +7,7 @@ router.use('/admin', require('./admin'));
 
 router.get('/games', async (req, res, next) => {
   try {
-    const games = await Game.find({}, 'prefix title year cover slug').exec();
+    const games = await Game.find({}, 'prefix title year cover slug').sort('order').exec();
     return res.json(games);
     // return setTimeout(() => res.json(games), 5000);
   } catch (e) {

@@ -79,3 +79,21 @@ export function formSubmit(route, options) {
       throw new SubmissionError({ _error: err.message });
     });
 }
+
+export function jsonSubmit(route, method, fields) {
+  return dispatch =>
+    request(route, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(fields),
+    })
+    .then((response) => {
+      const message = response.json ? response.json.message : response.statusText;
+      dispatch(flashMessageActions.add(response.status, message, 0));
+    })
+    .catch((err) => {
+      dispatch(flashMessageActions.add(err.status, err.message, 3));
+    });
+}

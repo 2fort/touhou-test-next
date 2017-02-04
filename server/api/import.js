@@ -59,6 +59,23 @@ router.get('/populate/:id', (req, res) => {
     });
 });
 
+router.get('/exp/reorder', async (req, res, next) => {
+  try {
+    const allGames = await Game.find().exec();
+    allGames.forEach((game, i) => {
+      allGames[i] = game.toObject();
+      allGames[i].order = i + 1;
+    });
+
+    const updateGames = allGames.map(game => Game.findByIdAndUpdate(game.id, game));
+    const result = await Promise.all(updateGames);
+
+    return res.json(result);
+  } catch (e) {
+    return next(e);
+  }
+});
+
 router.get('/exp/purgecovers', (req, res) => {
   Game.find().exec()
     .then((gamesRes) => {

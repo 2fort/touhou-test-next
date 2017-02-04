@@ -4,7 +4,7 @@ import { stringify } from 'qs';
 import { gameEntity } from '../../schemas/adminSchemas';
 
 import { generateComponent } from '../../ducks/domain';
-import fetchAndSave, { formSubmit } from '../../actions/fetchAndSave';
+import fetchAndSave, { formSubmit, jsonSubmit } from '../../actions/fetchAndSave';
 
 const componentName = 'GamesTable';
 const NEW_GAME_MODAL_OPEN = `${componentName}/NEW_GAME_MODAL_OPEN`;
@@ -61,12 +61,17 @@ export function deleteGame(id) {
     dispatch(formSubmit(`${route}/${id}`, { method: 'DELETE' }));
 }
 
+export function changeOrder(id, order) {
+  return dispatch =>
+    dispatch(jsonSubmit(`${route}/${id}`, 'PATCH', { order }));
+}
+
 const defaultState = Immutable({
   newGameModalVisible: false,
   editGameModalVisible: false,
   editFormInitValues: {},
   query: {
-    sort: '_id',
+    sort: 'order',
   },
 });
 

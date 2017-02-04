@@ -33,7 +33,6 @@ class GamesTable extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.location.search === '') {
-      // this.props.component.setQuery({ sort: '_id', filter: {}, page: 1, limit: 10 });
       this.props.actions.updateQueryString();
     }
   }
@@ -54,6 +53,13 @@ class GamesTable extends Component {
 
   deleteGameBtnHandler = id => () => {
     this.props.actions.deleteGame(id)
+      .then(() => this.props.actions.fetchGames());
+  }
+
+  swapOrderBtnHandler = (id, num) => () => {
+    if (num === 0) return;
+
+    this.props.actions.changeOrder(id, num)
       .then(() => this.props.actions.fetchGames());
   }
 
@@ -80,25 +86,33 @@ class GamesTable extends Component {
 
     return (
       <div>
-        <button type="button" className="btn btn-primary" onClick={this.newGameBtnHandler}>
-          Add new game
+        <button title="Add filter" type="button" className="btn btn-primary">
+          <i className="fa fa-filter" aria-hidden="true" /> Add filter
         </button>
-
         <div className="form-inline">
           <div className="form-group">
             <Pagination page={query.page} limit={query.limit} total={total} setPage={this.setQuery(component.setPage)} />
           </div>
           <div className="form-group">
-            <label style={{ marginLeft: '15px' }} htmlFor="limit">Games per page: </label> {' '}
+            <label style={{ marginLeft: '15px' }} htmlFor="limit">Per page: </label> {' '}
             <LimitSelect setLimit={this.setQuery(component.setLimit)} limit={query.limit} />
-          </div>
+          </div> {' '}
+        </div>
+
+        <div className="pull-left">
+          <h4>{(query.page * query.limit <= total ? query.page * query.limit : total)} / <strong>{total}</strong> games</h4>
+        </div>
+        <div className="pull-right">
+          <button title="New game" type="button" className="btn btn-primary" onClick={this.newGameBtnHandler}>
+            <i className="fa fa-plus" aria-hidden="true" /> Add game
+          </button>
         </div>
 
         <table className="table table-striped games-table">
           <thead>
             <tr>
-              <th><Sort field="_id" def>ID</Sort></th>
-              <th>Order</th>
+              <th><Sort field="_id">ID</Sort></th>
+              <th><Sort field="order">Order</Sort></th>
               <th>Cover</th>
               <th><Sort field="title">Title</Sort></th>
               <th><Sort field="prefix">Prefix</Sort></th>
@@ -111,15 +125,15 @@ class GamesTable extends Component {
               <tr key={game.id}>
                 <td>
                   <Link target="_blank" to={`/characters/${game.slug}`} title={game.id}>
-                    {`...${game.id.substr(-7, 7)}`}
+                    {`${game.id.substr(-10, 10)}`}
                   </Link>
                 </td>
                 <td>
-                  <button type="button" className="btn btn-link">
+                  <button type="button" className="btn btn-link" onClick={this.swapOrderBtnHandler(game.id, game.order - 1)}>
                     <i className="fa fa-sort-asc" aria-hidden="true" />
                   </button>
-                  1
-                  <button type="button" className="btn btn-link">
+                  {game.order}
+                  <button type="button" className="btn btn-link" onClick={this.swapOrderBtnHandler(game.id, game.order + 1)}>
                     <i className="fa fa-sort-desc" aria-hidden="true" />
                   </button>
                 </td>
@@ -193,6 +207,7 @@ GamesTable.propTypes = {
     newGame: PropTypes.func.isRequired,
     deleteGame: PropTypes.func.isRequired,
     updateQueryString: PropTypes.func.isRequired,
+    changeOrder: PropTypes.func.isRequired,
   }).isRequired,
   component: PropTypes.shape({
     setSort: PropTypes.func.isRequired,

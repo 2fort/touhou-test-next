@@ -16,8 +16,12 @@ router.route('/')
           .sort(params.sort)
           .exec();
 
-      const count = await Game.count({});
-      res.set({ 'X-Total-Count': count });
+      if (Object.keys(params.filter).length > 0) {
+        res.set({ 'X-Total-Count': games.length });
+      } else {
+        const count = await Game.count({});
+        res.set({ 'X-Total-Count': count });
+      }
 
       return res.json(games);
     } catch (e) {
@@ -43,16 +47,25 @@ router.route('/')
 router.route('/:id')
   .patch(upload, async (req, res, next) => {
     try {
-      const update = JSON.parse(req.body.payload);
+      // FormData with json in payload and optional file || simple json
+      const update = req.body.payload ? JSON.parse(req.body.payload) : req.body;
 
       if (req.file) {
         update.cover = await controller.dealWithFile(req.file);
       }
 
-      const staleData = await Game.findByIdAndUpdate(req.params.id, update);
+      const currentGame = await Game.findById(req.params.id).lean().exec();
+      await Game.findByIdAndUpdate(req.params.id, Object.assign({}, currentGame, update)).exec();
 
-      if (staleData.cover && staleData.cover !== update.cover) {
-        await controller.deleteAllImg(staleData.cover);
+      if (update.order !== currentGame.order) {
+        const needSwap = (await Game.find({ order: update.order }).where('_id').ne(req.params.id).exec())[0];
+        needSwap.order = currentGame.order;
+        await needSwap.save();
+      }
+
+      // if { cover: 'new' } or { cover: '' }
+      if (currentGame.cover && typeof update.cover === 'string' && currentGame.cover !== update.cover) {
+        await controller.deleteAllImg(currentGame.cover);
       }
 
       return res.status(200).json({ message: 'Game successfully updated.' });
