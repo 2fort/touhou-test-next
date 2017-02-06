@@ -19,7 +19,10 @@ const schema = new mongoose.Schema({
     default: '',
   },
   slug: String,
-  order: Number,
+  order: {
+    type: Number,
+    required: true,
+  },
 });
 
 /* schema.virtual('created').get( function () {
