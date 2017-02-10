@@ -132,8 +132,10 @@ export default function domainSlice(componentName, reducer = defaultDomainReduce
       case SET_SORT:
         return Immutable.merge(state, { query: { sort: action.field } }, { deep: true });
 
-      case SET_FILTER:
-        return Immutable.merge(state, { query: { filter: action.filter } }, { deep: true });
+      case SET_FILTER: {
+        const query = Immutable.merge(state.query, { filter: action.filter });
+        return Immutable.merge(state, { query });
+      }
 
       case SET_PAGE:
         return Immutable.merge(state, { query: { page: action.page } }, { deep: true });

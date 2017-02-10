@@ -9,9 +9,11 @@ import { prepareFormData } from '../_sharedComponents/utils';
 import { IMG_THUMBNAIL } from '../../config';
 
 import GameFormModal from './components/GameFormModal';
+import GameFilterModal from './components/GameFilterModal';
 import SortButton from './components/SortButton';
 import Pagination from '../Base/components/Pagination';
 import LimitSelect from './components/LimitSelect';
+import ActiveFilters from './components/ActiveFilters';
 
 class GamesTable extends Component {
   componentWillMount() {
@@ -79,6 +81,21 @@ class GamesTable extends Component {
       .then(() => this.props.actions.editGameModalClose());
   }
 
+  filterSubmit = (values) => {
+    const cleanVal = {};
+
+    Object.keys(values).forEach((key) => {
+      if (values[key]) {
+        cleanVal[key] = values[key];
+      }
+    });
+
+    this.props.component.setFilter(cleanVal);
+    this.props.actions.updateQueryString();
+    this.props.actions.gameFilterModalClose();
+    this.props.actions.fetchGames();
+  }
+
   render() {
     const { gamesArray, actions, modals, total, query, component } = this.props;
 
@@ -86,9 +103,12 @@ class GamesTable extends Component {
 
     return (
       <div>
-        <button title="Add filter" type="button" className="btn btn-primary">
+        <button title="Add filter" type="button" className="btn btn-primary" onClick={actions.gameFilterModalOpen}>
           <i className="fa fa-filter" aria-hidden="true" /> Add filter
         </button>
+
+        <ActiveFilters setFilter={this.setQuery(component.setFilter)} filters={query.filter} />
+
         <div className="form-inline">
           <div className="form-group">
             <Pagination page={query.page} limit={query.limit} total={total} setPage={this.setQuery(component.setPage)} />
@@ -207,6 +227,14 @@ class GamesTable extends Component {
             total={total}
           />
         }
+
+        {modals.filterModalVisible &&
+          <GameFilterModal
+            initialValues={query.filter}
+            onSubmit={this.filterSubmit}
+            hide={actions.gameFilterModalClose}
+          />
+        }
       </div>
     );
   }
@@ -241,6 +269,8 @@ GamesTable.propTypes = {
     newGameModalClose: PropTypes.func.isRequired,
     editGameModalOpen: PropTypes.func.isRequired,
     editGameModalClose: PropTypes.func.isRequired,
+    gameFilterModalOpen: PropTypes.func.isRequired,
+    gameFilterModalClose: PropTypes.func.isRequired,
     fetchGames: PropTypes.func.isRequired,
     editGame: PropTypes.func.isRequired,
     newGame: PropTypes.func.isRequired,
@@ -251,6 +281,7 @@ GamesTable.propTypes = {
   component: PropTypes.shape({
     setSort: PropTypes.func.isRequired,
     setQuery: PropTypes.func.isRequired,
+    setFilter: PropTypes.func.isRequired,
   }).isRequired,
   query: PropTypes.shape({
     page: PropTypes.number,
@@ -279,6 +310,7 @@ function mapStateToProps({ domain: { gamesTable }, entities: { games } }) {
       newGameModalVisible: gamesTable.newGameModalVisible,
       editGameModalVisible: gamesTable.editGameModalVisible,
       editFormInitValues: gamesTable.editFormInitValues,
+      filterModalVisible: gamesTable.filterModalVisible,
     },
     total: gamesTable.total,
     query: gamesTable.query,

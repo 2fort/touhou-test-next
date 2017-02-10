@@ -11,6 +11,8 @@ const NEW_GAME_MODAL_OPEN = `${componentName}/NEW_GAME_MODAL_OPEN`;
 const NEW_GAME_MODAL_CLOSE = `${componentName}/NEW_GAME_MODAL_CLOSE`;
 const EDIT_GAME_MODAL_OPEN = `${componentName}/EDIT_GAME_MODAL_OPEN`;
 const EDIT_GAME_MODAL_CLOSE = `${componentName}/EDIT_GAME_MODAL_CLOSE`;
+const GAME_FILTER_MODAL_OPEN = `${componentName}/GAME_FILTER_MODAL_OPEN`;
+const GAME_FILTER_MODAL_CLOSE = `${componentName}/GAME_FILTER_MODAL_CLOSE`;
 
 const component = generateComponent(componentName);
 const route = '/api/admin/games';
@@ -29,6 +31,14 @@ export function editGameModalOpen(initValues) {
 
 export function editGameModalClose() {
   return { type: EDIT_GAME_MODAL_CLOSE };
+}
+
+export function gameFilterModalOpen() {
+  return { type: GAME_FILTER_MODAL_OPEN };
+}
+
+export function gameFilterModalClose() {
+  return { type: GAME_FILTER_MODAL_CLOSE };
 }
 
 export function updateQueryString() {
@@ -70,6 +80,7 @@ const defaultState = Immutable({
   newGameModalVisible: false,
   editGameModalVisible: false,
   editFormInitValues: {},
+  filterModalVisible: false,
   query: {
     sort: 'order',
   },
@@ -91,6 +102,14 @@ function reducer(state = null, action) {
 
     case EDIT_GAME_MODAL_CLOSE: {
       return Immutable.merge(state, { editGameModalVisible: false, editFormInitValues: {} });
+    }
+
+    case GAME_FILTER_MODAL_OPEN: {
+      return Immutable.merge(state, { filterModalVisible: true });
+    }
+
+    case GAME_FILTER_MODAL_CLOSE: {
+      return Immutable.merge(state, { filterModalVisible: false });
     }
 
     default: {
