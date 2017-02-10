@@ -3,9 +3,9 @@ import { Modal, Button, Alert } from 'react-bootstrap';
 import { Field, reduxForm, propTypes } from 'redux-form';
 
 import { textField, imageField } from '../../_sharedComponents/formFields';
-import { required, number } from '../../_sharedComponents/validationFields';
+import { required, number, maxValue, moreThan0 } from '../../_sharedComponents/validationFields';
 
-const GameFormModal = ({ title, buttonName, hide, initialValues, handleSubmit, submitting, error, reset }) => (
+const GameFormModal = ({ title, buttonName, total, hide, initialValues, handleSubmit, submitting, error, reset }) => (
   <div className="static-modal">
     <Modal show onHide={hide}>
       <Modal.Header>
@@ -25,6 +25,13 @@ const GameFormModal = ({ title, buttonName, hide, initialValues, handleSubmit, s
             label="Cover"
           />
           <Field name="year" type="text" component={textField} label="Year" validate={[number]} />
+          <Field
+            name="order"
+            type="number"
+            component={textField}
+            label="Order"
+            validate={[number, maxValue(total), moreThan0]}
+          />
 
           {error &&
             <Alert bsStyle="danger"><strong>Error: </strong>{error}</Alert>

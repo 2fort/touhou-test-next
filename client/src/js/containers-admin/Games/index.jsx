@@ -193,6 +193,7 @@ class GamesTable extends Component {
             hide={actions.newGameModalClose}
             title="New Game"
             buttonName="Create"
+            total={total + 1}
           />
         }
 
@@ -203,6 +204,7 @@ class GamesTable extends Component {
             hide={actions.editGameModalClose}
             title="Edit Game"
             buttonName="Edit"
+            total={total}
           />
         }
       </div>
