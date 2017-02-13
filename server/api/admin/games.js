@@ -8,8 +8,8 @@ const upload = multer.single('cover');
 router.route('/')
   .get(async (req, res, next) => {
     const params = controller.queryParams(req.query);
-    try {
-      const games = await Game
+
+    let func = Game
         .aggregate()
         .match(params.filter)
         .lookup({
@@ -35,17 +35,21 @@ router.route('/')
           chars: 1,
           id: 1,
         })
-        .sort(params.sort)
-        .skip(params.skip)
-        .limit(params.limit)
-        .exec();
+        .sort(params.sort || 'order');
 
-      if (Object.keys(params.filter).length > 0) {
-        res.set({ 'X-Total-Count': games.length });
-      } else {
-        const count = await Game.count({});
-        res.set({ 'X-Total-Count': count });
-      }
+    if (params.skip) {
+      func = func.skip(params.skip);
+    }
+
+    if (params.limit) {
+      func = func.limit(params.limit);
+    }
+
+    try {
+      const games = await func.exec();
+
+      const count = await Game.count(params.filter);
+      res.set({ 'X-Total-Count': count });
 
       return res.json(games);
     } catch (e) {
@@ -97,6 +101,14 @@ router.route('/')
   });
 
 router.route('/:id')
+  .get(async (req, res, next) => {
+    try {
+      const game = await Game.findById(req.params.id).exec();
+      return res.json(game);
+    } catch (e) {
+      return next(e);
+    }
+  })
   .patch(upload, async (req, res, next) => {
     try {
       // FormData with json in payload and optional file || simple json

@@ -76,6 +76,23 @@ router.get('/exp/reorder', async (req, res, next) => {
   }
 });
 
+router.get('/exp/charsreorder', async (req, res, next) => {
+  try {
+    const allGames = await Game.find().exec();
+
+    for (let i = 0; i < allGames.length; i++) {
+      let gameCharacters = await Character.find({ _game: allGames[i]._id }).exec();
+
+      const charsUpdate = gameCharacters.map((char, j) => Character.update({ _id: char._id }, { _order: j + 1 }));
+      await Promise.all(charsUpdate);
+    }
+
+    return res.json('Completed!');
+  } catch (e) {
+    return next(e);
+  }
+});
+
 router.get('/exp/purgecovers', (req, res) => {
   Game.find().exec()
     .then((gamesRes) => {

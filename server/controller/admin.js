@@ -1,4 +1,5 @@
 const path = require('path');
+const flatten = require('flat');
 const utils = require('../lib/utils');
 const config = require('../config');
 
@@ -33,11 +34,15 @@ this.deleteAllImg = function deleteAllImg(image) {
 
 this.queryParams = function queryParams(query) {
   const params = {
-    page: Number(query.page) || 1,
-    limit: Number(query.limit) || 10,
-    sort: query.sort || '',
+    page: Number(query.page) || undefined,
+    limit: Number(query.limit) || undefined,
+    sort: query.sort,
     filter: query.filter || {},
   };
+
+  if (Object.keys(params.filter)[0]) {
+    params.filter = flatten(params.filter);
+  }
 
   Object.keys(params.filter).forEach((key) => {
     // convert strings to numbers if possible
@@ -51,7 +56,7 @@ this.queryParams = function queryParams(query) {
     }
   });
 
-  params.skip = (params.page - 1) * params.limit;
+  params.skip = (params.page && params.limit) ? (params.page - 1) * params.limit : undefined;
 
   return params;
 };

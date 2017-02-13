@@ -1,10 +1,10 @@
 import Immutable from 'seamless-immutable';
 import { browserHistory } from 'react-router';
 import { stringify } from 'qs';
-import { gameEntity } from '../../schemas/adminSchemas';
 
+import { gameEntity } from '../../schemas/adminSchemas';
 import { generateComponent } from '../../ducks/domain';
-import fetchAndSave, { formSubmit, jsonSubmit } from '../../actions/fetchAndSave';
+import fetchAndSave, { fetchAndReturnJson, formSubmit, jsonSubmit } from '../../actions/fetchAndSave';
 
 const componentName = 'GamesTable';
 const NEW_GAME_MODAL_OPEN = `${componentName}/NEW_GAME_MODAL_OPEN`;
@@ -45,15 +45,20 @@ export function updateQueryString() {
   return (dispatch) => {
     const query = dispatch(component.getState()).query;
     const { pathname } = browserHistory.getCurrentLocation();
-    browserHistory.push(`${pathname}?${stringify(query, { encode: false })}`);
+    browserHistory.replace(`${pathname}?${stringify(query, { encode: false })}`);
   };
 }
 
 export function fetchGames() {
   return (dispatch) => {
     const query = dispatch(component.getState()).query;
-    dispatch(fetchAndSave(`${route}?${stringify(query)}`, [gameEntity], component));
+    return dispatch(fetchAndSave(`${route}?${stringify(query)}`, [gameEntity], component));
   };
+}
+
+export function getGameWithMaxOrder() {
+  return dispatch =>
+    dispatch(fetchAndReturnJson(`${route}?sort=-order&limit=1`, component));
 }
 
 export function newGame(values) {

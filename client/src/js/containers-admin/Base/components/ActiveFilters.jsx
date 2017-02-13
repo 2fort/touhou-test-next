@@ -1,17 +1,23 @@
 import React, { Component, PropTypes } from 'react';
+import flatten from 'flat';
+
+const unflatten = require('flat').unflatten;
 
 class ActiveFilters extends Component {
   btnHandler = key => () => {
-    const filters = Object.assign({}, this.props.filters);
-    delete filters[key];
+    const flattenFilters = flatten(this.props.filters);
+    delete flattenFilters[key];
+    const filters = unflatten(flattenFilters);
     this.props.setFilter(filters);
   }
 
   render() {
     const { filters } = this.props;
+
+    const flattenFilters = flatten(filters);
     const buttons = [];
 
-    Object.keys(filters).forEach((key) => {
+    Object.keys(flattenFilters).forEach((key) => {
       buttons.push(
         <button
           key={key}
@@ -20,7 +26,7 @@ class ActiveFilters extends Component {
           className="btn btn-default"
           style={{ marginLeft: '7px' }}
         >
-          {key} <b>is</b> {filters[key]}<span className="close-sign">✕</span>
+          {key} <b>is</b> {flattenFilters[key]}<span className="close-sign">✕</span>
         </button>,
       );
     });
@@ -38,10 +44,7 @@ ActiveFilters.defaultProps = {
 };
 
 ActiveFilters.propTypes = {
-  filters: PropTypes.shape({
-    title: PropTypes.string,
-    year: PropTypes.string,
-  }),
+  filters: PropTypes.objectOf(PropTypes.any),
   setFilter: PropTypes.func.isRequired,
 };
 

@@ -5,34 +5,31 @@ import { Link } from 'react-router';
 
 import { domainHoc } from '../../ducks/domain';
 import * as ownActions from './duck';
-import { prepareFormData } from '../_sharedComponents/utils';
+import { prepareFormData, parseQuery } from '../_sharedComponents/utils';
 import { IMG_THUMBNAIL } from '../../config';
 
 import GameFormModal from './components/GameFormModal';
 import GameFilterModal from './components/GameFilterModal';
-import SortButton from './components/SortButton';
+import SortButton from '../Base/components/SortButton';
 import Pagination from '../Base/components/Pagination';
-import LimitSelect from './components/LimitSelect';
-import ActiveFilters from './components/ActiveFilters';
+import LimitSelect from '../Base/components/LimitSelect';
+import ActiveFilters from '../Base/components/ActiveFilters';
 
 class GamesTable extends Component {
   componentWillMount() {
-    const { sort, filter, page, limit } = this.props.location.query;
+    const { location, component, actions } = this.props;
 
-    const query = Object.assign(
-      {}, sort && { sort }, filter && { filter }, page && { page: Number(page) }, limit && { limit: Number(limit) },
-    );
+    const query = parseQuery(location.query);
 
     if (Object.keys(query).length > 0) {
-      this.props.component.setQuery(query);
-      this.props.actions.updateQueryString();
-    } else {
-      this.props.actions.updateQueryString();
+      component.setQuery(query);
     }
 
-    this.props.actions.fetchGames();
+    actions.updateQueryString();
+    actions.fetchGames();
   }
 
+  // then Games button pressed on NavPanel, add qs
   componentWillReceiveProps(newProps) {
     if (newProps.location.search === '') {
       this.props.actions.updateQueryString();
@@ -59,8 +56,6 @@ class GamesTable extends Component {
   }
 
   swapOrderBtnHandler = (id, num) => () => {
-    if (num === 0) return;
-
     this.props.actions.changeOrder(id, num)
       .then(() => this.props.actions.fetchGames());
   }
@@ -120,10 +115,10 @@ class GamesTable extends Component {
         </div>
 
         <div className="pull-left">
-          <h4>{(query.page * query.limit <= total ? query.page * query.limit : total)} / <strong>{total}</strong> games</h4>
+          <h4>{gamesArray.length} / <strong>{total}</strong> games</h4>
         </div>
         <div className="pull-right">
-          <button title="New game" type="button" className="btn btn-primary" onClick={this.newGameBtnHandler}>
+          <button type="button" className="btn btn-primary" onClick={this.newGameBtnHandler}>
             <i className="fa fa-plus" aria-hidden="true" /> Add game
           </button>
         </div>
@@ -161,14 +156,24 @@ class GamesTable extends Component {
             {gamesArray[0] && gamesArray.map((game, i) => (
               <tr key={game.id}>
                 <td>
-                  <Link to={`/admin/games/${game.id}`}>{game.title}</Link>
+                  <Link to={`/admin/characters?_game=${game.id}`}>{game.title}</Link>
                 </td>
                 <td className="text-center">
-                  <button type="button" className="btn btn-link" onClick={this.swapOrderBtnHandler(game.id, game.order - 1)}>
+                  <button
+                    type="button"
+                    className="btn btn-link"
+                    onClick={this.swapOrderBtnHandler(game.id, game.order - 1)}
+                    disabled={game.order === 1}
+                  >
                     <i className="fa fa-sort-asc" aria-hidden="true" />
                   </button>
                   {game.order}
-                  <button type="button" className="btn btn-link" onClick={this.swapOrderBtnHandler(game.id, game.order + 1)}>
+                  <button
+                    type="button"
+                    className="btn btn-link"
+                    onClick={this.swapOrderBtnHandler(game.id, game.order + 1)}
+                    disabled={game.order === total}
+                  >
                     <i className="fa fa-sort-desc" aria-hidden="true" />
                   </button>
                 </td>
@@ -213,7 +218,8 @@ class GamesTable extends Component {
             hide={actions.newGameModalClose}
             title="New Game"
             buttonName="Create"
-            total={total + 1}
+            getMaxOrder={actions.getGameWithMaxOrder}
+            mode="new"
           />
         }
 
@@ -224,7 +230,8 @@ class GamesTable extends Component {
             hide={actions.editGameModalClose}
             title="Edit Game"
             buttonName="Edit"
-            total={total}
+            getMaxOrder={actions.getGameWithMaxOrder}
+            mode="edit"
           />
         }
 
@@ -277,6 +284,7 @@ GamesTable.propTypes = {
     deleteGame: PropTypes.func.isRequired,
     updateQueryString: PropTypes.func.isRequired,
     changeOrder: PropTypes.func.isRequired,
+    getGameWithMaxOrder: PropTypes.func.isRequired,
   }).isRequired,
   component: PropTypes.shape({
     setSort: PropTypes.func.isRequired,

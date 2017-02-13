@@ -2,13 +2,68 @@ const router = require('express').Router();
 const Character = require('../../models/character');
 const controller = require('../../controller/admin');
 const multer = require('../../controller/multer');
+const ObjectId = require('mongodb').ObjectId;
 
 const upload = multer.single('image');
 
 router.route('/')
   .get(async (req, res, next) => {
+    // { _game: '12345gf67' } => { _game: '12345gf67' } => means "show all characters from game with id: '12345gf67'"
+    // { _game: '' } => { _game: null } => means "show all uncategorized characters"
+    // { _game: undefined } => {} => means "show all characters"
+    const filter = (_game) => {
+      if (_game === '') return { _game: null };
+      if (_game === undefined) return {};
+      return { _game: ObjectId(_game) };
+    };
+
+    const params = controller.queryParams(req.query);
+    params.filter = Object.assign({}, params.filter, filter(req.query._game));
+
+    let func = Character.aggregate()
+        .match(params.filter)
+        .lookup({
+          from: 'games',
+          localField: '_game',
+          foreignField: '_id',
+          as: '_game',
+        })
+        .append({
+          $unwind: { path: '$_game', preserveNullAndEmptyArrays: true },
+        })
+        .append({
+          $addFields: {
+            id: '$_id',
+            game: '$_game.title',
+            '_game.id': '$_game._id',
+          },
+        });
+
+    if (params.sort) {
+      func = func.sort(params.sort);
+    }
+
+    func = func.project({
+      _id: 0,
+      __v: 0,
+      '_game._id': 0,
+      '_game.__v': 0,
+    });
+
+    if (params.skip) {
+      func = func.skip(params.skip);
+    }
+
+    if (params.limit) {
+      func = func.limit(params.limit);
+    }
+
     try {
-      const characters = await Character.find().populate('_game', 'title').exec();
+      const characters = await func.exec();
+
+      const count = await Character.count(params.filter);
+      res.set({ 'X-Total-Count': count });
+
       return res.json(characters);
     } catch (e) {
       return next(e);
@@ -30,11 +85,11 @@ router.route('/')
     }
   });
 
-
 router.route('/:id')
   .patch(upload, async (req, res, next) => {
     try {
-      const update = JSON.parse(req.body.payload);
+      // FormData with json in payload and optional file || simple json
+      const update = req.body.payload ? JSON.parse(req.body.payload) : req.body;
 
       if (req.file) {
         update.image = await controller.dealWithFile(req.file);

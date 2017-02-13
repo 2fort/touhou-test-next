@@ -22,7 +22,11 @@ router.get('/characters/:game', (req, res, next) => {
         throw new Error('404'); // game not found!
       }
 
-      return Character.find({ _game: game[0]._id }, 'name image slug wiki _game').populate('_game', 'title slug').exec();
+      return Character
+        .find({ _game: game[0]._id }, 'name image slug wiki _game')
+        .populate('_game', 'title slug')
+        .sort('_order')
+        .exec();
     })
     .then(characters => res.json(characters))  // setTimeout(() => res.json(characters), 1000);
     .catch(e => next(e));

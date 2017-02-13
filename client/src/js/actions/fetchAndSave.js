@@ -28,6 +28,22 @@ export default function (url, schema, component, saveVisible = true) {
   };
 }
 
+export function fetchAndReturnJson(url, component) {
+  return (dispatch) => {
+    dispatch(component.fetchBegin());
+
+    return request(url)
+      .then((response) => {
+        dispatch(component.fetchSuccess());
+        return response.json;
+      })
+      .catch((err) => {
+        dispatch(component.fetchFail());
+        dispatch(flashMessageActions.add(err.status, err.message, 3));
+      });
+  };
+}
+
 export function fetchAndSaveEntities(url, schema) {
   return dispatch =>
     request(url)

@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "bootstrap-sass": "^3.3.7",
+    "flat": "^2.0.1",
     "hammerjs": "^2.0.8",
     "lodash": "^4.17.4",
     "normalize-scss": "^6.0.0",

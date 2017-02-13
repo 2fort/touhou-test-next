@@ -35,6 +35,9 @@ const schema = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: 'Game',
   },
+  _order: {
+    type: Number,
+  },
 });
 
 schema.set('toJSON', {

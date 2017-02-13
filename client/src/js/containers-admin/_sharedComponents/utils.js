@@ -20,3 +20,9 @@ export function prepareFormData(values, files, fileFiedName) {
 
   return formData;
 }
+
+export function parseQuery({ sort, filter, page, limit }) {
+  return Object.assign(
+    {}, sort && { sort }, filter && { filter }, page && { page: Number(page) }, limit && { limit: Number(limit) },
+  );
+}
