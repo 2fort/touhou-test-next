@@ -14,6 +14,7 @@ import SortButton from '../Base/components/SortButton';
 import Pagination from '../Base/components/Pagination';
 import LimitSelect from '../Base/components/LimitSelect';
 import ActiveFilters from '../Base/components/ActiveFilters';
+import EntitiesCounter from '../Base/components/EntitiesCounter';
 
 class GamesTable extends Component {
   componentWillMount() {
@@ -92,8 +93,7 @@ class GamesTable extends Component {
   }
 
   render() {
-    const { gamesArray, actions, modals, total, query, component } = this.props;
-
+    const { gamesArray, actions, modals, component, domainState: { pending, total, query } } = this.props;
     const Sort = props => <SortButton reduxField={query.sort} setSort={this.setQuery(component.setSort)} {...props} />;
 
     return (
@@ -115,7 +115,9 @@ class GamesTable extends Component {
         </div>
 
         <div className="pull-left">
-          <h4>{gamesArray.length} / <strong>{total}</strong> games</h4>
+          <EntitiesCounter page={query.page} limit={query.limit} length={gamesArray.length} total={total} pending={pending}>
+            games
+          </EntitiesCounter>
         </div>
         <div className="pull-right">
           <button type="button" className="btn btn-primary" onClick={this.newGameBtnHandler}>
@@ -250,8 +252,9 @@ class GamesTable extends Component {
 GamesTable.defaultProps = {
   gamesArray: [],
   modals: {},
-  total: 0,
-  query: {},
+  domainState: {
+
+  },
 };
 
 GamesTable.propTypes = {
@@ -270,7 +273,6 @@ GamesTable.propTypes = {
     editGameModalVisible: PropTypes.bool,
     editFormInitValues: PropTypes.object,
   }),
-  total: PropTypes.number,
   actions: PropTypes.shape({
     newGameModalOpen: PropTypes.func.isRequired,
     newGameModalClose: PropTypes.func.isRequired,
@@ -291,12 +293,17 @@ GamesTable.propTypes = {
     setQuery: PropTypes.func.isRequired,
     setFilter: PropTypes.func.isRequired,
   }).isRequired,
-  query: PropTypes.shape({
-    page: PropTypes.number,
-    limit: PropTypes.number,
-    sort: PropTypes.string,
-    filter: PropTypes.objectOf(PropTypes.any),
-  }),
+  domainState: PropTypes.shape({
+    pending: PropTypes.bool,
+    visible: PropTypes.arrayOf(PropTypes.string),
+    total: PropTypes.number,
+    query: PropTypes.shape({
+      page: PropTypes.number,
+      limit: PropTypes.number,
+      sort: PropTypes.string,
+      filter: PropTypes.objectOf(PropTypes.any),
+    }),
+  }).isRequired,
   location: PropTypes.shape({
     query: PropTypes.shape({
       page: PropTypes.string,
@@ -320,8 +327,6 @@ function mapStateToProps({ domain: { gamesTable }, entities: { games } }) {
       editFormInitValues: gamesTable.editFormInitValues,
       filterModalVisible: gamesTable.filterModalVisible,
     },
-    total: gamesTable.total,
-    query: gamesTable.query,
   };
 }
 

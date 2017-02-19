@@ -72,7 +72,7 @@ router.route('/')
 
   .post(upload, async (req, res, next) => {
     try {
-      const newCharacter = JSON.parse(req.body.payload);
+      const newCharacter = req.body.payload ? JSON.parse(req.body.payload) : req.body;
 
       if (req.file) {
         newCharacter.image = await controller.dealWithFile(req.file);

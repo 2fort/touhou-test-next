@@ -4,7 +4,7 @@ import { browserHistory } from 'react-router';
 
 import { charactersEntity } from '../../schemas/adminSchemas';
 import { generateComponent } from '../../ducks/domain';
-import fetchAndSave, { fetchAndReturnJson, formSubmit } from '../../actions/fetchAndSave';
+import fetchAndSave, { fetchAndReturnJson, formSubmit, jsonSubmit } from '../../actions/fetchAndSave';
 
 const componentName = 'CharactersTable';
 const NEW_CHAR_MODAL_OPEN = `${componentName}/NEW_CHAR_MODAL_OPEN`;
@@ -89,6 +89,11 @@ export function fetchAllGames() {
         dispatch({ type: ADD_ALL_GAMES, games });
         return true;
       });
+}
+
+export function changeOrder(id, order) {
+  return dispatch =>
+    dispatch(jsonSubmit(`${route}/${id}`, 'PATCH', { order }));
 }
 
 export function newCharacter(values) {

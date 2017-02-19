@@ -14,6 +14,7 @@ import SortButton from '../Base/components/SortButton';
 import Pagination from '../Base/components/Pagination';
 import LimitSelect from '../Base/components/LimitSelect';
 import ActiveFilters from '../Base/components/ActiveFilters';
+import EntitiesCounter from '../Base/components/EntitiesCounter';
 
 class CharactersTable extends Component {
   componentWillMount() {
@@ -89,8 +90,14 @@ class CharactersTable extends Component {
     this.props.actions.fetchCharacters();
   }
 
+  swapOrderBtnHandler = (id, num) => () => {
+    this.props.actions.changeOrder(id, num)
+      .then(() => this.props.actions.fetchCharacters());
+  }
+
   render() {
-    const { charsArray, gamesList, currentGame, actions, modals, query, total, allGames, component } = this.props;
+    const { charsArray, gamesList, currentGame, actions, modals, allGames,
+      component, domainState: { pending, total, query } } = this.props;
 
     const Sort = props => <SortButton reduxField={query.sort} setSort={this.setQuery(component.setSort)} {...props} />;
     const nonOrderMode = !currentGame || currentGame === '[!uncategorized]';
@@ -134,7 +141,9 @@ class CharactersTable extends Component {
         </div>
 
         <div className="pull-left">
-          <h4>{charsArray.length} / <strong>{total}</strong> characters</h4>
+          <EntitiesCounter page={query.page} limit={query.limit} length={charsArray.length} total={total} pending={pending}>
+            games
+          </EntitiesCounter>
         </div>
         <div className="pull-right">
           <button type="button" className="btn btn-primary" onClick={this.newCharBtnHandler}>
@@ -177,7 +186,25 @@ class CharactersTable extends Component {
                   {char.name}
                 </td>
                 {nonOrderMode ||
-                  <td className="text-center">{char._order}</td>
+                  <td className="text-center">
+                    <button
+                      type="button"
+                      className="btn btn-link"
+                      onClick={this.swapOrderBtnHandler(char.id, char._order - 1)}
+                      disabled={char._order === 1}
+                    >
+                      <i className="fa fa-sort-asc" aria-hidden="true" />
+                    </button>
+                    {char._order}
+                    <button
+                      type="button"
+                      className="btn btn-link"
+                      onClick={this.swapOrderBtnHandler(char.id, char._order + 1)}
+                      disabled={char._order === total}
+                    >
+                      <i className="fa fa-sort-desc" aria-hidden="true" />
+                    </button>
+                  </td>
                 }
                 <td className="table-image text-center">
                   {char.image && <img alt={char.name} src={IMG_THUMBNAIL + char.image} />}
@@ -276,7 +303,6 @@ CharactersTable.propTypes = {
   gamesList: PropTypes.objectOf(PropTypes.object),
   allGames: PropTypes.arrayOf(PropTypes.object),
   currentGame: PropTypes.string,
-  total: PropTypes.number,
   modals: PropTypes.shape({
     newCharModalVisible: PropTypes.bool,
     editCharModalVisible: PropTypes.bool,
@@ -289,6 +315,7 @@ CharactersTable.propTypes = {
     editCharModalClose: PropTypes.func.isRequired,
     fetchCharacters: PropTypes.func.isRequired,
     fetchAllGames: PropTypes.func.isRequired,
+    changeOrder: PropTypes.func.isRequired,
     changeCurrentGame: PropTypes.func.isRequired,
     editCharacter: PropTypes.func.isRequired,
     newCharacter: PropTypes.func.isRequired,
@@ -302,12 +329,17 @@ CharactersTable.propTypes = {
     setQuery: PropTypes.func.isRequired,
     setFilter: PropTypes.func.isRequired,
   }).isRequired,
-  query: PropTypes.shape({
-    page: PropTypes.number,
-    limit: PropTypes.number,
-    sort: PropTypes.string,
-    filter: PropTypes.objectOf(PropTypes.any),
-  }),
+  domainState: PropTypes.shape({
+    pending: PropTypes.bool,
+    visible: PropTypes.arrayOf(PropTypes.string),
+    total: PropTypes.number,
+    query: PropTypes.shape({
+      page: PropTypes.number,
+      limit: PropTypes.number,
+      sort: PropTypes.string,
+      filter: PropTypes.objectOf(PropTypes.any),
+    }),
+  }).isRequired,
   location: PropTypes.shape({
     query: PropTypes.shape({
       page: PropTypes.string,
@@ -334,8 +366,6 @@ function mapStateToProps({ entities, domain: { charactersTable } }) {
       editFormInitValues: charactersTable.editFormInitValues,
       filterModalVisible: charactersTable.filterModalVisible,
     },
-    total: charactersTable.total,
-    query: charactersTable.query,
   };
 }
 
