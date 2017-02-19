@@ -104,7 +104,11 @@ class CharactersTable extends Component {
         <div className="form-inline" style={{ marginBottom: '15px' }}>
           <div className="form-group">
             <label htmlFor="game">Game</label>{' '}
-            <select className="form-control" value={currentGame} onChange={this.setQuery(actions.changeCurrentGame)}>
+            <select
+              className="form-control"
+              value={currentGame}
+              onChange={(e) => { this.setQuery(actions.changeCurrentGame)(e.target.value); }}
+            >
               <option value="">All</option>
               <option value="[!uncategorized]">Uncategorized</option>
               <option disabled>──────────</option>
@@ -223,6 +227,7 @@ class CharactersTable extends Component {
             allGames={allGames}
             charsArray={charsArray}
             getMaxOrder={actions.getCharWithMaxOrder}
+            getCharsFromGame={actions.getCharsFromGame}
             mode="new"
           />
         }
@@ -237,6 +242,7 @@ class CharactersTable extends Component {
             allGames={allGames}
             charsArray={charsArray}
             getMaxOrder={actions.getCharWithMaxOrder}
+            getCharsFromGame={actions.getCharsFromGame}
             mode="edit"
           />
         }

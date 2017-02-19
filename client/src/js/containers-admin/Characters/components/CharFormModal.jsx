@@ -5,63 +5,20 @@ import { Field, reduxForm, formValueSelector, propTypes } from 'redux-form';
 
 import { textField, imageField } from '../../_sharedComponents/formFields';
 import { required } from '../../_sharedComponents/validationFields';
+import OrderSelectField from './OrderSelectField';
 
 class CharFormModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { maxOrder: 0 };
-  }
-
-  componentWillMount() {
-    this.updateMaxOrder(this.props._gameValue);
-  }
-
-  componentWillReceiveProps(newProps) {
-    if (this.props._gameValue !== newProps._gameValue) {
-      this.updateMaxOrder(newProps._gameValue);
-    }
-  }
-
-  updateMaxOrder = (gameId) => {
-    this.props.getMaxOrder(gameId)
-      .then((char) => {
-        if (char[0]) {
-          const maxOrder = this.props.mode === 'new' ? char[0]._order + 1 : char[0]._order;
-          this.setState({ maxOrder });
-        } else {
-          this.setState({ maxOrder: 1 });
-        }
-      });
-  }
-
   render() {
-    const { title, buttonName, mode, allGames, _gameValue, hide,
+    const { mode, title, buttonName, allGames, reduxValues, getCharsFromGame, hide,
       handleSubmit, submitting, initialValues, error, reset } = this.props;
 
     const gameOptions = allGames.map(game => (
       <option key={game.title} value={game.id}>{game.title}</option>
     ));
 
-    const orderSelect = [];
-
-    if (mode === 'edit') {
-      for (let i = 1; i <= this.state.maxOrder; i++) {
-        orderSelect.push(<option key={i} value={i}>{i}</option>);
-      }
-      if (initialValues._game !== _gameValue) {
-        orderSelect.push(
-          <option key={this.state.maxOrder + 1} value={this.state.maxOrder + 1}>{this.state.maxOrder + 1}</option>
-        );
-      }
-    } else {
-      for (let i = this.state.maxOrder; i > 0; i--) {
-        orderSelect.push(<option key={i} value={i}>{i}</option>);
-      }
-    }
-
     return (
       <div className="static-modal">
-        <Modal show onHide={hide}>
+        <Modal show onHide={hide} bsSize="large">
           <Modal.Header>
             <Modal.Title>{title}</Modal.Title>
           </Modal.Header>
@@ -76,6 +33,8 @@ class CharFormModal extends Component {
                 type="file"
                 component={imageField}
                 label="Image"
+                withRef
+                ref={(com) => { this.fileImageField = com; }}
               />
 
               <div className="form-group">
@@ -88,15 +47,17 @@ class CharFormModal extends Component {
                 </div>
               </div>
 
-              {_gameValue && _gameValue !== '[!uncategorized]' &&
-                <div className="form-group">
-                  <label htmlFor="_order" className="col-sm-2 control-label">Order</label>
-                  <div className="col-sm-10">
-                    <Field name="_order" component="select" className="form-control">
-                      {orderSelect}
-                    </Field>
-                  </div>
-                </div>
+              {reduxValues._game && reduxValues._game !== '[!uncategorized]' &&
+                <Field
+                  name="_order"
+                  component={OrderSelectField}
+                  getCharsFromGame={getCharsFromGame}
+                  initialValues={initialValues}
+                  reduxValues={reduxValues}
+                  initial={reduxValues._game === initialValues._game}
+                  fileImageField={this.fileImageField}
+                  mode={mode}
+                />
               }
 
               <Field name="art.author" type="text" component={textField} label="Art author" />
@@ -126,14 +87,12 @@ CharFormModal.defaultProps = {
   initialValues: {},
   error: '',
   allGames: {},
-  _gameValue: '',
 };
 
 CharFormModal.propTypes = {
   title: PropTypes.string.isRequired,
   buttonName: PropTypes.string.isRequired,
   allGames: PropTypes.arrayOf(PropTypes.object),
-  _gameValue: PropTypes.string,
   hide: PropTypes.func.isRequired,
   getMaxOrder: PropTypes.func.isRequired,
   mode: PropTypes.string.isRequired,
@@ -148,14 +107,25 @@ CharFormModal.propTypes = {
     }),
     wiki: PropTypes.string,
   }),
+  reduxValues: PropTypes.shape({
+    name: PropTypes.string,
+    _game: PropTypes.string,
+    fileImage: PropTypes.object,
+  }).isRequired,
   ...propTypes,
 };
 
 const selector = formValueSelector('CharFormModal');
 
 function mapStateToProps(state) {
-  const _gameValue = selector(state, '_game');
-  return { _gameValue };
+  const name = selector(state, 'name');
+  const _game = selector(state, '_game');
+  const fileImage = selector(state, 'fileImage');
+  return {
+    reduxValues: {
+      name, _game, fileImage,
+    },
+  };
 }
 
 export default connect(mapStateToProps)(

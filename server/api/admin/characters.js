@@ -8,57 +8,57 @@ const upload = multer.single('image');
 
 router.route('/')
   .get(async (req, res, next) => {
-    // { _game: '12345gf67' } => { _game: '12345gf67' } => means "show all characters from game with id: '12345gf67'"
-    // { _game: '' } => { _game: null } => means "show all uncategorized characters"
-    // { _game: undefined } => {} => means "show all characters"
-    const filter = (_game) => {
-      if (_game === '') return { _game: null };
-      if (_game === undefined) return {};
-      return { _game: ObjectId(_game) };
-    };
-
-    const params = controller.queryParams(req.query);
-    params.filter = Object.assign({}, params.filter, filter(req.query._game));
-
-    let func = Character.aggregate()
-        .match(params.filter)
-        .lookup({
-          from: 'games',
-          localField: '_game',
-          foreignField: '_id',
-          as: '_game',
-        })
-        .append({
-          $unwind: { path: '$_game', preserveNullAndEmptyArrays: true },
-        })
-        .append({
-          $addFields: {
-            id: '$_id',
-            game: '$_game.title',
-            '_game.id': '$_game._id',
-          },
-        });
-
-    if (params.sort) {
-      func = func.sort(params.sort);
-    }
-
-    func = func.project({
-      _id: 0,
-      __v: 0,
-      '_game._id': 0,
-      '_game.__v': 0,
-    });
-
-    if (params.skip) {
-      func = func.skip(params.skip);
-    }
-
-    if (params.limit) {
-      func = func.limit(params.limit);
-    }
-
     try {
+      // { _game: '12345gf67' } => { _game: '12345gf67' } => means "show all characters from game with id: '12345gf67'"
+      // { _game: '' } => { _game: null } => means "show all uncategorized characters"
+      // { _game: undefined } => {} => means "show all characters"
+      const filter = (_game) => {
+        if (_game === '') return { _game: null };
+        if (_game === undefined) return {};
+        return { _game: ObjectId(_game) };
+      };
+
+      const params = controller.queryParams(req.query);
+      params.filter = Object.assign({}, params.filter, filter(req.query._game));
+
+      let func = Character.aggregate()
+          .match(params.filter)
+          .lookup({
+            from: 'games',
+            localField: '_game',
+            foreignField: '_id',
+            as: '_game',
+          })
+          .append({
+            $unwind: { path: '$_game', preserveNullAndEmptyArrays: true },
+          })
+          .append({
+            $addFields: {
+              id: '$_id',
+              game: '$_game.title',
+              '_game.id': '$_game._id',
+            },
+          });
+
+      if (params.sort) {
+        func = func.sort(params.sort);
+      }
+
+      func = func.project({
+        _id: 0,
+        __v: 0,
+        '_game._id': 0,
+        '_game.__v': 0,
+      });
+
+      if (params.skip) {
+        func = func.skip(params.skip);
+      }
+
+      if (params.limit) {
+        func = func.limit(params.limit);
+      }
+
       const characters = await func.exec();
 
       const count = await Character.count(params.filter);

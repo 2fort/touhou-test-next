@@ -43,8 +43,8 @@ export function charFilterModalClose() {
   return { type: CHAR_FILTER_MODAL_CLOSE };
 }
 
-export function changeCurrentGame(e) {
-  return { type: CHANGE_CURRENT_GAME, gameId: e.target.value };
+export function changeCurrentGame(gameId) {
+  return { type: CHANGE_CURRENT_GAME, gameId };
 }
 
 export function updateQueryString() {
@@ -75,6 +75,11 @@ export function fetchCharacters() {
 export function getCharWithMaxOrder(gameId) {
   return dispatch =>
     dispatch(fetchAndReturnJson(`${route}?_game=${gameId}&sort=-_order&limit=1`, component));
+}
+
+export function getCharsFromGame(gameId) {
+  return dispatch =>
+    dispatch(fetchAndReturnJson(`${route}?_game=${gameId}&sort=_order`, component));
 }
 
 export function fetchAllGames() {

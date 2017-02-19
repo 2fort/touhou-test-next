@@ -40,6 +40,8 @@ export class imageField extends Component {
     }
   }
 
+  getImgPreview = () => this.state.imgPreview;
+
   revokeImgPreview = () => {
     const { imgPreview } = this.state;
     if (imgPreview && imgPreview.substring(0, 4) === 'blob') {
