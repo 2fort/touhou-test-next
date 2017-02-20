@@ -91,9 +91,9 @@ export function fetchAllGames() {
       });
 }
 
-export function changeOrder(id, order) {
+export function changeOrder(id, _order) {
   return dispatch =>
-    dispatch(jsonSubmit(`${route}/${id}`, 'PATCH', { order }));
+    dispatch(jsonSubmit(`${route}/${id}`, 'PATCH', { _order }));
 }
 
 export function newCharacter(values) {

@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const _ = require('lodash');
 const Game = require('../../models/game');
 const controller = require('../../controller/admin');
 const multer = require('../../controller/multer');
@@ -133,10 +134,15 @@ router.route('/:id')
         update.cover = await controller.dealWithFile(req.file);
       }
 
+      // title was changed? if so, update slug
+      if (update.title && update.title !== gameBeforeUpdate.title) {
+        update.slug = _.snakeCase(update.title);
+      }
+
       // time to update the game!
       await Game.update({ _id: req.params.id }, update).exec();
 
-      // no errors so far, time to compare some values from `new game` and `old game`
+      // no errors so far, time to compare some values before and after update
 
       // does order was changed?
       if (update.order && update.order !== gameBeforeUpdate.order) {

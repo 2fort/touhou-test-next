@@ -29,6 +29,7 @@ const GameFilterModal = ({ handleSubmit, hide }) => (
 
 GameFilterModal.propTypes = {
   hide: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
   ...propTypes,
 };
 
