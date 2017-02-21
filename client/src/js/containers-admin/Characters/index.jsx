@@ -9,24 +9,20 @@ import { prepareFormData, parseQuery } from '../_sharedComponents/utils';
 import { IMG_THUMBNAIL } from '../../config';
 
 import CharFormModal from './components/CharFormModal';
-import CharFilterModal from './components/CharFilterModal';
 import SortButton from '../Base/components/SortButton';
 import Pagination from '../Base/components/Pagination';
 import LimitSelect from '../Base/components/LimitSelect';
-import ActiveFilters from '../Base/components/ActiveFilters';
 import EntitiesCounter from '../Base/components/EntitiesCounter';
+import FilterPanel from './components/FilterPanel';
 
 class CharactersTable extends Component {
   componentWillMount() {
     const { location, component, actions } = this.props;
+
     const query = parseQuery(location.query);
 
     if (Object.keys(query).length > 0) {
       component.setQuery(query);
-    }
-
-    if (location.query._game) {
-      actions.changeCurrentGame(location.query._game);
     }
 
     actions.updateQueryString();
@@ -75,60 +71,28 @@ class CharactersTable extends Component {
       .then(() => this.props.actions.editCharModalClose());
   }
 
-  filterSubmit = (values) => {
-    const cleanVal = {};
-
-    Object.keys(values).forEach((key) => {
-      if (values[key]) {
-        cleanVal[key] = values[key];
-      }
-    });
-
-    this.props.component.setFilter(cleanVal);
-    this.props.actions.updateQueryString();
-    this.props.actions.charFilterModalClose();
-    this.props.actions.fetchCharacters();
-  }
-
   swapOrderBtnHandler = (id, num) => () => {
     this.props.actions.changeOrder(id, num)
       .then(() => this.props.actions.fetchCharacters());
   }
 
   render() {
-    const { charsArray, gamesList, currentGame, actions, modals, allGames,
+    const { charsArray, gamesList, actions, modals, filterPanelOpen, allGames,
       component, domainState: { pending, total, query } } = this.props;
 
     const Sort = props => <SortButton reduxField={query.sort} setSort={this.setQuery(component.setSort)} {...props} />;
-    const nonOrderMode = !currentGame || currentGame === '[!uncategorized]';
-
-    const gameOptions = allGames.map(game => (
-      <option key={game.title} value={game.id}>{game.title}</option>
-    ));
+    const nonOrderMode = !query.filter._game;
 
     return (
       <div>
-        <div className="form-inline" style={{ marginBottom: '15px' }}>
-          <div className="form-group">
-            <label htmlFor="game">Game</label>{' '}
-            <select
-              className="form-control"
-              value={currentGame}
-              onChange={(e) => { this.setQuery(actions.changeCurrentGame)(e.target.value); }}
-            >
-              <option value="">All</option>
-              <option value="[!uncategorized]">Uncategorized</option>
-              <option disabled>──────────</option>
-              {gameOptions}
-            </select>
-          </div>
-        </div>
-
-        <button title="Add filter" type="button" className="btn btn-primary" onClick={actions.charFilterModalOpen}>
-          <i className="fa fa-filter" aria-hidden="true" /> Add filter
-        </button>
-
-        <ActiveFilters setFilter={this.setQuery(component.setFilter)} filters={query.filter} />
+        <FilterPanel
+          filterPanelOpen={filterPanelOpen}
+          openTrigger={actions.charFilterPanelTrigger}
+          nameSearchExp={actions.nameSearchExp}
+          initialValues={query.filter}
+          setFilter={this.setQuery(component.setFilter)}
+          allGames={allGames}
+        />
 
         <div className="form-inline">
           <div className="form-group">
@@ -142,7 +106,7 @@ class CharactersTable extends Component {
 
         <div className="pull-left">
           <EntitiesCounter page={query.page} limit={query.limit} length={charsArray.length} total={total} pending={pending}>
-            games
+            characters
           </EntitiesCounter>
         </div>
         <div className="pull-right">
@@ -233,7 +197,7 @@ class CharactersTable extends Component {
                     <i className="fa fa-pencil fa-lg" aria-hidden="true" />
                   </button>
                   {' '}
-                  <button type="button" className="btn btn-default" onClick={this.deleteCharBtnHandler(char)}>
+                  <button type="button" className="btn btn-default" onClick={this.deleteCharBtnHandler(char.id)}>
                     <i className="fa fa-trash fa-lg" aria-hidden="true" />
                   </button>
                 </td>
@@ -246,7 +210,7 @@ class CharactersTable extends Component {
 
         {modals.newCharModalVisible &&
           <CharFormModal
-            initialValues={{ _game: currentGame }}
+            initialValues={{ _game: query.filter._game }}
             onSubmit={this.newCharModalSubmit}
             hide={actions.newCharModalClose}
             title="New Character"
@@ -273,14 +237,6 @@ class CharactersTable extends Component {
             mode="edit"
           />
         }
-
-        {modals.filterModalVisible &&
-          <CharFilterModal
-            initialValues={query.filter}
-            onSubmit={this.filterSubmit}
-            hide={actions.charFilterModalClose}
-          />
-        }
       </div>
     );
   }
@@ -289,8 +245,8 @@ class CharactersTable extends Component {
 CharactersTable.defaultProps = {
   charsArray: [],
   gamesList: {},
-  allGames: [],
-  currentGame: '',
+  allGames: {},
+  filterPanelOpen: false,
   total: 0,
   modals: {},
   query: {
@@ -301,8 +257,8 @@ CharactersTable.defaultProps = {
 CharactersTable.propTypes = {
   charsArray: PropTypes.arrayOf(PropTypes.object),
   gamesList: PropTypes.objectOf(PropTypes.object),
-  allGames: PropTypes.arrayOf(PropTypes.object),
-  currentGame: PropTypes.string,
+  allGames: PropTypes.objectOf(PropTypes.object),
+  filterPanelOpen: PropTypes.bool,
   modals: PropTypes.shape({
     newCharModalVisible: PropTypes.bool,
     editCharModalVisible: PropTypes.bool,
@@ -316,13 +272,11 @@ CharactersTable.propTypes = {
     fetchCharacters: PropTypes.func.isRequired,
     fetchAllGames: PropTypes.func.isRequired,
     changeOrder: PropTypes.func.isRequired,
-    changeCurrentGame: PropTypes.func.isRequired,
     editCharacter: PropTypes.func.isRequired,
     newCharacter: PropTypes.func.isRequired,
     deleteCharacter: PropTypes.func.isRequired,
     updateQueryString: PropTypes.func.isRequired,
-    charFilterModalOpen: PropTypes.func.isRequired,
-    charFilterModalClose: PropTypes.func.isRequired,
+    charFilterPanelTrigger: PropTypes.func.isRequired,
   }).isRequired,
   component: PropTypes.shape({
     setSort: PropTypes.func.isRequired,
@@ -359,13 +313,12 @@ function mapStateToProps({ entities, domain: { charactersTable } }) {
     charsArray,
     gamesList: entities.games,
     allGames: charactersTable.allGames,
-    currentGame: charactersTable.currentGame,
     modals: {
       newCharModalVisible: charactersTable.newCharModalVisible,
       editCharModalVisible: charactersTable.editCharModalVisible,
       editFormInitValues: charactersTable.editFormInitValues,
-      filterModalVisible: charactersTable.filterModalVisible,
     },
+    filterPanelOpen: charactersTable.filterPanelOpen,
   };
 }
 

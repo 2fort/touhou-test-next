@@ -28,13 +28,19 @@ export default function (url, schema, component, saveVisible = true) {
   };
 }
 
-export function fetchAndReturnJson(url, component) {
+export function fetchAndReturnJson(url, component, schema = null) {
   return (dispatch) => {
     dispatch(component.fetchBegin());
 
     return request(url)
       .then((response) => {
         dispatch(component.fetchSuccess());
+
+        if (schema) {
+          const data = normalize(response.json, schema);
+          return data.entities;
+        }
+
         return response.json;
       })
       .catch((err) => {

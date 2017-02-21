@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import { Field, reduxForm, formValueSelector, propTypes } from 'redux-form';
 
-import { textField, imageField } from '../../_sharedComponents/formFields';
+import { TextField, ImageField } from '../../_sharedComponents/fields';
 import { required } from '../../_sharedComponents/validationFields';
 import OrderSelectField from './OrderSelectField';
 
@@ -12,7 +12,7 @@ class CharFormModal extends Component {
     const { mode, title, buttonName, allGames, reduxValues, getCharsFromGame, hide,
       handleSubmit, submitting, initialValues, error, reset } = this.props;
 
-    const gameOptions = allGames.map(game => (
+    const gameOptions = Object.values(allGames).map(game => (
       <option key={game.title} value={game.id}>{game.title}</option>
     ));
 
@@ -26,12 +26,12 @@ class CharFormModal extends Component {
           <form encType="multipart/form-data" className="form-horizontal" onSubmit={handleSubmit}>
             <Modal.Body>
               <Field name="id" type="hidden" component="input" />
-              <Field name="name" type="text" component={textField} label="Name" validate={[required]} />
+              <Field name="name" type="text" component={TextField} label="Name" validate={[required]} />
               <Field
                 name="fileImage"
                 currentImage={initialValues.image}
                 type="file"
-                component={imageField}
+                component={ImageField}
                 label="Image"
                 withRef
                 ref={(com) => { this.fileImageField = com; }}
@@ -47,7 +47,7 @@ class CharFormModal extends Component {
                 </div>
               </div>
 
-              {reduxValues._game && reduxValues._game !== '[!uncategorized]' &&
+              {reduxValues._game &&
                 <Field
                   name="_order"
                   component={OrderSelectField}
@@ -60,9 +60,9 @@ class CharFormModal extends Component {
                 />
               }
 
-              <Field name="art.author" type="text" component={textField} label="Art author" />
-              <Field name="art.url" type="text" component={textField} label="Art url" />
-              <Field name="wiki" type="text" component={textField} label="Wiki" />
+              <Field name="art.author" type="text" component={TextField} label="Art author" />
+              <Field name="art.url" type="text" component={TextField} label="Art url" />
+              <Field name="wiki" type="text" component={TextField} label="Wiki" />
 
               {error &&
                 <Alert bsStyle="danger"><strong>Error: </strong>{error}</Alert>
@@ -92,9 +92,8 @@ CharFormModal.defaultProps = {
 CharFormModal.propTypes = {
   title: PropTypes.string.isRequired,
   buttonName: PropTypes.string.isRequired,
-  allGames: PropTypes.arrayOf(PropTypes.object),
+  allGames: PropTypes.objectOf(PropTypes.object),
   hide: PropTypes.func.isRequired,
-  getMaxOrder: PropTypes.func.isRequired,
   mode: PropTypes.string.isRequired,
   initialValues: PropTypes.shape({
     id: PropTypes.string,

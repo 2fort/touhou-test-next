@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import { Field, reduxForm, propTypes } from 'redux-form';
 
-import { textField, imageField } from '../../_sharedComponents/formFields';
+import { TextField, ImageField } from '../../_sharedComponents/fields';
 import { required, number, maxValue, moreThan0 } from '../../_sharedComponents/validationFields';
 
 class GameFormModal extends Component {
@@ -36,20 +36,20 @@ class GameFormModal extends Component {
           <form encType="multipart/form-data" className="form-horizontal" onSubmit={handleSubmit}>
             <Modal.Body>
               <Field name="id" type="hidden" component="input" />
-              <Field name="prefix" type="text" component={textField} label="Prefix" />
-              <Field name="title" type="text" component={textField} label="Title" validate={[required]} />
+              <Field name="prefix" type="text" component={TextField} label="Prefix" />
+              <Field name="title" type="text" component={TextField} label="Title" validate={[required]} />
               <Field
                 name="fileCover"
                 currentImage={initialValues.cover}
                 type="file"
-                component={imageField}
+                component={ImageField}
                 label="Cover"
               />
-              <Field name="year" type="text" component={textField} label="Year" validate={[number]} />
+              <Field name="year" type="text" component={TextField} label="Year" validate={[number]} />
               <Field
                 name="order"
                 type="number"
-                component={textField}
+                component={TextField}
                 label="Order"
                 validate={
                   mode === 'new'

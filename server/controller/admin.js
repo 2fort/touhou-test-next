@@ -1,5 +1,6 @@
 const path = require('path');
 const flatten = require('flat');
+const ObjectId = require('mongodb').ObjectId;
 const utils = require('../lib/utils');
 const config = require('../config');
 
@@ -32,7 +33,23 @@ this.deleteAllImg = function deleteAllImg(image) {
   return utils.deleteMany(paths);
 };
 
-this.queryParams = function queryParams(query) {
+function toObjectId(id) {
+  const stringId = id.toString().toLowerCase();
+
+  if (!ObjectId.isValid(stringId)) {
+    return null;
+  }
+
+  const result = new ObjectId(stringId);
+
+  if (result.toString() !== stringId) {
+    return null;
+  }
+
+  return result;
+}
+
+this.queryParams = function queryParams(query, emptyStringToNull) {
   const params = {
     page: Number(query.page) || undefined,
     limit: Number(query.limit) || undefined,
@@ -44,18 +61,39 @@ this.queryParams = function queryParams(query) {
     params.filter = flatten(params.filter);
   }
 
+  const cleanFilters = {};
+
+  // this needs refactoring
   Object.keys(params.filter).forEach((key) => {
-    // convert strings to numbers if possible
-    if (!isNaN(Number(params.filter[key]))) {
-      params.filter[key] = Number(params.filter[key]);
+    // copy blank strings, convert them to nulls if needed
+    if (params.filter[key] === '' && !emptyStringToNull.includes(key)) {
+      cleanFilters[key] = '';
+      params.filter[key] = undefined;
+    } else if (params.filter[key] === '' && emptyStringToNull.includes(key)) {
+      cleanFilters[key] = null;
+      params.filter[key] = undefined;
+    }
+
+    // convert strings to Numbers if possible
+    if (params.filter[key] && !isNaN(Number(params.filter[key]))) {
+      cleanFilters[key] = Number(params.filter[key]);
+      params.filter[key] = undefined;
+    }
+
+    // same with ObjectId
+    if (params.filter[key] && toObjectId(params.filter[key])) {
+      cleanFilters[key] = ObjectId(params.filter[key]);
+      params.filter[key] = undefined;
     }
 
     // convert strings to regex for partial search
-    if (typeof params.filter[key] === 'string') {
-      params.filter[key] = new RegExp(params.filter[key], 'i');
+    if (params.filter[key] && typeof params.filter[key] === 'string') {
+      cleanFilters[key] = new RegExp(params.filter[key], 'i');
+      params.filter[key] = undefined;
     }
   });
 
+  params.filter = cleanFilters;
   params.skip = (params.page && params.limit) ? (params.page - 1) * params.limit : undefined;
 
   return params;

@@ -2,7 +2,7 @@ import Immutable from 'seamless-immutable';
 import { stringify } from 'qs';
 import { browserHistory } from 'react-router';
 
-import { charactersEntity } from '../../schemas/adminSchemas';
+import { charactersEntity, gameEntity } from '../../schemas/adminSchemas';
 import { generateComponent } from '../../ducks/domain';
 import fetchAndSave, { fetchAndReturnJson, formSubmit, jsonSubmit } from '../../actions/fetchAndSave';
 
@@ -11,10 +11,8 @@ const NEW_CHAR_MODAL_OPEN = `${componentName}/NEW_CHAR_MODAL_OPEN`;
 const NEW_CHAR_MODAL_CLOSE = `${componentName}/NEW_CHAR_MODAL_CLOSE`;
 const EDIT_CHAR_MODAL_OPEN = `${componentName}/EDIT_CHAR_MODAL_OPEN`;
 const EDIT_CHAR_MODAL_CLOSE = `${componentName}/EDIT_CHAR_MODAL_CLOSE`;
-const CHANGE_CURRENT_GAME = `${componentName}/CHANGE_CURRENT_GAME`;
 const ADD_ALL_GAMES = `${componentName}/ADD_ALL_GAMES`;
-const CHAR_FILTER_MODAL_OPEN = `${componentName}/CHAR_FILTER_MODAL_OPEN`;
-const CHAR_FILTER_MODAL_CLOSE = `${componentName}/CHAR_FILTER_MODAL_CLOSE`;
+const FILTER_PANEL_TRIGGER = `${componentName}/FILTER_PANEL_TRIGGER`;
 
 const component = generateComponent(componentName);
 const route = '/api/admin/characters';
@@ -35,58 +33,35 @@ export function editCharModalClose() {
   return { type: EDIT_CHAR_MODAL_CLOSE };
 }
 
-export function charFilterModalOpen() {
-  return { type: CHAR_FILTER_MODAL_OPEN };
-}
-
-export function charFilterModalClose() {
-  return { type: CHAR_FILTER_MODAL_CLOSE };
-}
-
-export function changeCurrentGame(gameId) {
-  return { type: CHANGE_CURRENT_GAME, gameId };
+export function charFilterPanelTrigger() {
+  return { type: FILTER_PANEL_TRIGGER };
 }
 
 export function updateQueryString() {
   return (dispatch) => {
-    const { currentGame, query } = dispatch(component.getState());
+    const query = dispatch(component.getState()).query;
     const { pathname } = browserHistory.getCurrentLocation();
-
-    const _game = (currentGame) ? { _game: currentGame } : undefined;
-
-    browserHistory.replace(`${pathname}?${stringify({ ...query, ..._game }, { encode: false })}`);
+    browserHistory.replace(`${pathname}?${stringify(query, { encode: false })}`);
   };
 }
 
 export function fetchCharacters() {
   return (dispatch) => {
-    const { currentGame, query } = dispatch(component.getState());
-
-    const gameRoute = (game) => {
-      if (game === '') return '';
-      if (game === '[!uncategorized]') return '_game=';
-      return `_game=${game}`;
-    };
-
-    return dispatch(fetchAndSave(`${route}?${gameRoute(currentGame)}&${stringify(query)}`, [charactersEntity], component));
+    const query = dispatch(component.getState()).query;
+    return dispatch(fetchAndSave(`${route}?${stringify(query)}`, [charactersEntity], component));
   };
-}
-
-export function getCharWithMaxOrder(gameId) {
-  return dispatch =>
-    dispatch(fetchAndReturnJson(`${route}?_game=${gameId}&sort=-_order&limit=1`, component));
 }
 
 export function getCharsFromGame(gameId) {
   return dispatch =>
-    dispatch(fetchAndReturnJson(`${route}?_game=${gameId}&sort=_order`, component));
+    dispatch(fetchAndReturnJson(`${route}?filter[_game]=${gameId}&sort=_order`, component));
 }
 
 export function fetchAllGames() {
   return dispatch =>
-    dispatch(fetchAndReturnJson('/api/admin/games', component))
+    dispatch(fetchAndReturnJson('/api/admin/games', component, [gameEntity]))
       .then((games) => {
-        dispatch({ type: ADD_ALL_GAMES, games });
+        dispatch({ type: ADD_ALL_GAMES, ...games });
         return true;
       });
 }
@@ -115,12 +90,11 @@ const defaultState = Immutable({
   newCharModalVisible: false,
   editCharModalVisible: false,
   editFormInitValues: {},
-  filterModalVisible: false,
+  filterPanelOpen: false,
   query: {
-    sort: '_id',
+    sort: 'name',
   },
-  currentGame: '',
-  allGames: [],
+  allGames: {},
 });
 
 function reducer(state = null, action) {
@@ -141,16 +115,9 @@ function reducer(state = null, action) {
       return Immutable.merge(state, { editCharModalVisible: false, editFormInitValues: {} });
     }
 
-    case CHAR_FILTER_MODAL_OPEN: {
-      return Immutable.merge(state, { filterModalVisible: true });
+    case FILTER_PANEL_TRIGGER: {
+      return Immutable.merge(state, { filterPanelOpen: !state.filterPanelOpen });
     }
-
-    case CHAR_FILTER_MODAL_CLOSE: {
-      return Immutable.merge(state, { filterModalVisible: false });
-    }
-
-    case CHANGE_CURRENT_GAME:
-      return Immutable.merge(state, { currentGame: action.gameId });
 
     case ADD_ALL_GAMES:
       return Immutable.merge(state, { allGames: action.games });

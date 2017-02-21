@@ -1,32 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { IMG_THUMBNAIL } from '../../config';
+import { IMG_THUMBNAIL } from '../../../config';
 
-export const textField = ({ input, label, type, meta: { touched, error }, disabled }) => (
-  <div className="form-group">
-    <label htmlFor={input.name} className="col-sm-2 control-label">{label}</label>
-    <div className="col-sm-10">
-      <input className="form-control" disabled={disabled} {...input} placeholder={label} type={type} />
-      {touched && (error && <span>{error}</span>)}
-    </div>
-  </div>
-);
-
-textField.defaultProps = {
-  disabled: false,
-};
-
-textField.propTypes = {
-  input: PropTypes.object.isRequired,
-  label: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
-  meta: PropTypes.shape({
-    touched: PropTypes.bool,
-    error: PropTypes.string,
-  }).isRequired,
-  disabled: PropTypes.bool,
-};
-
-export class imageField extends Component {
+export default class ImageField extends Component {
   constructor(props) {
     super(props);
     this.initialImage = props.currentImage ? IMG_THUMBNAIL + props.currentImage : '';
@@ -106,12 +81,15 @@ export class imageField extends Component {
   }
 }
 
-imageField.defaultProps = {
+ImageField.defaultProps = {
   currentImage: '',
 };
 
-imageField.propTypes = {
-  input: PropTypes.object.isRequired,
+ImageField.propTypes = {
+  input: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+  }).isRequired,
   label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   meta: PropTypes.shape({

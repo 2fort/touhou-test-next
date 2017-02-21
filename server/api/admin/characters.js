@@ -3,24 +3,13 @@ const _ = require('lodash');
 const Character = require('../../models/character');
 const controller = require('../../controller/admin');
 const multer = require('../../controller/multer');
-const ObjectId = require('mongodb').ObjectId;
 
 const upload = multer.single('image');
 
 router.route('/')
   .get(async (req, res, next) => {
     try {
-      // { _game: '12345gf67' } => { _game: '12345gf67' } => means "show all characters from game with id: '12345gf67'"
-      // { _game: '' } => { _game: null } => means "show all uncategorized characters"
-      // { _game: undefined } => {} => means "show all characters"
-      const filter = (_game) => {
-        if (_game === '') return { _game: null };
-        if (_game === undefined) return {};
-        return { _game: ObjectId(_game) };
-      };
-
-      const params = controller.queryParams(req.query);
-      params.filter = Object.assign({}, params.filter, filter(req.query._game));
+      const params = controller.queryParams(req.query, ['_game']);
 
       let func = Character.aggregate()
           .match(params.filter)

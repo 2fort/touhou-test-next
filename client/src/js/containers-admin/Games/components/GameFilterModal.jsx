@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { Field, reduxForm, propTypes } from 'redux-form';
 
-import { textField } from '../../_sharedComponents/formFields';
+import { TextField } from '../../_sharedComponents/fields';
 import { number } from '../../_sharedComponents/validationFields';
 
 const GameFilterModal = ({ handleSubmit, hide }) => (
@@ -14,8 +14,8 @@ const GameFilterModal = ({ handleSubmit, hide }) => (
 
       <form className="form-horizontal" onSubmit={handleSubmit}>
         <Modal.Body>
-          <Field name="title" type="text" component={textField} label="Title" />
-          <Field name="year" type="text" component={textField} label="Year" validate={[number]} />
+          <Field name="title" type="text" component={TextField} label="Title" />
+          <Field name="year" type="text" component={TextField} label="Year" validate={[number]} />
         </Modal.Body>
 
         <Modal.Footer>
