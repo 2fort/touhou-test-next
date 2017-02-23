@@ -17,7 +17,7 @@ import EntitiesCounter from '../Base/components/EntitiesCounter';
 import FilterPanel from '../Base/components/FilterPanel';
 
 class GamesTable extends Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.actions.fetchGames();
   }
 
@@ -278,6 +278,7 @@ function mapStateToProps({ domain: { gamesTable }, entities: { games } }) {
     year: {
       type: 'text',
       label: 'Year',
+      canBeBlank: true,
       validation: ['number'],
     },
   };
@@ -291,7 +292,7 @@ function mapDispatchToProps(dispatch) {
 
 export default
   connect(mapStateToProps, mapDispatchToProps)(
-    domainHoc({ name: 'GamesTable' })(
+    domainHoc({ name: 'GamesTable', persist: true, resetVisible: true })(
       QueryStringHOC(GamesTable),
     ),
   );

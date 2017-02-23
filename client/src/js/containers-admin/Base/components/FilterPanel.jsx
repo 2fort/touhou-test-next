@@ -2,12 +2,20 @@ import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import { Form, Field, reduxForm, propTypes } from 'redux-form';
 import * as validationFields from '../../_sharedComponents/validationFields';
-import { SelectFieldFilter, TextFieldFilter } from '../../_sharedComponents/fields';
+import { SelectFieldFilter, TextFieldFilter, TextField } from '../../_sharedComponents/fields';
 
 class FilterPanel extends Component {
   constructor(props) {
     super(props);
     this.state = { open: false };
+  }
+
+  onFieldChange = handleSubmit => (e) => {
+    const { removeFilter } = this.props.qs;
+    if (e.target.value === '') {
+      this.props.setFilter(removeFilter(e.target.name));
+    }
+    setTimeout(handleSubmit);
   }
 
   submit = (values) => {
@@ -87,8 +95,8 @@ class FilterPanel extends Component {
               label={obj.label}
               validate={validations}
               optionsSelect={options}
-              onChange={() => { setTimeout(handleSubmit); }}
-              disabled={!Object.keys(flattenFilters).includes(name)}
+              onChange={this.onFieldChange(handleSubmit)}
+              disabled={flattenFilters[name] === ''}
               checkboxTrigger={this.checkboxTrigger}
             />
           );
@@ -100,11 +108,12 @@ class FilterPanel extends Component {
               key={name}
               name={name}
               type="text"
-              component={TextFieldFilter}
+              component={obj.canBeBlank ? TextFieldFilter : TextField}
               label={obj.label}
+              placeholder={false}
               validate={validations}
-              onChange={() => { setTimeout(handleSubmit); }}
-              disabled={!Object.keys(flattenFilters).includes(name)}
+              onChange={this.onFieldChange(handleSubmit)}
+              disabled={flattenFilters[name] === ''}
               checkboxTrigger={this.checkboxTrigger}
             />
           );
@@ -158,6 +167,7 @@ FilterPanel.propTypes = {
     type: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     validation: PropTypes.arrayOf(PropTypes.string),
+    canBeBlank: PropTypes.bool,
     select: PropTypes.shape({
       source: PropTypes.objectOf(PropTypes.object).isRequired,
       value: PropTypes.string.isRequired,

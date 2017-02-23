@@ -6,6 +6,7 @@ import { generateComponent } from '../domain';
 export default childOptions => (ComposedComponent) => {
   const options = {
     persist: false,
+    resetVisible: false,
     ...childOptions,
   };
 
@@ -15,11 +16,16 @@ export default childOptions => (ComposedComponent) => {
     }
 
     componentWillUnmount() {
-      if (options.persist) {
-        this.props.component.containerUnmount();
-      } else {
+      if (!options.persist) {
         this.props.component.containerDestroy();
+        return;
       }
+
+      if (options.resetVisible) {
+        this.props.component.resetVisible();
+      }
+
+      this.props.component.containerUnmount();
     }
 
     render() {
@@ -32,9 +38,7 @@ export default childOptions => (ComposedComponent) => {
       containerMount: PropTypes.func.isRequired,
       containerUnmount: PropTypes.func.isRequired,
       containerDestroy: PropTypes.func.isRequired,
-      fetchBegin: PropTypes.func.isRequired,
-      fetchSuccess: PropTypes.func.isRequired,
-      fetchFail: PropTypes.func.isRequired,
+      resetVisible: PropTypes.func.isRequired,
     }).isRequired,
   };
 

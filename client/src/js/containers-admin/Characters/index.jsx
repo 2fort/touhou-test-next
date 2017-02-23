@@ -280,10 +280,12 @@ function mapStateToProps({ entities, domain: { charactersTable } }) {
     'art.author': {
       type: 'text',
       label: 'Art Author',
+      canBeBlank: true,
     },
     _game: {
       type: 'select',
       label: 'Game',
+      canBeBlank: true,
       select: {
         source: charactersTable.allGames,
         value: 'id',
@@ -303,7 +305,7 @@ function mapDispatchToProps(dispatch) {
 
 export default
   connect(mapStateToProps, mapDispatchToProps)(
-    domainHoc({ name: 'CharactersTable' })(
+    domainHoc({ name: 'CharactersTable', persist: true, resetVisible: true })(
       QueryStringHOC(CharactersTable),
     ),
   );

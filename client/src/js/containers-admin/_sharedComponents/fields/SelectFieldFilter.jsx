@@ -5,13 +5,13 @@ const SelectFieldFilter = ({ input, label, meta: { touched, error }, disabled, c
     <label htmlFor={input.name} className="col-sm-2 control-label">{label}</label>
     <div className="col-sm-10">
       <div className="input-group">
-        <span className="input-group-addon">
-          <input checked={!disabled} onChange={checkboxTrigger(input.name)} type="checkbox" />
-        </span>
         <select className="form-control" disabled={disabled} {...input}>
           <option />
           {optionsSelect}
         </select>
+        <span className="input-group-addon">
+          <input checked={disabled} onChange={checkboxTrigger(input.name)} type="checkbox" /> blank
+        </span>
       </div>
       {touched && (error && <span>{error}</span>)}
     </div>

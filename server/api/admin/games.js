@@ -8,7 +8,7 @@ const upload = multer.single('cover');
 
 router.route('/')
   .get(async (req, res, next) => {
-    const params = controller.queryParams(req.query);
+    const params = controller.queryParams(req.query, 'year');
 
     let func = Game
         .aggregate()

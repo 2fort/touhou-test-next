@@ -12,6 +12,7 @@ const FETCH_BEGIN = 'FETCH_BEGIN';
 const FETCH_SUCCESS = 'FETCH_SUCCESS';
 const FETCH_FAIL = 'FETCH_FAIL';
 const ADD_VISIBLE = 'ADD_VISIBLE';
+const RESET_VISIBLE = 'RESET_VISIBLE';
 const SET_SORT = 'SET_SORT';
 const SET_FILTER = 'SET_FILTER';
 const SET_PAGE = 'SET_PAGE';
@@ -40,6 +41,10 @@ export function generateComponent(component) {
 
     addVisible: (visible, total = 0) => (
       { type: ADD_VISIBLE, component, visible, total: Number(total) }
+    ),
+
+    resetVisible: () => (
+      { type: RESET_VISIBLE, component }
     ),
 
     fetchSuccess: () => (
@@ -124,6 +129,9 @@ export default function domainSlice(componentName, reducer = defaultDomainReduce
 
       case ADD_VISIBLE:
         return Immutable.merge(state, { visible: action.visible, total: action.total, fetchedAt: Date.now() });
+
+      case RESET_VISIBLE:
+        return Immutable.merge(state, { visible: [], total: 0, fetchedAt: 0 });
 
       case FETCH_SUCCESS:
       case FETCH_FAIL:
