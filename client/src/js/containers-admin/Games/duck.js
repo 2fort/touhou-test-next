@@ -1,6 +1,6 @@
 import Immutable from 'seamless-immutable';
-import { browserHistory } from 'react-router';
 import { stringify } from 'qs';
+import { initialize } from 'redux-form';
 
 import { gameEntity } from '../../schemas/adminSchemas';
 import { generateComponent } from '../../ducks/domain';
@@ -11,8 +11,6 @@ const NEW_GAME_MODAL_OPEN = `${componentName}/NEW_GAME_MODAL_OPEN`;
 const NEW_GAME_MODAL_CLOSE = `${componentName}/NEW_GAME_MODAL_CLOSE`;
 const EDIT_GAME_MODAL_OPEN = `${componentName}/EDIT_GAME_MODAL_OPEN`;
 const EDIT_GAME_MODAL_CLOSE = `${componentName}/EDIT_GAME_MODAL_CLOSE`;
-const GAME_FILTER_MODAL_OPEN = `${componentName}/GAME_FILTER_MODAL_OPEN`;
-const GAME_FILTER_MODAL_CLOSE = `${componentName}/GAME_FILTER_MODAL_CLOSE`;
 
 const component = generateComponent(componentName);
 const route = '/api/admin/games';
@@ -25,28 +23,15 @@ export function newGameModalClose() {
   return { type: NEW_GAME_MODAL_CLOSE };
 }
 
-export function editGameModalOpen(initValues) {
-  return { type: EDIT_GAME_MODAL_OPEN, initValues };
+export function editGameModalOpen(game) {
+  return (dispatch) => {
+    dispatch(initialize('GameFormModal', game));
+    dispatch({ type: EDIT_GAME_MODAL_OPEN });
+  };
 }
 
 export function editGameModalClose() {
   return { type: EDIT_GAME_MODAL_CLOSE };
-}
-
-export function gameFilterModalOpen() {
-  return { type: GAME_FILTER_MODAL_OPEN };
-}
-
-export function gameFilterModalClose() {
-  return { type: GAME_FILTER_MODAL_CLOSE };
-}
-
-export function updateQueryString() {
-  return (dispatch) => {
-    const query = dispatch(component.getState()).query;
-    const { pathname } = browserHistory.getCurrentLocation();
-    browserHistory.replace(`${pathname}?${stringify(query, { encode: false })}`);
-  };
 }
 
 export function fetchGames() {
@@ -84,7 +69,6 @@ export function changeOrder(id, order) {
 const defaultState = Immutable({
   newGameModalVisible: false,
   editGameModalVisible: false,
-  editFormInitValues: {},
   filterModalVisible: false,
   query: {
     sort: 'order',
@@ -102,19 +86,11 @@ function reducer(state = null, action) {
     }
 
     case EDIT_GAME_MODAL_OPEN: {
-      return Immutable.merge(state, { editGameModalVisible: true, editFormInitValues: action.initValues });
+      return Immutable.merge(state, { editGameModalVisible: true });
     }
 
     case EDIT_GAME_MODAL_CLOSE: {
-      return Immutable.merge(state, { editGameModalVisible: false, editFormInitValues: {} });
-    }
-
-    case GAME_FILTER_MODAL_OPEN: {
-      return Immutable.merge(state, { filterModalVisible: true });
-    }
-
-    case GAME_FILTER_MODAL_CLOSE: {
-      return Immutable.merge(state, { filterModalVisible: false });
+      return Immutable.merge(state, { editGameModalVisible: false });
     }
 
     default: {

@@ -186,11 +186,11 @@ OrderSelectField.propTypes = {
   reduxValues: PropTypes.shape({
     name: PropTypes.string,
     _game: PropTypes.string,
-    fileImageField: PropTypes.object,
+    fileImage: PropTypes.object,
   }).isRequired,
   getCharsFromGame: PropTypes.func.isRequired,
   fileImageField: PropTypes.shape({
-    getRenderedComponent: PropTypes.func.isRequired,
+    getRenderedComponent: PropTypes.func,
   }),
 };
 

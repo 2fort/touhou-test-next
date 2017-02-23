@@ -101,13 +101,13 @@ export default function domainSlice(componentName, reducer = defaultDomainReduce
 
   return (state, action) => {
     if (!action.component || componentName !== action.component) {
-      return reducer(state, action);
+      return reducer(state || initState, action);
     }
 
     switch (action.type) {
       case CONTAINER_MOUNT: {
-        const returnState = (state) || initState; // first-time mounting check
-        return Immutable.merge(returnState, { active: true });
+        // const returnState = (state) || initState; // first-time mounting check
+        return Immutable.merge(state, { active: true });
       }
 
       case CONTAINER_UNMOUNT: {
@@ -123,7 +123,7 @@ export default function domainSlice(componentName, reducer = defaultDomainReduce
       }
 
       case ADD_VISIBLE:
-        return Immutable.merge(state, { visible: action.visible, total: action.total, fetchedAt: new Date() });
+        return Immutable.merge(state, { visible: action.visible, total: action.total, fetchedAt: Date.now() });
 
       case FETCH_SUCCESS:
       case FETCH_FAIL:

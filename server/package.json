@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "NODE_PATH=. supervisor --harmony --inspect app.js"
+    "start": "NODE_PATH=. supervisor app.js"
   },
   "author": "Alexander Kirsanov",
   "license": "MIT",

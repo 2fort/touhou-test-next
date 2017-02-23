@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Button, Alert } from 'react-bootstrap';
-import { Field, reduxForm, formValueSelector, propTypes } from 'redux-form';
+import { Field, reduxForm, formValueSelector, getFormInitialValues, propTypes } from 'redux-form';
 
 import { TextField, ImageField } from '../../_sharedComponents/fields';
 import { required } from '../../_sharedComponents/validationFields';
@@ -73,7 +73,7 @@ class CharFormModal extends Component {
               <Button type="submit" disabled={submitting} bsStyle="primary">
                 {submitting && <i className="fa fa-spinner fa-spin" />} {buttonName}
               </Button>
-              {initialValues.name && <Button onClick={reset}>Reset</Button>}
+              {mode === 'edit' && <Button onClick={reset}>Reset</Button>}
               <Button onClick={hide}>Cancel</Button>
             </Modal.Footer>
           </form>
@@ -117,16 +117,16 @@ CharFormModal.propTypes = {
 const selector = formValueSelector('CharFormModal');
 
 function mapStateToProps(state) {
-  const name = selector(state, 'name');
-  const _game = selector(state, '_game');
-  const fileImage = selector(state, 'fileImage');
   return {
     reduxValues: {
-      name, _game, fileImage,
+      name: selector(state, 'name'),
+      _game: selector(state, '_game'),
+      fileImage: selector(state, 'fileImage'),
     },
+    initialValues: getFormInitialValues('CharFormModal')(state),
   };
 }
 
 export default connect(mapStateToProps)(
-  reduxForm({ form: 'CharFormModal' })(CharFormModal),
+  reduxForm({ form: 'CharFormModal', enableReinitialize: true })(CharFormModal),
 );

@@ -4,42 +4,26 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
 import { domainHoc } from '../../ducks/domain';
+import QueryStringHOC from '../Base/hocs/QueryStringHOC';
 import * as ownActions from './duck';
-import { prepareFormData, parseQuery } from '../_sharedComponents/utils';
+import { prepareFormData } from '../_sharedComponents/utils';
 import { IMG_THUMBNAIL } from '../../config';
 
 import GameFormModal from './components/GameFormModal';
-import GameFilterModal from './components/GameFilterModal';
 import SortButton from '../Base/components/SortButton';
 import Pagination from '../Base/components/Pagination';
 import LimitSelect from '../Base/components/LimitSelect';
-import ActiveFilters from '../Base/components/ActiveFilters';
 import EntitiesCounter from '../Base/components/EntitiesCounter';
+import FilterPanel from '../Base/components/FilterPanel';
 
 class GamesTable extends Component {
   componentWillMount() {
-    const { location, component, actions } = this.props;
-
-    const query = parseQuery(location.query);
-
-    if (Object.keys(query).length > 0) {
-      component.setQuery(query);
-    }
-
-    actions.updateQueryString();
-    actions.fetchGames();
+    this.props.actions.fetchGames();
   }
 
-  // then Games button pressed on NavPanel, add qs
-  componentWillReceiveProps(newProps) {
-    if (newProps.location.search === '') {
-      this.props.actions.updateQueryString();
-    }
-  }
-
-  setQuery = queryFunc => (...args) => {
+  cb = queryFunc => (...args) => {
     queryFunc(...args);
-    this.props.actions.updateQueryString();
+    this.props.qs.setQueryString();
     this.props.actions.fetchGames();
   };
 
@@ -77,45 +61,40 @@ class GamesTable extends Component {
       .then(() => this.props.actions.editGameModalClose());
   }
 
-  filterSubmit = (values) => {
-    const cleanVal = {};
-
-    Object.keys(values).forEach((key) => {
-      if (values[key]) {
-        cleanVal[key] = values[key];
-      }
-    });
-
-    this.props.component.setFilter(cleanVal);
-    this.props.actions.updateQueryString();
-    this.props.actions.gameFilterModalClose();
-    this.props.actions.fetchGames();
-  }
-
   render() {
-    const { gamesArray, actions, modals, component, domainState: { pending, total, query } } = this.props;
-    const Sort = props => <SortButton reduxField={query.sort} setSort={this.setQuery(component.setSort)} {...props} />;
+    const { gamesArray, actions, component, qs, fetchedAt, total, query, filterFields,
+      newGameModalVisible, editGameModalVisible } = this.props;
+
+    const Sort = props => <SortButton reduxField={query.sort} setSort={this.cb(component.setSort)} {...props} />;
 
     return (
       <div>
-        <button title="Add filter" type="button" className="btn btn-primary" onClick={actions.gameFilterModalOpen}>
-          <i className="fa fa-filter" aria-hidden="true" /> Add filter
-        </button>
-
-        <ActiveFilters setFilter={this.setQuery(component.setFilter)} filters={query.filter} />
+        <FilterPanel
+          initialValues={query.filter}
+          filter={query.filter}
+          setFilter={this.cb(component.setFilter)}
+          qs={qs}
+          filterFields={filterFields}
+        />
 
         <div className="form-inline">
           <div className="form-group">
-            <Pagination page={query.page} limit={query.limit} total={total} setPage={this.setQuery(component.setPage)} />
+            <Pagination page={query.page} limit={query.limit} total={total} setPage={this.cb(component.setPage)} />
           </div>
           <div className="form-group">
             <label style={{ marginLeft: '15px' }} htmlFor="limit">Per page: </label> {' '}
-            <LimitSelect setLimit={this.setQuery(component.setLimit)} limit={query.limit} />
+            <LimitSelect setLimit={this.cb(component.setLimit)} limit={query.limit} />
           </div> {' '}
         </div>
 
         <div className="pull-left">
-          <EntitiesCounter page={query.page} limit={query.limit} length={gamesArray.length} total={total} pending={pending}>
+          <EntitiesCounter
+            page={query.page}
+            limit={query.limit}
+            length={gamesArray.length}
+            total={total}
+            fetchedAt={fetchedAt}
+          >
             games
           </EntitiesCounter>
         </div>
@@ -158,7 +137,7 @@ class GamesTable extends Component {
             {gamesArray[0] && gamesArray.map((game, i) => (
               <tr key={game.id}>
                 <td>
-                  <Link to={`/admin/characters?_game=${game.id}`}>{game.title}</Link>
+                  <Link to={`/admin/characters?filter[_game]=${game.id}`}>{game.title}</Link>
                 </td>
                 <td className="text-center">
                   <button
@@ -212,9 +191,9 @@ class GamesTable extends Component {
           </tbody>
         </table>
 
-        <Pagination page={query.page} limit={query.limit} total={total} setPage={this.setQuery(component.setPage)} />
+        <Pagination page={query.page} limit={query.limit} total={total} setPage={this.cb(component.setPage)} />
 
-        {modals.newGameModalVisible &&
+        {newGameModalVisible &&
           <GameFormModal
             onSubmit={this.newGameModalSubmit}
             hide={actions.newGameModalClose}
@@ -225,9 +204,8 @@ class GamesTable extends Component {
           />
         }
 
-        {modals.editGameModalVisible &&
+        {editGameModalVisible &&
           <GameFormModal
-            initialValues={modals.editFormInitValues}
             onSubmit={this.editGameModalSubmit}
             hide={actions.editGameModalClose}
             title="Edit Game"
@@ -236,28 +214,22 @@ class GamesTable extends Component {
             mode="edit"
           />
         }
-
-        {modals.filterModalVisible &&
-          <GameFilterModal
-            initialValues={query.filter}
-            onSubmit={this.filterSubmit}
-            hide={actions.gameFilterModalClose}
-          />
-        }
       </div>
     );
   }
 }
 
-GamesTable.defaultProps = {
-  gamesArray: [],
-  modals: {},
-  domainState: {
-
-  },
-};
-
 GamesTable.propTypes = {
+  fetchedAt: PropTypes.number.isRequired,
+  total: PropTypes.number.isRequired,
+  newGameModalVisible: PropTypes.bool.isRequired,
+  editGameModalVisible: PropTypes.bool.isRequired,
+  query: PropTypes.shape({
+    page: PropTypes.number.isRequired,
+    limit: PropTypes.number.isRequired,
+    sort: PropTypes.string.isRequired,
+    filter: PropTypes.objectOf(PropTypes.any).isRequired,
+  }).isRequired,
   gamesArray: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
@@ -267,67 +239,50 @@ GamesTable.propTypes = {
     cover: PropTypes.string,
     order: PropTypes.number.isRequired,
     chars: PropTypes.number,
-  })),
-  modals: PropTypes.shape({
-    newGameModalVisible: PropTypes.bool,
-    editGameModalVisible: PropTypes.bool,
-    editFormInitValues: PropTypes.object,
-  }),
+  })).isRequired,
   actions: PropTypes.shape({
     newGameModalOpen: PropTypes.func.isRequired,
     newGameModalClose: PropTypes.func.isRequired,
     editGameModalOpen: PropTypes.func.isRequired,
     editGameModalClose: PropTypes.func.isRequired,
-    gameFilterModalOpen: PropTypes.func.isRequired,
-    gameFilterModalClose: PropTypes.func.isRequired,
     fetchGames: PropTypes.func.isRequired,
     editGame: PropTypes.func.isRequired,
     newGame: PropTypes.func.isRequired,
     deleteGame: PropTypes.func.isRequired,
-    updateQueryString: PropTypes.func.isRequired,
     changeOrder: PropTypes.func.isRequired,
     getGameWithMaxOrder: PropTypes.func.isRequired,
   }).isRequired,
   component: PropTypes.shape({
     setSort: PropTypes.func.isRequired,
-    setQuery: PropTypes.func.isRequired,
     setFilter: PropTypes.func.isRequired,
   }).isRequired,
-  domainState: PropTypes.shape({
-    pending: PropTypes.bool,
-    visible: PropTypes.arrayOf(PropTypes.string),
-    total: PropTypes.number,
-    query: PropTypes.shape({
-      page: PropTypes.number,
-      limit: PropTypes.number,
-      sort: PropTypes.string,
-      filter: PropTypes.objectOf(PropTypes.any),
-    }),
+  qs: PropTypes.shape({
+    setQueryString: PropTypes.func.isRequired,
+    flatten: PropTypes.func.isRequired,
+    unflatten: PropTypes.func.isRequired,
+    addFilter: PropTypes.func.isRequired,
+    removeFilter: PropTypes.func.isRequired,
   }).isRequired,
-  location: PropTypes.shape({
-    query: PropTypes.shape({
-      page: PropTypes.string,
-      limit: PropTypes.string,
-      sort: PropTypes.string,
-      filter: PropTypes.objectOf(PropTypes.string),
-    }),
-  }).isRequired,
+  filterFields: PropTypes.objectOf(PropTypes.object).isRequired,
 };
 
 function mapStateToProps({ domain: { gamesTable }, entities: { games } }) {
-  if (!gamesTable) return { };
-
   const gamesArray = gamesTable.visible.map(id => games[id]);
 
-  return {
-    gamesArray,
-    modals: {
-      newGameModalVisible: gamesTable.newGameModalVisible,
-      editGameModalVisible: gamesTable.editGameModalVisible,
-      editFormInitValues: gamesTable.editFormInitValues,
-      filterModalVisible: gamesTable.filterModalVisible,
+  const filterFields = {
+    title: {
+      type: 'text',
+      label: 'Title',
+      validation: ['minLength2'],
+    },
+    year: {
+      type: 'text',
+      label: 'Year',
+      validation: ['number'],
     },
   };
+
+  return { ...gamesTable, filterFields, gamesArray };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -336,5 +291,7 @@ function mapDispatchToProps(dispatch) {
 
 export default
   connect(mapStateToProps, mapDispatchToProps)(
-    domainHoc({ name: 'GamesTable' })(GamesTable),
+    domainHoc({ name: 'GamesTable' })(
+      QueryStringHOC(GamesTable),
+    ),
   );

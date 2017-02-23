@@ -2,35 +2,30 @@ import React, { PropTypes, Component } from 'react';
 
 class EntitiesCounter extends Component {
   shouldComponentUpdate(nextProps) {
-    if (nextProps.pending) return false;
+    if (this.props.fetchedAt === nextProps.fetchedAt) return false;
     return true;
   }
 
   render() {
-    const { page, limit, length, total, children, pending } = this.props;
-    const value = (pending) ? '...' : ((page - 1) * limit) + length;
+    const { page, limit, length, total, children } = this.props;
+    const first = (page - 1) * limit;
+    const second = ((page - 1) * limit) + length;
 
     return (
-      <h4>{value} / <strong>{total}</strong> {children}</h4>
+      <h4>
+        { total ? `${first + 1}–${second}` : 0 } / <strong>{total}</strong> {children}
+      </h4>
     );
   }
 }
 
-EntitiesCounter.defaultProps = {
-  page: 0,
-  limit: 0,
-  length: 0,
-  total: 0,
-  pending: false,
-};
-
 EntitiesCounter.propTypes = {
-  page: PropTypes.number,
-  limit: PropTypes.number,
-  length: PropTypes.number,
-  total: PropTypes.number,
+  page: PropTypes.number.isRequired,
+  limit: PropTypes.number.isRequired,
+  length: PropTypes.number.isRequired,
+  total: PropTypes.number.isRequired,
   children: PropTypes.string.isRequired,
-  pending: PropTypes.bool,
+  fetchedAt: PropTypes.number.isRequired,
 };
 
 export default EntitiesCounter;

@@ -2,6 +2,14 @@ import React, { PropTypes, Component } from 'react';
 import { Pagination as BootstrapPagination } from 'react-bootstrap';
 
 class Pagination extends Component {
+  componentWillReceiveProps(nextProps) {
+    const { page, limit, total } = nextProps;
+
+    if (total !== this.props.total && (page - 1) * limit > total) {
+      this.props.setPage(1);
+    }
+  }
+
   handleSelect = (eventKey) => {
     this.props.setPage(eventKey);
   }
@@ -28,16 +36,10 @@ class Pagination extends Component {
   }
 }
 
-Pagination.defaultProps = {
-  page: 1,
-  total: 0,
-  limit: 10,
-};
-
 Pagination.propTypes = {
-  page: PropTypes.number,
-  total: PropTypes.number,
-  limit: PropTypes.number,
+  page: PropTypes.number.isRequired,
+  total: PropTypes.number.isRequired,
+  limit: PropTypes.number.isRequired,
   setPage: PropTypes.func.isRequired,
 };
 

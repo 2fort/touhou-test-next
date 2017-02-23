@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
 import { domainHoc } from '../../ducks/domain';
+import QueryStringHOC from '../Base/hocs/QueryStringHOC';
 import * as ownActions from './duck';
-import { prepareFormData, parseQuery } from '../_sharedComponents/utils';
+import { prepareFormData } from '../_sharedComponents/utils';
 import { IMG_THUMBNAIL } from '../../config';
 
 import CharFormModal from './components/CharFormModal';
@@ -13,32 +14,17 @@ import SortButton from '../Base/components/SortButton';
 import Pagination from '../Base/components/Pagination';
 import LimitSelect from '../Base/components/LimitSelect';
 import EntitiesCounter from '../Base/components/EntitiesCounter';
-import FilterPanel from './components/FilterPanel';
+import FilterPanel from '../Base/components/FilterPanel';
 
 class CharactersTable extends Component {
-  componentWillMount() {
-    const { location, component, actions } = this.props;
-
-    const query = parseQuery(location.query);
-
-    if (Object.keys(query).length > 0) {
-      component.setQuery(query);
-    }
-
-    actions.updateQueryString();
-    actions.fetchAllGames();
-    actions.fetchCharacters();
+  componentDidMount() {
+    this.props.actions.fetchAllGames();
+    this.props.actions.fetchCharacters();
   }
 
-  componentWillReceiveProps(newProps) {
-    if (newProps.location.search === '') {
-      this.props.actions.updateQueryString();
-    }
-  }
-
-  setQuery = queryFunc => (...args) => {
+  cb = queryFunc => (...args) => {
     queryFunc(...args);
-    this.props.actions.updateQueryString();
+    this.props.qs.setQueryString();
     this.props.actions.fetchCharacters();
   };
 
@@ -77,35 +63,40 @@ class CharactersTable extends Component {
   }
 
   render() {
-    const { charsArray, gamesList, actions, modals, filterPanelOpen, allGames,
-      component, domainState: { pending, total, query } } = this.props;
+    const { charsArray, gamesList, actions, allGames, component, qs, fetchedAt, total, query,
+      newCharModalVisible, editCharModalVisible, filterFields } = this.props;
 
-    const Sort = props => <SortButton reduxField={query.sort} setSort={this.setQuery(component.setSort)} {...props} />;
+    const Sort = props => <SortButton reduxField={query.sort} setSort={this.cb(component.setSort)} {...props} />;
     const nonOrderMode = !query.filter._game;
 
     return (
       <div>
         <FilterPanel
-          filterPanelOpen={filterPanelOpen}
-          openTrigger={actions.charFilterPanelTrigger}
-          nameSearchExp={actions.nameSearchExp}
           initialValues={query.filter}
-          setFilter={this.setQuery(component.setFilter)}
-          allGames={allGames}
+          filter={query.filter}
+          setFilter={this.cb(component.setFilter)}
+          qs={qs}
+          filterFields={filterFields}
         />
 
         <div className="form-inline">
           <div className="form-group">
-            <Pagination page={query.page} limit={query.limit} total={total} setPage={this.setQuery(component.setPage)} />
+            <Pagination page={query.page} limit={query.limit} total={total} setPage={this.cb(component.setPage)} />
           </div>
           <div className="form-group">
             <label style={{ marginLeft: '15px' }} htmlFor="limit">Per page: </label> {' '}
-            <LimitSelect setLimit={this.setQuery(component.setLimit)} limit={query.limit} />
+            <LimitSelect setLimit={this.cb(component.setLimit)} limit={query.limit} />
           </div> {' '}
         </div>
 
         <div className="pull-left">
-          <EntitiesCounter page={query.page} limit={query.limit} length={charsArray.length} total={total} pending={pending}>
+          <EntitiesCounter
+            page={query.page}
+            limit={query.limit}
+            length={charsArray.length}
+            total={total}
+            fetchedAt={fetchedAt}
+          >
             characters
           </EntitiesCounter>
         </div>
@@ -206,9 +197,9 @@ class CharactersTable extends Component {
           </tbody>
         </table>
 
-        <Pagination page={query.page} limit={query.limit} total={total} setPage={this.setQuery(component.setPage)} />
+        <Pagination page={query.page} limit={query.limit} total={total} setPage={this.cb(component.setPage)} />
 
-        {modals.newCharModalVisible &&
+        {newCharModalVisible &&
           <CharFormModal
             initialValues={{ _game: query.filter._game }}
             onSubmit={this.newCharModalSubmit}
@@ -216,23 +207,18 @@ class CharactersTable extends Component {
             title="New Character"
             buttonName="Create"
             allGames={allGames}
-            charsArray={charsArray}
-            getMaxOrder={actions.getCharWithMaxOrder}
             getCharsFromGame={actions.getCharsFromGame}
             mode="new"
           />
         }
 
-        {modals.editCharModalVisible &&
+        {editCharModalVisible &&
           <CharFormModal
-            initialValues={modals.editFormInitValues}
             onSubmit={this.editCharModalSubmit}
             hide={actions.editCharModalClose}
             title="Edit Character"
             buttonName="Edit"
             allGames={allGames}
-            charsArray={charsArray}
-            getMaxOrder={actions.getCharWithMaxOrder}
             getCharsFromGame={actions.getCharsFromGame}
             mode="edit"
           />
@@ -242,28 +228,20 @@ class CharactersTable extends Component {
   }
 }
 
-CharactersTable.defaultProps = {
-  charsArray: [],
-  gamesList: {},
-  allGames: {},
-  filterPanelOpen: false,
-  total: 0,
-  modals: {},
-  query: {
-    filter: {},
-  },
-};
-
 CharactersTable.propTypes = {
-  charsArray: PropTypes.arrayOf(PropTypes.object),
-  gamesList: PropTypes.objectOf(PropTypes.object),
-  allGames: PropTypes.objectOf(PropTypes.object),
-  filterPanelOpen: PropTypes.bool,
-  modals: PropTypes.shape({
-    newCharModalVisible: PropTypes.bool,
-    editCharModalVisible: PropTypes.bool,
-    editFormInitValues: PropTypes.object,
-  }),
+  fetchedAt: PropTypes.number.isRequired,
+  total: PropTypes.number.isRequired,
+  newCharModalVisible: PropTypes.bool.isRequired,
+  editCharModalVisible: PropTypes.bool.isRequired,
+  charsArray: PropTypes.arrayOf(PropTypes.object).isRequired,
+  gamesList: PropTypes.objectOf(PropTypes.object).isRequired,
+  allGames: PropTypes.objectOf(PropTypes.object).isRequired,
+  query: PropTypes.shape({
+    page: PropTypes.number.isRequired,
+    limit: PropTypes.number.isRequired,
+    sort: PropTypes.string.isRequired,
+    filter: PropTypes.objectOf(PropTypes.any).isRequired,
+  }).isRequired,
   actions: PropTypes.shape({
     newCharModalOpen: PropTypes.func.isRequired,
     newCharModalClose: PropTypes.func.isRequired,
@@ -275,51 +253,46 @@ CharactersTable.propTypes = {
     editCharacter: PropTypes.func.isRequired,
     newCharacter: PropTypes.func.isRequired,
     deleteCharacter: PropTypes.func.isRequired,
-    updateQueryString: PropTypes.func.isRequired,
-    charFilterPanelTrigger: PropTypes.func.isRequired,
   }).isRequired,
   component: PropTypes.shape({
     setSort: PropTypes.func.isRequired,
-    setQuery: PropTypes.func.isRequired,
     setFilter: PropTypes.func.isRequired,
   }).isRequired,
-  domainState: PropTypes.shape({
-    pending: PropTypes.bool,
-    visible: PropTypes.arrayOf(PropTypes.string),
-    total: PropTypes.number,
-    query: PropTypes.shape({
-      page: PropTypes.number,
-      limit: PropTypes.number,
-      sort: PropTypes.string,
-      filter: PropTypes.objectOf(PropTypes.any),
-    }),
+  qs: PropTypes.shape({
+    setQueryString: PropTypes.func.isRequired,
+    flatten: PropTypes.func.isRequired,
+    unflatten: PropTypes.func.isRequired,
+    addFilter: PropTypes.func.isRequired,
+    removeFilter: PropTypes.func.isRequired,
   }).isRequired,
-  location: PropTypes.shape({
-    query: PropTypes.shape({
-      page: PropTypes.string,
-      limit: PropTypes.string,
-      sort: PropTypes.string,
-      filter: PropTypes.objectOf(PropTypes.any),
-    }),
-  }).isRequired,
+  filterFields: PropTypes.objectOf(PropTypes.object).isRequired,
 };
 
 function mapStateToProps({ entities, domain: { charactersTable } }) {
-  if (!charactersTable) return { };
-
   const charsArray = charactersTable.visible.map(char => entities.characters[char]);
 
-  return {
-    charsArray,
-    gamesList: entities.games,
-    allGames: charactersTable.allGames,
-    modals: {
-      newCharModalVisible: charactersTable.newCharModalVisible,
-      editCharModalVisible: charactersTable.editCharModalVisible,
-      editFormInitValues: charactersTable.editFormInitValues,
+  const filterFields = {
+    name: {
+      type: 'text',
+      label: 'Name',
+      validation: ['minLength2'],
     },
-    filterPanelOpen: charactersTable.filterPanelOpen,
+    'art.author': {
+      type: 'text',
+      label: 'Art Author',
+    },
+    _game: {
+      type: 'select',
+      label: 'Game',
+      select: {
+        source: charactersTable.allGames,
+        value: 'id',
+        text: 'title',
+      },
+    },
   };
+
+  return { ...charactersTable, filterFields, charsArray, gamesList: entities.games };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -330,5 +303,7 @@ function mapDispatchToProps(dispatch) {
 
 export default
   connect(mapStateToProps, mapDispatchToProps)(
-    domainHoc({ name: 'CharactersTable' })(CharactersTable),
+    domainHoc({ name: 'CharactersTable' })(
+      QueryStringHOC(CharactersTable),
+    ),
   );

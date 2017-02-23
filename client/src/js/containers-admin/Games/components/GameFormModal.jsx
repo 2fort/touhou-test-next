@@ -100,4 +100,5 @@ GameFormModal.propTypes = {
 
 export default reduxForm({
   form: 'GameFormModal',
+  enableReinitialize: true,
 })(GameFormModal);

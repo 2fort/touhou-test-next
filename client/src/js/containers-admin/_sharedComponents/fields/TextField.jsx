@@ -17,7 +17,7 @@ TextField.defaultProps = {
 TextField.propTypes = {
   input: PropTypes.shape({
     name: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.any.isRequired,
   }).isRequired,
   label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,

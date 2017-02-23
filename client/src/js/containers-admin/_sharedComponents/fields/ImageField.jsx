@@ -46,6 +46,8 @@ export default class ImageField extends Component {
   render() {
     const { input, label, type, meta: { touched, error } } = this.props;
 
+    const validInput = Object.assign(input, { value: undefined });
+
     const imageBlock = (
       <div>
         <img alt="preview" src={this.state.imgPreview} />
@@ -58,10 +60,10 @@ export default class ImageField extends Component {
 
     return (
       <div className="form-group">
-        <label htmlFor={input.name} className="col-sm-2 control-label">{label}</label>
+        <label htmlFor={validInput.name} className="col-sm-2 control-label">{label}</label>
         <div className="col-sm-10 form-image">
           <input
-            {...input}
+            {...validInput}
             type={type}
             className="pure-input-2-3"
             style={{ display: 'none' }}
@@ -88,7 +90,7 @@ ImageField.defaultProps = {
 ImageField.propTypes = {
   input: PropTypes.shape({
     name: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
   }).isRequired,
   label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,

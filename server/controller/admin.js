@@ -49,7 +49,7 @@ function toObjectId(id) {
   return result;
 }
 
-this.queryParams = function queryParams(query, emptyStringToNull) {
+this.queryParams = function queryParams(query, emptyStringToNull = []) {
   const params = {
     page: Number(query.page) || undefined,
     limit: Number(query.limit) || undefined,

@@ -1,6 +1,6 @@
 import Immutable from 'seamless-immutable';
 import { stringify } from 'qs';
-import { browserHistory } from 'react-router';
+import { initialize } from 'redux-form';
 
 import { charactersEntity, gameEntity } from '../../schemas/adminSchemas';
 import { generateComponent } from '../../ducks/domain';
@@ -12,7 +12,6 @@ const NEW_CHAR_MODAL_CLOSE = `${componentName}/NEW_CHAR_MODAL_CLOSE`;
 const EDIT_CHAR_MODAL_OPEN = `${componentName}/EDIT_CHAR_MODAL_OPEN`;
 const EDIT_CHAR_MODAL_CLOSE = `${componentName}/EDIT_CHAR_MODAL_CLOSE`;
 const ADD_ALL_GAMES = `${componentName}/ADD_ALL_GAMES`;
-const FILTER_PANEL_TRIGGER = `${componentName}/FILTER_PANEL_TRIGGER`;
 
 const component = generateComponent(componentName);
 const route = '/api/admin/characters';
@@ -25,24 +24,15 @@ export function newCharModalClose() {
   return { type: NEW_CHAR_MODAL_CLOSE };
 }
 
-export function editCharModalOpen(initValues) {
-  return { type: EDIT_CHAR_MODAL_OPEN, initValues };
+export function editCharModalOpen(char) {
+  return (dispatch) => {
+    dispatch(initialize('CharFormModal', char));
+    dispatch({ type: EDIT_CHAR_MODAL_OPEN });
+  };
 }
 
 export function editCharModalClose() {
   return { type: EDIT_CHAR_MODAL_CLOSE };
-}
-
-export function charFilterPanelTrigger() {
-  return { type: FILTER_PANEL_TRIGGER };
-}
-
-export function updateQueryString() {
-  return (dispatch) => {
-    const query = dispatch(component.getState()).query;
-    const { pathname } = browserHistory.getCurrentLocation();
-    browserHistory.replace(`${pathname}?${stringify(query, { encode: false })}`);
-  };
 }
 
 export function fetchCharacters() {
@@ -89,8 +79,6 @@ export function deleteCharacter(id) {
 const defaultState = Immutable({
   newCharModalVisible: false,
   editCharModalVisible: false,
-  editFormInitValues: {},
-  filterPanelOpen: false,
   query: {
     sort: 'name',
   },
@@ -108,15 +96,11 @@ function reducer(state = null, action) {
     }
 
     case EDIT_CHAR_MODAL_OPEN: {
-      return Immutable.merge(state, { editCharModalVisible: true, editFormInitValues: action.initValues });
+      return Immutable.merge(state, { editCharModalVisible: true });
     }
 
     case EDIT_CHAR_MODAL_CLOSE: {
-      return Immutable.merge(state, { editCharModalVisible: false, editFormInitValues: {} });
-    }
-
-    case FILTER_PANEL_TRIGGER: {
-      return Immutable.merge(state, { filterPanelOpen: !state.filterPanelOpen });
+      return Immutable.merge(state, { editCharModalVisible: false });
     }
 
     case ADD_ALL_GAMES:

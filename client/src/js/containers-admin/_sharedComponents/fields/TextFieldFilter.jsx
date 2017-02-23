@@ -6,7 +6,7 @@ const TextFieldFilter = ({ input, label, type, meta: { touched, error }, disable
     <div className="col-sm-10">
       <div className="input-group">
         <span className="input-group-addon">
-          <input checked={!disabled} onChange={() => checkboxTrigger(input.name)} type="checkbox" />
+          <input checked={!disabled} onChange={checkboxTrigger(input.name)} type="checkbox" />
         </span>
         <input className="form-control" disabled={disabled} {...input} type={type} />
       </div>
