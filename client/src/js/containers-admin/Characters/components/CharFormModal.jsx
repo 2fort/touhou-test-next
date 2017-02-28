@@ -3,18 +3,150 @@ import { connect } from 'react-redux';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import { Field, reduxForm, formValueSelector, getFormInitialValues, propTypes } from 'redux-form';
 
-import { TextField, ImageField } from '../../_sharedComponents/fields';
+import { IMG_THUMBNAIL } from '../../../config';
+import { TextField, ImageField, OrderSelectField } from '../../_sharedComponents/fields';
 import { required } from '../../_sharedComponents/validationFields';
-import OrderSelectField from './OrderSelectField';
+import FilePreviewHoc from '../../_sharedComponents/FilePreviewHoc';
 
 class CharFormModal extends Component {
-  render() {
-    const { mode, title, buttonName, allGames, reduxValues, getCharsFromGame, hide,
-      handleSubmit, submitting, initialValues, error, reset } = this.props;
+  constructor(props) {
+    super(props);
+    this.state = { charList: [] };
+  }
 
-    const gameOptions = Object.values(allGames).map(game => (
+  componentDidMount() {
+    const { initialValues } = this.props;
+    const initialRel = initialValues.link ? initialValues.link.rel : undefined;
+
+    if (initialRel) {
+      this.reloadCharList(initialRel)
+        .then((length) => {
+          this.props.change('link.order', this.chageOrder(initialValues, length));
+        });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { currentValues } = this.props;
+    const currentRel = currentValues.link ? currentValues.link.rel : undefined;
+    const nextRel = nextProps.currentValues.link ? nextProps.currentValues.link.rel : undefined;
+
+    if (currentRel !== nextRel) {
+      this.setState({ charList: [] });
+
+      if (!nextRel) {
+        this.props.change('link.order', null);
+        return;
+      }
+
+      this.reloadCharList(nextRel)
+        .then((length) => {
+          this.props.change('link.order', this.chageOrder(nextProps.currentValues, length));
+        });
+    }
+
+    if (!this.props.pristine && nextProps.pristine) {
+      this.props.filePreview.revoke();
+    }
+  }
+
+  chageOrder = (currentValues, length) => {
+    const { mode, initialValues } = this.props;
+    const initialRel = initialValues.link ? initialValues.link.rel : undefined;
+    const currentRel = currentValues.link ? currentValues.link.rel : undefined;
+
+    if (mode === 'new') {
+      return length + 1;
+    }
+    if (mode === 'edit' && currentRel !== initialRel) {
+      return length + 1;
+    }
+    if (mode === 'edit' && currentRel === initialRel) {
+      return initialValues.link.order;
+    }
+    return null;
+  }
+
+  reloadCharList = id =>
+    this.props.getCharsFromGame(id)
+      .then((charList) => {
+        this.setState({ charList });
+        return (charList.length);
+      });
+
+  prepareGameOptionsForSelectField = () => {
+    const options = Object.values(this.props.allGames).map(game => (
       <option key={game.title} value={game.id}>{game.title}</option>
     ));
+    return options;
+  }
+
+  prepareCharListForOrderField = () => {
+    const { initialValues, currentValues, filePreview } = this.props;
+    const { charList } = this.state;
+
+    const cleanList = charList.filter(char => initialValues.id !== char.id);
+    const defaultImage = currentValues.image && typeof currentValues.image === 'string'
+      ? currentValues.image
+      : null;
+
+    const newObj = {
+      id: initialValues.id,
+      name: currentValues.name,
+      image: filePreview.blob || defaultImage || '',
+    };
+
+    const newList = [...cleanList];
+
+    newList.splice(currentValues.link.order - 1, 0, newObj);
+
+    const tableBody = newList.map((char, i) => (
+      <tr className={char.id === initialValues.id ? 'info' : ''} key={char.name}>
+        <td>{i + 1}</td>
+        <td>
+          {char.image &&
+            <img
+              height={50}
+              alt="char preview"
+              src={filePreview.blobTest(char.image) ? char.image : IMG_THUMBNAIL + char.image}
+            />
+          }
+        </td>
+        <td>
+          {char.name}
+        </td>
+      </tr>
+    ));
+
+    return (
+      <table className="table table-striped table-order-field">
+        <thead>
+          <tr>
+            <th>Position</th>
+            <th>Image</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tableBody}
+        </tbody>
+      </table>
+    );
+  }
+
+  gameSelectHandler = (e) => {
+    if (e.target.value === '') {
+      e.preventDefault();
+      this.props.change('link.rel', null);
+    }
+  }
+
+  render() {
+    const { mode, title, buttonName, currentValues, hide, handleSubmit, submitting, error, reset, filePreview } = this.props;
+
+    const gameOptions = this.prepareGameOptionsForSelectField();
+    const charList = this.prepareCharListForOrderField();
+    const currentRel = currentValues.link ? currentValues.link.rel : undefined;
 
     return (
       <div className="static-modal">
@@ -28,35 +160,28 @@ class CharFormModal extends Component {
               <Field name="id" type="hidden" component="input" />
               <Field name="name" type="text" component={TextField} label="Name" validate={[required]} />
               <Field
-                name="fileImage"
-                currentImage={initialValues.image}
+                name="image"
                 type="file"
                 component={ImageField}
                 label="Image"
-                withRef
-                ref={(com) => { this.fileImageField = com; }}
+                filePreview={filePreview}
               />
 
               <div className="form-group">
-                <label htmlFor="_game" className="col-sm-2 control-label">Game</label>
+                <label htmlFor="link.rel" className="col-sm-2 control-label">Game</label>
                 <div className="col-sm-10">
-                  <Field name="_game" component="select" className="form-control">
+                  <Field name="link.rel" component="select" className="form-control" onChange={this.gameSelectHandler}>
                     <option />
                     {gameOptions}
                   </Field>
                 </div>
               </div>
 
-              {reduxValues._game &&
+              {currentRel &&
                 <Field
-                  name="_order"
+                  name="link.order"
                   component={OrderSelectField}
-                  getCharsFromGame={getCharsFromGame}
-                  initialValues={initialValues}
-                  reduxValues={reduxValues}
-                  initial={reduxValues._game === initialValues._game}
-                  fileImageField={this.fileImageField}
-                  mode={mode}
+                  list={charList}
                 />
               }
 
@@ -99,17 +224,29 @@ CharFormModal.propTypes = {
     id: PropTypes.string,
     name: PropTypes.string,
     image: PropTypes.string,
-    _game: PropTypes.string,
+    link: PropTypes.shape({
+      rel: PropTypes.string,
+      order: PropTypes.number,
+    }),
     art: PropTypes.shape({
       author: PropTypes.string,
       url: PropTypes.string,
     }),
     wiki: PropTypes.string,
   }),
-  reduxValues: PropTypes.shape({
+  currentValues: PropTypes.shape({
     name: PropTypes.string,
-    _game: PropTypes.string,
-    fileImage: PropTypes.object,
+    link: PropTypes.shape({
+      rel: PropTypes.string,
+      order: PropTypes.number,
+    }),
+    image: PropTypes.any,
+  }).isRequired,
+  filePreview: PropTypes.shape({
+    add: PropTypes.func.isRequired,
+    revoke: PropTypes.func.isRequired,
+    blob: PropTypes.string.isRequired,
+    blobTest: PropTypes.func.isRequired,
   }).isRequired,
   ...propTypes,
 };
@@ -118,15 +255,19 @@ const selector = formValueSelector('CharFormModal');
 
 function mapStateToProps(state) {
   return {
-    reduxValues: {
+    currentValues: {
       name: selector(state, 'name'),
-      _game: selector(state, '_game'),
-      fileImage: selector(state, 'fileImage'),
+      link: {
+        rel: selector(state, 'link.rel'),
+        order: selector(state, 'link.order'),
+      },
+      image: selector(state, 'image'),
     },
     initialValues: getFormInitialValues('CharFormModal')(state),
   };
 }
 
 export default connect(mapStateToProps)(
-  reduxForm({ form: 'CharFormModal', enableReinitialize: true })(CharFormModal),
+  reduxForm({ form: 'CharFormModal', enableReinitialize: true })(
+    FilePreviewHoc(CharFormModal)),
 );

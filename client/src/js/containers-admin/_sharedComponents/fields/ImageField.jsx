@@ -2,55 +2,32 @@ import React, { Component, PropTypes } from 'react';
 import { IMG_THUMBNAIL } from '../../../config';
 
 export default class ImageField extends Component {
-  constructor(props) {
-    super(props);
-    this.initialImage = props.currentImage ? IMG_THUMBNAIL + props.currentImage : '';
-    this.state = { imgPreview: this.initialImage };
-  }
-
-  componentWillReceiveProps = (newProps) => {
-    if (!this.props.meta.pristine && newProps.meta.pristine) {
-      this.revokeImgPreview();
-      this.setState({ imgPreview: this.initialImage });
-    }
-  }
-
-  getImgPreview = () => this.state.imgPreview;
-
-  revokeImgPreview = () => {
-    const { imgPreview } = this.state;
-    if (imgPreview && imgPreview.substring(0, 4) === 'blob') {
-      window.URL.revokeObjectURL(this.state.imgPreview);
-    }
-  }
-
   addImgBtnHandler = () => {
     this.fileInput.click();
   }
 
   removeImgBtnHandler = () => {
-    this.revokeImgPreview();
-    this.setState({ imgPreview: '' });
+    this.props.filePreview.revoke();
     this.props.input.onChange({});
   }
 
   fileSelectHandler = (e) => {
-    this.revokeImgPreview();
     const files = e.target.files;
     if (files[0]) {
+      this.props.filePreview.revoke();
+      this.props.filePreview.add(files[0]);
       this.props.input.onChange(files);
-      this.setState({ imgPreview: window.URL.createObjectURL(files[0]) });
     }
   }
 
   render() {
-    const { input, label, type, meta: { touched, error } } = this.props;
+    const { input: { value, ...input }, label, type, meta: { touched, error }, filePreview } = this.props;
 
-    const validInput = Object.assign(input, { value: undefined });
+    const defaultImage = value && typeof value === 'string' ? IMG_THUMBNAIL + value : null;
 
     const imageBlock = (
       <div>
-        <img alt="preview" src={this.state.imgPreview} />
+        <img alt="preview" src={filePreview.blob || defaultImage || ''} />
         <br />
         <button type="button" className="btn btn-primary" onClick={this.addImgBtnHandler}>Replace</button>
         {' '}
@@ -60,10 +37,10 @@ export default class ImageField extends Component {
 
     return (
       <div className="form-group">
-        <label htmlFor={validInput.name} className="col-sm-2 control-label">{label}</label>
+        <label htmlFor={input.name} className="col-sm-2 control-label">{label}</label>
         <div className="col-sm-10 form-image">
           <input
-            {...validInput}
+            {...input}
             type={type}
             className="pure-input-2-3"
             style={{ display: 'none' }}
@@ -71,7 +48,7 @@ export default class ImageField extends Component {
             ref={(file) => { this.fileInput = file; }}
           />
 
-          {this.state.imgPreview
+          {defaultImage || filePreview.blob
             ? imageBlock
             : <button type="button" className="btn btn-primary" onClick={this.addImgBtnHandler}>Add</button>
           }
@@ -83,13 +60,10 @@ export default class ImageField extends Component {
   }
 }
 
-ImageField.defaultProps = {
-  currentImage: '',
-};
-
 ImageField.propTypes = {
   input: PropTypes.shape({
     name: PropTypes.string.isRequired,
+    value: PropTypes.any,
     onChange: PropTypes.func.isRequired,
   }).isRequired,
   label: PropTypes.string.isRequired,
@@ -99,5 +73,9 @@ ImageField.propTypes = {
     error: PropTypes.string,
     pristine: PropTypes.bool,
   }).isRequired,
-  currentImage: PropTypes.string,
+  filePreview: PropTypes.shape({
+    add: PropTypes.func.isRequired,
+    revoke: PropTypes.func.isRequired,
+    blob: PropTypes.string.isRequired,
+  }).isRequired,
 };

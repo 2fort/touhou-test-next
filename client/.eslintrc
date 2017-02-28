@@ -12,6 +12,7 @@
         "max-len": ["error", 125],
         "import/no-extraneous-dependencies": 1,
         "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
-        "no-underscore-dangle": 0
+        "no-underscore-dangle": 0,
+        "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": true }]
     }
 }

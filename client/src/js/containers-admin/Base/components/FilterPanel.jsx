@@ -149,14 +149,6 @@ class FilterPanel extends Component {
 FilterPanel.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   setFilter: PropTypes.func.isRequired,
-  initialValues: PropTypes.shape({
-    name: PropTypes.string,
-    _game: PropTypes.string,
-    art: PropTypes.shape({
-      author: PropTypes.string,
-      url: PropTypes.string,
-    }),
-  }).isRequired,
   qs: PropTypes.shape({
     flatten: PropTypes.func.isRequired,
     unflatten: PropTypes.func.isRequired,

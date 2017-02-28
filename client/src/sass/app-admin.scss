@@ -214,3 +214,26 @@ span {
     }
   }
 }
+
+.table-order-field {
+  table {
+    width: 100%;
+    table-layout: fixed;
+  }
+  
+  td {
+    &:nth-child(1) {
+      width: 15%;
+      text-align: center;
+    }
+
+    &:nth-child(2) {
+      width: 15%;
+      text-align: center;
+    }
+
+    &:nth-child(3) {
+      width: 70%;
+    }
+  }
+}

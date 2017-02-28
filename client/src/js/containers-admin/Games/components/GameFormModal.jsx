@@ -4,27 +4,31 @@ import { Field, reduxForm, propTypes } from 'redux-form';
 
 import { TextField, ImageField } from '../../_sharedComponents/fields';
 import { required, number, maxValue, moreThan0 } from '../../_sharedComponents/validationFields';
+import FilePreviewHoc from '../../_sharedComponents/FilePreviewHoc';
 
 class GameFormModal extends Component {
   constructor(props) {
     super(props);
-    this.state = { maxOrder: 0 };
+    this.state = {
+      maxOrder: 0,
+      fetchedAt: 0,
+    };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.getMaxOrder()
-      .then((game) => {
-        if (game[0]) {
-          const maxOrder = this.props.mode === 'new' ? game[0].order + 1 : game[0].order;
-          this.setState({ maxOrder });
+      .then(({ maxOrder }) => {
+        if (this.props.mode === 'new') {
+          this.props.change('order', maxOrder + 1);
+          this.setState({ maxOrder, fetchedAt: Date.now() });
         } else {
-          this.setState({ maxOrder: 1 });
+          this.setState({ maxOrder, fetchedAt: Date.now() });
         }
       });
   }
 
   render() {
-    const { title, buttonName, hide, initialValues, handleSubmit, submitting, error, reset, mode } = this.props;
+    const { title, buttonName, hide, handleSubmit, submitting, error, reset, mode, filePreview } = this.props;
 
     return (
       <div className="static-modal">
@@ -39,24 +43,23 @@ class GameFormModal extends Component {
               <Field name="prefix" type="text" component={TextField} label="Prefix" />
               <Field name="title" type="text" component={TextField} label="Title" validate={[required]} />
               <Field
-                name="fileCover"
-                currentImage={initialValues.cover}
+                name="cover"
                 type="file"
                 component={ImageField}
                 label="Cover"
+                filePreview={filePreview}
               />
               <Field name="year" type="text" component={TextField} label="Year" validate={[number]} />
-              <Field
-                name="order"
-                type="number"
-                component={TextField}
-                label="Order"
-                validate={
-                  mode === 'new'
-                    ? [number, maxValue(this.state.maxOrder), moreThan0]
-                    : [required, number, maxValue(this.state.maxOrder), moreThan0]
-                }
-              />
+
+              {this.state.fetchedAt &&
+                <Field
+                  name="order"
+                  type="number"
+                  component={TextField}
+                  label="Order"
+                  validate={[required, number, maxValue(this.state.maxOrder), moreThan0]}
+                />
+              }
 
               {error &&
                 <Alert bsStyle="danger"><strong>Error: </strong>{error}</Alert>
@@ -67,7 +70,7 @@ class GameFormModal extends Component {
               <Button type="submit" disabled={submitting} bsStyle="primary">
                 {submitting && <i className="fa fa-spinner fa-spin" />} {buttonName}
               </Button>
-              {initialValues.title && <Button onClick={reset}>Reset</Button>}
+              {mode === 'edit' && <Button onClick={reset}>Reset</Button>}
               <Button onClick={hide}>Cancel</Button>
             </Modal.Footer>
           </form>
@@ -78,7 +81,6 @@ class GameFormModal extends Component {
 }
 
 GameFormModal.defaultProps = {
-  initialValues: {},
   error: '',
 };
 
@@ -88,17 +90,14 @@ GameFormModal.propTypes = {
   hide: PropTypes.func.isRequired,
   mode: PropTypes.string.isRequired,
   getMaxOrder: PropTypes.func.isRequired,
-  initialValues: PropTypes.shape({
-    id: PropTypes.string,
-    prefix: PropTypes.string,
-    title: PropTypes.string,
-    cover: PropTypes.string,
-    year: PropTypes.number,
-  }),
+  filePreview: PropTypes.shape({
+    add: PropTypes.func.isRequired,
+    revoke: PropTypes.func.isRequired,
+    blob: PropTypes.string.isRequired,
+  }).isRequired,
   ...propTypes,
 };
 
-export default reduxForm({
-  form: 'GameFormModal',
-  enableReinitialize: true,
-})(GameFormModal);
+export default reduxForm({ form: 'GameFormModal' })(
+  FilePreviewHoc(GameFormModal),
+);

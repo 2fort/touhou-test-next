@@ -6,39 +6,54 @@ import { generateComponent } from '../domain';
 export default childOptions => (ComposedComponent) => {
   const options = {
     persist: false,
-    resetVisible: false,
     ...childOptions,
   };
 
   class DomainHOC extends Component {
+    constructor(props) {
+      super(props);
+
+      this.state = {
+        mountedAt: Date.now(),
+      };
+    }
+
     componentWillMount() {
       this.props.component.containerMount();
     }
 
     componentWillUnmount() {
-      if (!options.persist) {
-        this.props.component.containerDestroy();
+      if (options.persist) {
+        this.props.component.containerUnmount();
         return;
       }
-
-      if (options.resetVisible) {
-        this.props.component.resetVisible();
-      }
-
-      this.props.component.containerUnmount();
+      this.props.component.containerDestroy();
     }
 
+    res = () => ({
+      fresh: this.state.mountedAt < this.props.fetchedAt,
+      stale: this.state.mountedAt > this.props.fetchedAt,
+    })
+
     render() {
-      return <ComposedComponent component={this.props.component} {...this.props} />;
+      const hocProps = {
+        component: this.props.component,
+      };
+
+      if (options.persist) {
+        hocProps.res = this.res();
+      }
+
+      return <ComposedComponent {...hocProps} {...this.props} />;
     }
   }
 
   DomainHOC.propTypes = {
+    fetchedAt: PropTypes.number.isRequired,
     component: PropTypes.shape({
       containerMount: PropTypes.func.isRequired,
       containerUnmount: PropTypes.func.isRequired,
       containerDestroy: PropTypes.func.isRequired,
-      resetVisible: PropTypes.func.isRequired,
     }).isRequired,
   };
 

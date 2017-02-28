@@ -29,11 +29,15 @@ class CharactersTable extends Component {
   };
 
   newCharBtnHandler = () => {
-    this.props.actions.newCharModalOpen();
+    const { link } = this.props.query.filter;
+    this.props.actions.newCharModalOpen(link && link.rel);
   }
 
-  editCharBtnHandler = char => () => {
-    this.props.actions.editCharModalOpen(char);
+  editCharBtnHandler = id => () => {
+    this.props.actions.fetchSingleCharacter(id)
+      .then((char) => {
+        this.props.actions.editCharModalOpen(char);
+      });
   }
 
   deleteCharBtnHandler = id => () => {
@@ -49,10 +53,8 @@ class CharactersTable extends Component {
       .then(() => this.props.actions.newCharModalClose());
   }
 
-  editCharModalSubmit = ({ fileImage, ...values }) => {
-    const formDataValues = prepareFormData(values, fileImage, 'image');
-
-    return this.props.actions.editCharacter(values.id, formDataValues)
+  editCharModalSubmit = (values) => {
+    return this.props.actions.editCharacter(values.id, values)
       .then(() => this.props.actions.fetchCharacters())
       .then(() => this.props.actions.editCharModalClose());
   }
@@ -67,7 +69,7 @@ class CharactersTable extends Component {
       newCharModalVisible, editCharModalVisible, filterFields } = this.props;
 
     const Sort = props => <SortButton reduxField={query.sort} setSort={this.cb(component.setSort)} {...props} />;
-    const nonOrderMode = !query.filter._game;
+    const nonOrderMode = !query.filter.link || !query.filter.link.rel;
 
     return (
       <div>
@@ -114,7 +116,7 @@ class CharactersTable extends Component {
               </th>
               {nonOrderMode ||
                 <th className="text-center">
-                  <Sort field="_order">
+                  <Sort field="link.order">
                     Order
                   </Sort>
                 </th>
@@ -145,17 +147,17 @@ class CharactersTable extends Component {
                     <button
                       type="button"
                       className="btn btn-link"
-                      onClick={this.swapOrderBtnHandler(char.id, char._order - 1)}
-                      disabled={char._order === 1}
+                      onClick={this.swapOrderBtnHandler(char.id, char.link.order - 1)}
+                      disabled={char.link.order === 1}
                     >
                       <i className="fa fa-sort-asc" aria-hidden="true" />
                     </button>
-                    {char._order}
+                    {char.link.order}
                     <button
                       type="button"
                       className="btn btn-link"
-                      onClick={this.swapOrderBtnHandler(char.id, char._order + 1)}
-                      disabled={char._order === total}
+                      onClick={this.swapOrderBtnHandler(char.id, char.link.order + 1)}
+                      disabled={char.link.order === total}
                     >
                       <i className="fa fa-sort-desc" aria-hidden="true" />
                     </button>
@@ -165,26 +167,26 @@ class CharactersTable extends Component {
                   {char.image && <img alt={char.name} src={IMG_THUMBNAIL + char.image} />}
                 </td>
                 <td>
-                  {char._game && gamesList[char._game].title}
+                  {char.link && char.link.rel && gamesList[char.link.rel].title}
                 </td>
                 <td className="toowide">
-                  {char.art.author}
+                  {char.art && char.art.author}
                 </td>
                 <td className="text-center">
                   <span title={char.id}>{char.id.substr(-11, 11)}</span>
                 </td>
                 <td className="tooshort">
-                  {char._game &&
+                  {char.link && char.link.rel &&
                     <Link
                       target="_blank"
                       className="btn btn-default"
-                      to={`/characters/${gamesList[char._game].slug}/${char.slug}`}
+                      to={`/characters/${gamesList[char.link.rel].slug}/${char.slug}`}
                     >
                       <i className="fa fa-eye" aria-hidden="true" />
                     </Link>
                   }
                   {' '}
-                  <button type="button" className="btn btn-default" onClick={this.editCharBtnHandler(char)}>
+                  <button type="button" className="btn btn-default" onClick={this.editCharBtnHandler(char.id)}>
                     <i className="fa fa-pencil fa-lg" aria-hidden="true" />
                   </button>
                   {' '}
@@ -201,7 +203,6 @@ class CharactersTable extends Component {
 
         {newCharModalVisible &&
           <CharFormModal
-            initialValues={{ _game: query.filter._game }}
             onSubmit={this.newCharModalSubmit}
             hide={actions.newCharModalClose}
             title="New Character"
@@ -243,6 +244,7 @@ CharactersTable.propTypes = {
     filter: PropTypes.objectOf(PropTypes.any).isRequired,
   }).isRequired,
   actions: PropTypes.shape({
+    fetchSingleCharacter: PropTypes.func.isRequired,
     newCharModalOpen: PropTypes.func.isRequired,
     newCharModalClose: PropTypes.func.isRequired,
     editCharModalOpen: PropTypes.func.isRequired,
@@ -282,7 +284,7 @@ function mapStateToProps({ entities, domain: { charactersTable } }) {
       label: 'Art Author',
       canBeBlank: true,
     },
-    _game: {
+    'link.rel': {
       type: 'select',
       label: 'Game',
       canBeBlank: true,
@@ -305,7 +307,7 @@ function mapDispatchToProps(dispatch) {
 
 export default
   connect(mapStateToProps, mapDispatchToProps)(
-    domainHoc({ name: 'CharactersTable', persist: true, resetVisible: true })(
+    domainHoc({ name: 'CharactersTable' })(
       QueryStringHOC(CharactersTable),
     ),
   );

@@ -16,8 +16,16 @@ const ADD_ALL_GAMES = `${componentName}/ADD_ALL_GAMES`;
 const component = generateComponent(componentName);
 const route = '/api/admin/characters';
 
-export function newCharModalOpen() {
-  return { type: NEW_CHAR_MODAL_OPEN };
+export function fetchSingleCharacter(id) {
+  return dispatch =>
+     dispatch(fetchAndReturnJson(`${route}/${id}`, component));
+}
+
+export function newCharModalOpen(game) {
+  return (dispatch) => {
+    dispatch(initialize('CharFormModal', { link: { rel: game } }));
+    dispatch({ type: NEW_CHAR_MODAL_OPEN });
+  };
 }
 
 export function newCharModalClose() {
@@ -44,7 +52,7 @@ export function fetchCharacters() {
 
 export function getCharsFromGame(gameId) {
   return dispatch =>
-    dispatch(fetchAndReturnJson(`${route}?filter[_game]=${gameId}&sort=_order`, component));
+    dispatch(fetchAndReturnJson(`${route}?filter[link][rel]=${gameId}&sort=link.rel`, component));
 }
 
 export function fetchAllGames() {
@@ -56,9 +64,9 @@ export function fetchAllGames() {
       });
 }
 
-export function changeOrder(id, _order) {
+export function changeOrder(id, order) {
   return dispatch =>
-    dispatch(jsonSubmit(`${route}/${id}`, 'PATCH', { _order }));
+    dispatch(jsonSubmit(`${route}/${id}`, 'PATCH', { link: { rel: order } }));
 }
 
 export function newCharacter(values) {

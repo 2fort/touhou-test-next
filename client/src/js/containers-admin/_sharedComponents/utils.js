@@ -20,3 +20,12 @@ export function prepareFormData(values, files, fileFiedName) {
 
   return formData;
 }
+
+export const removeEmpty = (values) => {
+  const obj = Object.assign({}, values);
+  Object.keys(obj).forEach((key) => {
+    if (obj[key] && typeof obj[key] === 'object') removeEmpty(obj[key]);
+    else if (obj[key] === '') delete obj[key];
+  });
+  return obj;
+};

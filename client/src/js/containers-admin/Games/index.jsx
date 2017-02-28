@@ -6,7 +6,6 @@ import { Link } from 'react-router';
 import { domainHoc } from '../../ducks/domain';
 import QueryStringHOC from '../Base/hocs/QueryStringHOC';
 import * as ownActions from './duck';
-import { prepareFormData } from '../_sharedComponents/utils';
 import { IMG_THUMBNAIL } from '../../config';
 
 import GameFormModal from './components/GameFormModal';
@@ -31,8 +30,11 @@ class GamesTable extends Component {
     this.props.actions.newGameModalOpen();
   }
 
-  editGameBtnHandler = game => () => {
-    this.props.actions.editGameModalOpen(game);
+  editGameBtnHandler = id => () => {
+    this.props.actions.fetchSingleGame(id)
+      .then((game) => {
+        this.props.actions.editGameModalOpen(game);
+      });
   }
 
   deleteGameBtnHandler = id => () => {
@@ -45,18 +47,31 @@ class GamesTable extends Component {
       .then(() => this.props.actions.fetchGames());
   }
 
-  newGameModalSubmit = ({ fileCover, ...values }) => {
-    const formDataValues = prepareFormData(values, fileCover, 'cover');
+  newGameModalSubmit = ({ cover, ...values }) => {
+    const formData = new FormData();
 
-    return this.props.actions.newGame(formDataValues)
+    if (cover && cover[0]) {
+      formData.append('cover', cover[0], cover[0].name);
+    }
+
+    formData.append('payload', JSON.stringify(values));
+
+    return this.props.actions.newGame(formData)
       .then(() => this.props.actions.fetchGames())
       .then(() => this.props.actions.newGameModalClose());
   }
 
-  editGameModalSubmit = ({ fileCover, ...values }) => {
-    const formDataValues = prepareFormData(values, fileCover, 'cover');
+  editGameModalSubmit = ({ id, cover, ...values }) => {
+    const formData = new FormData();
+    const coverStringName = typeof cover === 'string' && { cover };
 
-    return this.props.actions.editGame(values.id, formDataValues)
+    if (typeof cover === 'object' && cover[0]) {
+      formData.append('cover', cover[0], cover[0].name);
+    }
+
+    formData.append('payload', JSON.stringify(Object.assign({}, values, coverStringName)));
+
+    return this.props.actions.editGame(id, formData)
       .then(() => this.props.actions.fetchGames())
       .then(() => this.props.actions.editGameModalClose());
   }
@@ -178,7 +193,7 @@ class GamesTable extends Component {
                     <i className="fa fa-eye" aria-hidden="true" />
                   </Link>
                   {' '}
-                  <button type="button" className="btn btn-default" onClick={this.editGameBtnHandler(game)}>
+                  <button type="button" className="btn btn-default" onClick={this.editGameBtnHandler(game.id)}>
                     <i className="fa fa-pencil fa-lg" aria-hidden="true" />
                   </button>
                   {' '}
@@ -199,7 +214,7 @@ class GamesTable extends Component {
             hide={actions.newGameModalClose}
             title="New Game"
             buttonName="Create"
-            getMaxOrder={actions.getGameWithMaxOrder}
+            getMaxOrder={actions.getMaxOrder}
             mode="new"
           />
         }
@@ -210,7 +225,7 @@ class GamesTable extends Component {
             hide={actions.editGameModalClose}
             title="Edit Game"
             buttonName="Edit"
-            getMaxOrder={actions.getGameWithMaxOrder}
+            getMaxOrder={actions.getMaxOrder}
             mode="edit"
           />
         }
@@ -245,12 +260,13 @@ GamesTable.propTypes = {
     newGameModalClose: PropTypes.func.isRequired,
     editGameModalOpen: PropTypes.func.isRequired,
     editGameModalClose: PropTypes.func.isRequired,
+    fetchSingleGame: PropTypes.func.isRequired,
     fetchGames: PropTypes.func.isRequired,
     editGame: PropTypes.func.isRequired,
     newGame: PropTypes.func.isRequired,
     deleteGame: PropTypes.func.isRequired,
     changeOrder: PropTypes.func.isRequired,
-    getGameWithMaxOrder: PropTypes.func.isRequired,
+    getMaxOrder: PropTypes.func.isRequired,
   }).isRequired,
   component: PropTypes.shape({
     setSort: PropTypes.func.isRequired,
@@ -292,7 +308,7 @@ function mapDispatchToProps(dispatch) {
 
 export default
   connect(mapStateToProps, mapDispatchToProps)(
-    domainHoc({ name: 'GamesTable', persist: true, resetVisible: true })(
+    domainHoc({ name: 'GamesTable' })(
       QueryStringHOC(GamesTable),
     ),
   );

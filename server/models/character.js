@@ -9,34 +9,25 @@ const schema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  image: {
-    type: String,
-    default: '',
-  },
+  image: String,
   art: {
-    author: {
-      type: String,
-      default: '',
-    },
-    url: {
-      type: String,
-      default: '',
-    },
+    author: String,
+    url: String,
   },
-  wiki: {
-    type: String,
-    default: '',
-  },
+  wiki: String,
   slug: {
     type: String,
-    default: '',
+    required: true,
+    unique: true,
   },
-  _game: {
-    type: Schema.Types.ObjectId,
-    ref: 'Game',
-  },
-  _order: {
-    type: Number,
+  link: {
+    rel: {
+      type: Schema.Types.ObjectId,
+      ref: 'Game',
+    },
+    order: {
+      type: Number,
+    },
   },
 });
 

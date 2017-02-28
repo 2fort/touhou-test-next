@@ -63,14 +63,15 @@ this.queryParams = function queryParams(query, emptyStringToNull = []) {
 
   const cleanFilters = {};
 
-  // this needs refactoring
   Object.keys(params.filter).forEach((key) => {
-    // copy blank strings, convert them to nulls if needed
-    if (params.filter[key] === '' && !emptyStringToNull.includes(key)) {
-      cleanFilters[key] = '';
-      params.filter[key] = undefined;
-    } else if (params.filter[key] === '' && emptyStringToNull.includes(key)) {
+    if (params.filter[key] === '' && emptyStringToNull.includes(key)) {
       cleanFilters[key] = null;
+      params.filter[key] = undefined;
+    }
+
+    // convert blank strings to { $exists: false }
+    if (params.filter[key] === '') {
+      cleanFilters[key] = { $in: [null, ''] };
       params.filter[key] = undefined;
     }
 

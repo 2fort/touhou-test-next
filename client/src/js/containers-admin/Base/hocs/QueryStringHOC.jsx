@@ -23,7 +23,7 @@ export default (ComposedComponent) => {
     }
 
     componentWillReceiveProps(nextProps) {
-      if (nextProps.router.location.search === '') {
+      if (nextProps.location.search === '') {
         this.setQueryString();
       }
     }
@@ -80,6 +80,7 @@ export default (ComposedComponent) => {
         sort: PropTypes.string,
         filter: PropTypes.objectOf(PropTypes.any),
       }),
+      search: PropTypes.string.isRequired,
     }).isRequired,
     component: PropTypes.shape({
       setQuery: PropTypes.func.isRequired,

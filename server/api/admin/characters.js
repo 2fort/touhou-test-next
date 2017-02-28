@@ -9,26 +9,26 @@ const upload = multer.single('image');
 router.route('/')
   .get(async (req, res, next) => {
     try {
-      const params = controller.queryParams(req.query, ['_game']);
+      const params = controller.queryParams(req.query, 'link.rel');
 
       let func = Character.aggregate()
-          .match(params.filter)
-          .lookup({
-            from: 'games',
-            localField: '_game',
-            foreignField: '_id',
-            as: '_game',
-          })
-          .append({
-            $unwind: { path: '$_game', preserveNullAndEmptyArrays: true },
-          })
-          .append({
-            $addFields: {
-              id: '$_id',
-              game: '$_game.title',
-              '_game.id': '$_game._id',
-            },
-          });
+        .match(params.filter)
+        .lookup({
+          from: 'games',
+          localField: 'link.rel',
+          foreignField: '_id',
+          as: 'link.rel',
+        })
+        .append({
+          $unwind: { path: '$link.rel', preserveNullAndEmptyArrays: true },
+        })
+        .append({
+          $addFields: {
+            id: '$_id',
+            game: '$link.rel.title',
+            'link.rel.id': '$link.rel._id',
+          },
+        });
 
       if (params.sort) {
         func = func.sort(params.sort);
@@ -37,8 +37,8 @@ router.route('/')
       func = func.project({
         _id: 0,
         __v: 0,
-        '_game._id': 0,
-        '_game.__v': 0,
+        'link.rel._id': 0,
+        'link.rel.__v': 0,
       });
 
       if (params.skip) {
@@ -61,14 +61,50 @@ router.route('/')
   })
 
   .post(upload, async (req, res, next) => {
+    // TODO: refactor this
     try {
-      const newCharacter = req.body.payload ? JSON.parse(req.body.payload) : req.body;
+      const newJson = req.body.payload ? JSON.parse(req.body.payload) : req.body;
 
-      if (req.file) {
-        newCharacter.image = await controller.dealWithFile(req.file);
+      const charMaxOrderPromise = Character.find({ _game: newJson._game }).sort('-_order').limit(1).exec();
+
+      if (newJson._game) {
+        if (newJson._order) {
+          const charMaxOrder = await charMaxOrderPromise;
+          const maxOrder = charMaxOrder[0] ? charMaxOrder[0]._order : 0;
+
+          if (newJson._order < 1 || newJson._order > maxOrder + 1) {
+            throw new Error('Bad order value.');
+          }
+
+          const newChar = await Character.create(newJson);
+
+          if (newJson._order < maxOrder + 1) {
+            const result = await Character.find({
+              _game: newJson._game,
+              _order: { $gte: newJson._order },
+              _id: { $ne: newChar._id },
+            }).exec();
+
+            const changeOrder = result.map(char => Character.update({ _id: char._id }, { $inc: { _order: 1 } }));
+            await Promise.all(changeOrder);
+          }
+        } else {
+          const charMaxOrder = await charMaxOrderPromise;
+          newJson._order = charMaxOrder[0] ? charMaxOrder[0]._order + 1 : 1;
+          await Character.create(newJson);
+        }
+      } else {
+        if (newJson._order) {
+          throw new Error('Can\'t set _order if _game is not provided');
+        }
+
+        await Character.create(newJson);
       }
 
-      await Character.create(newCharacter);
+      if (req.file) {
+        newJson.image = await controller.dealWithFile(req.file);
+      }
+
       return res.status(201).json({ message: 'Character successfully created' });
     } catch (e) {
       return next(e);
@@ -76,13 +112,27 @@ router.route('/')
   });
 
 router.route('/:id')
+  .get(async (req, res, next) => {
+    try {
+      const char = await Character.findById(req.params.id).exec();
+      return res.json(char);
+    } catch (e) {
+      return next(e);
+    }
+  })
   .patch(upload, async (req, res, next) => {
+    // TODO: refactor this
     try {
       // FormData with json in payload and optional file || simple json
       const update = req.body.payload ? JSON.parse(req.body.payload) : req.body;
 
+      if (update._game === '') {
+        update._game = null;
+      }
+
       // find character which needs to be updated
       const charBeforeUpdate = await Character.findById(req.params.id).lean().exec();
+
 
       // do we have field 'order' in update object?
       if (update._order) {
@@ -111,7 +161,7 @@ router.route('/:id')
       // no errors so far, time to compare some values before and after update
 
       // does order was changed?
-      if (update._order && update._order !== charBeforeUpdate._order) {
+      if (update._order !== charBeforeUpdate._order) {
         // yep. let's assume new order greater than older
         let range = { $gt: charBeforeUpdate._order, $lte: update._order };
         let inc = { $inc: { _order: -1 } };
@@ -140,6 +190,7 @@ router.route('/:id')
 
       return res.status(200).json({ message: 'Character successfully updated.' });
     } catch (e) {
+      console.log(e);
       return next(e);
     }
   })

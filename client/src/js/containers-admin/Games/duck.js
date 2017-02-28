@@ -15,6 +15,11 @@ const EDIT_GAME_MODAL_CLOSE = `${componentName}/EDIT_GAME_MODAL_CLOSE`;
 const component = generateComponent(componentName);
 const route = '/api/admin/games';
 
+export function fetchSingleGame(id) {
+  return dispatch =>
+     dispatch(fetchAndReturnJson(`${route}/${id}`, component));
+}
+
 export function newGameModalOpen() {
   return { type: NEW_GAME_MODAL_OPEN };
 }
@@ -41,9 +46,9 @@ export function fetchGames() {
   };
 }
 
-export function getGameWithMaxOrder() {
+export function getMaxOrder() {
   return dispatch =>
-    dispatch(fetchAndReturnJson(`${route}?sort=-order&limit=1`, component));
+    dispatch(fetchAndReturnJson(`${route}?action=maxorder`, component));
 }
 
 export function newGame(values) {
@@ -53,7 +58,7 @@ export function newGame(values) {
 
 export function editGame(id, values) {
   return dispatch =>
-    dispatch(formSubmit(`${route}/${id}`, { method: 'PATCH', body: values }));
+    dispatch(formSubmit(`${route}/${id}`, { method: 'PUT', body: values }));
 }
 
 export function deleteGame(id) {
@@ -63,7 +68,7 @@ export function deleteGame(id) {
 
 export function changeOrder(id, order) {
   return dispatch =>
-    dispatch(jsonSubmit(`${route}/${id}`, 'PATCH', { order }));
+    dispatch(jsonSubmit(`${route}/${id}?action=swaporder`, 'PATCH', { order }));
 }
 
 const defaultState = Immutable({
