@@ -251,7 +251,6 @@ CharactersTable.propTypes = {
     editCharModalClose: PropTypes.func.isRequired,
     fetchCharacters: PropTypes.func.isRequired,
     fetchAllGames: PropTypes.func.isRequired,
-    changeOrder: PropTypes.func.isRequired,
     editCharacter: PropTypes.func.isRequired,
     newCharacter: PropTypes.func.isRequired,
     deleteCharacter: PropTypes.func.isRequired,
@@ -300,9 +299,7 @@ function mapStateToProps({ entities, domain: { charactersTable } }) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(ownActions, dispatch),
-  };
+  return { actions: bindActionCreators(ownActions, dispatch) };
 }
 
 export default

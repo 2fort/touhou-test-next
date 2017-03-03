@@ -43,14 +43,14 @@ class LoadingLine extends Component {
   }
 }
 
-LoadingbarLine.propTypes = {
+LoadingLine.propTypes = {
   active: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps({ domain }) {
-  const active = Object.values(domain).some(dom => (dom && dom.pending));
+  const active = Object.values(domain).some(dom => (dom && dom.activeRequests > 0));
 
   return { active };
 }
 
-export default connect(mapStateToProps)(LoadingbarLine);
+export default connect(mapStateToProps)(LoadingLine);

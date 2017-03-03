@@ -4,7 +4,7 @@ import { initialize } from 'redux-form';
 
 import { charactersEntity, gameEntity } from '../../schemas/adminSchemas';
 import { generateComponent } from '../../ducks/domain';
-import fetchAndSave, { fetchAndReturnJson, formSubmit, jsonSubmit } from '../../actions/fetchAndSave';
+import { getData, formSubmit, jsonSubmit } from '../../actions/fetchAndSave';
 
 const componentName = 'CharactersTable';
 const NEW_CHAR_MODAL_OPEN = `${componentName}/NEW_CHAR_MODAL_OPEN`;
@@ -18,7 +18,7 @@ const route = '/api/admin/characters';
 
 export function fetchSingleCharacter(id) {
   return dispatch =>
-     dispatch(fetchAndReturnJson(`${route}/${id}`, component));
+     dispatch(getData(`${route}/${id}`)).exec(component);
 }
 
 export function newCharModalOpen(game) {
@@ -46,27 +46,21 @@ export function editCharModalClose() {
 export function fetchCharacters() {
   return (dispatch) => {
     const query = dispatch(component.getState()).query;
-    return dispatch(fetchAndSave(`${route}?${stringify(query)}`, [charactersEntity], component));
+    return dispatch(getData(`${route}?${stringify(query)}`)).normalize([charactersEntity]).save().exec(component);
   };
 }
 
 export function getCharsFromGame(gameId) {
   return dispatch =>
-    dispatch(fetchAndReturnJson(`${route}?filter[link][rel]=${gameId}&sort=link.rel`, component));
+    dispatch(getData(`${route}?filter[link][rel]=${gameId}&sort=link.rel`)).exec(component);
 }
 
 export function fetchAllGames() {
   return dispatch =>
-    dispatch(fetchAndReturnJson('/api/admin/games', component, [gameEntity]))
-      .then((games) => {
-        dispatch({ type: ADD_ALL_GAMES, ...games });
-        return true;
+    dispatch(getData('/api/admin/games')).normalize([gameEntity]).asObject().exec(component)
+      .then(({ games }) => {
+        dispatch({ type: ADD_ALL_GAMES, games });
       });
-}
-
-export function changeOrder(id, order) {
-  return dispatch =>
-    dispatch(jsonSubmit(`${route}/${id}`, 'PATCH', { link: { rel: order } }));
 }
 
 export function newCharacter(values) {

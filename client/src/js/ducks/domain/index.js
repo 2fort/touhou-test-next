@@ -8,9 +8,9 @@ const CONTAINER_UNMOUNT = 'CONTAINER_UNMOUNT';
 const CONTAINER_DESTROY = 'CONTAINER_DESTROY';
 
 // fetching actions
-const FETCH_BEGIN = 'FETCH_BEGIN';
-const FETCH_SUCCESS = 'FETCH_SUCCESS';
-const FETCH_FAIL = 'FETCH_FAIL';
+const REQUEST_BEGIN = 'REQUEST_BEGIN';
+const REQUEST_SUCCESS = 'REQUEST_SUCCESS';
+const REQUEST_FAIL = 'REQUEST_FAIL';
 const ADD_VISIBLE = 'ADD_VISIBLE';
 const RESET_VISIBLE = 'RESET_VISIBLE';
 const SET_SORT = 'SET_SORT';
@@ -35,8 +35,8 @@ export function generateComponent(component) {
       { type: CONTAINER_DESTROY, component }
     ),
 
-    fetchBegin: () => (
-      { type: FETCH_BEGIN, component }
+    requestBegin: url => (
+      { type: REQUEST_BEGIN, component, meta: url }
     ),
 
     addVisible: (visible, total = 0) => (
@@ -47,12 +47,12 @@ export function generateComponent(component) {
       { type: RESET_VISIBLE, component }
     ),
 
-    fetchSuccess: () => (
-      { type: FETCH_SUCCESS, component }
+    requestSuccess: url => (
+      { type: REQUEST_SUCCESS, component, meta: url }
     ),
 
-    fetchFail: () => (
-      { type: FETCH_FAIL, component }
+    requestFail: url => (
+      { type: REQUEST_FAIL, component, meta: url }
     ),
 
     setSort: field => (
@@ -89,7 +89,7 @@ function defaultDomainReducer(state = null, action) {
 
 const defaultDomainState = Immutable({
   active: false,
-  pending: false,
+  activeRequests: 0,
   visible: [],
   fetchedAt: 0,
   total: 0,
@@ -123,8 +123,8 @@ export default function domainSlice(componentName, reducer = defaultDomainReduce
         return null;
       }
 
-      case FETCH_BEGIN: {
-        return Immutable.merge(state, { pending: true });
+      case REQUEST_BEGIN: {
+        return Immutable.merge(state, { activeRequests: state.activeRequests + 1 });
       }
 
       case ADD_VISIBLE:
@@ -133,9 +133,9 @@ export default function domainSlice(componentName, reducer = defaultDomainReduce
       case RESET_VISIBLE:
         return Immutable.merge(state, { visible: [], total: 0, fetchedAt: 0 });
 
-      case FETCH_SUCCESS:
-      case FETCH_FAIL:
-        return Immutable.merge(state, { pending: false });
+      case REQUEST_SUCCESS:
+      case REQUEST_FAIL:
+        return Immutable.merge(state, { activeRequests: state.activeRequests - 1 });
 
       case SET_SORT:
         return Immutable.merge(state, { query: { sort: action.field } }, { deep: true });

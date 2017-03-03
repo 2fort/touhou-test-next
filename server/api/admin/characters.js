@@ -190,7 +190,6 @@ router.route('/:id')
 
       return res.status(200).json({ message: 'Character successfully updated.' });
     } catch (e) {
-      console.log(e);
       return next(e);
     }
   })

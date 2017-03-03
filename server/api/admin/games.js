@@ -50,6 +50,7 @@ router.route('/')
       const count = await Game.count(params.filter);
       res.set({ 'X-Total-Count': count });
 
+      // return setTimeout(() => res.json(games), 3000);
       return res.json(games);
     } catch (e) {
       return next(e);
@@ -68,6 +69,7 @@ router.route('/')
 
       await Game.updateMany({ order: { $gte: newData.order }, _id: { $ne: newGame._id } }, { $inc: { order: 1 } });
 
+      // return setTimeout(() => res.status(201).json({ message: 'Game successfully created.' }), 3000);
       return res.status(201).json({ message: 'Game successfully created.' });
     } catch (e) {
       return next(e);

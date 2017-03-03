@@ -5,10 +5,11 @@ import { Link } from 'react-router';
 
 import { domainHoc } from '../../ducks/domain';
 import QueryStringHOC from '../Base/hocs/QueryStringHOC';
-import * as ownActions from './duck';
+import * as ownActions from './GamesTable.duck';
+import { setMode, setGame, modalOpen } from './GameFormModal.duck';
 import { IMG_THUMBNAIL } from '../../config';
 
-import GameFormModal from './components/GameFormModal';
+import GameFormModal from './GameFormModal';
 import SortButton from '../Base/components/SortButton';
 import Pagination from '../Base/components/Pagination';
 import LimitSelect from '../Base/components/LimitSelect';
@@ -27,14 +28,14 @@ class GamesTable extends Component {
   };
 
   newGameBtnHandler = () => {
-    this.props.actions.newGameModalOpen();
+    this.props.modalActions.setMode('new');
+    this.props.modalActions.modalOpen();
   }
 
   editGameBtnHandler = id => () => {
-    this.props.actions.fetchSingleGame(id)
-      .then((game) => {
-        this.props.actions.editGameModalOpen(game);
-      });
+    this.props.modalActions.setMode('edit');
+    this.props.modalActions.setGame(id);
+    this.props.modalActions.modalOpen();
   }
 
   deleteGameBtnHandler = id => () => {
@@ -47,38 +48,8 @@ class GamesTable extends Component {
       .then(() => this.props.actions.fetchGames());
   }
 
-  newGameModalSubmit = ({ cover, ...values }) => {
-    const formData = new FormData();
-
-    if (cover && cover[0]) {
-      formData.append('cover', cover[0], cover[0].name);
-    }
-
-    formData.append('payload', JSON.stringify(values));
-
-    return this.props.actions.newGame(formData)
-      .then(() => this.props.actions.fetchGames())
-      .then(() => this.props.actions.newGameModalClose());
-  }
-
-  editGameModalSubmit = ({ id, cover, ...values }) => {
-    const formData = new FormData();
-    const coverStringName = typeof cover === 'string' && { cover };
-
-    if (typeof cover === 'object' && cover[0]) {
-      formData.append('cover', cover[0], cover[0].name);
-    }
-
-    formData.append('payload', JSON.stringify(Object.assign({}, values, coverStringName)));
-
-    return this.props.actions.editGame(id, formData)
-      .then(() => this.props.actions.fetchGames())
-      .then(() => this.props.actions.editGameModalClose());
-  }
-
   render() {
-    const { gamesArray, actions, component, qs, fetchedAt, total, query, filterFields,
-      newGameModalVisible, editGameModalVisible } = this.props;
+    const { gamesArray, actions, component, qs, fetchedAt, total, query, filterFields } = this.props;
 
     const Sort = props => <SortButton reduxField={query.sort} setSort={this.cb(component.setSort)} {...props} />;
 
@@ -208,26 +179,8 @@ class GamesTable extends Component {
 
         <Pagination page={query.page} limit={query.limit} total={total} setPage={this.cb(component.setPage)} />
 
-        {newGameModalVisible &&
-          <GameFormModal
-            onSubmit={this.newGameModalSubmit}
-            hide={actions.newGameModalClose}
-            title="New Game"
-            buttonName="Create"
-            getMaxOrder={actions.getMaxOrder}
-            mode="new"
-          />
-        }
-
-        {editGameModalVisible &&
-          <GameFormModal
-            onSubmit={this.editGameModalSubmit}
-            hide={actions.editGameModalClose}
-            title="Edit Game"
-            buttonName="Edit"
-            getMaxOrder={actions.getMaxOrder}
-            mode="edit"
-          />
+        {this.props.modalIsOpen &&
+          <GameFormModal cb={actions.fetchGames} />
         }
       </div>
     );
@@ -237,8 +190,6 @@ class GamesTable extends Component {
 GamesTable.propTypes = {
   fetchedAt: PropTypes.number.isRequired,
   total: PropTypes.number.isRequired,
-  newGameModalVisible: PropTypes.bool.isRequired,
-  editGameModalVisible: PropTypes.bool.isRequired,
   query: PropTypes.shape({
     page: PropTypes.number.isRequired,
     limit: PropTypes.number.isRequired,
@@ -256,18 +207,16 @@ GamesTable.propTypes = {
     chars: PropTypes.number,
   })).isRequired,
   actions: PropTypes.shape({
-    newGameModalOpen: PropTypes.func.isRequired,
-    newGameModalClose: PropTypes.func.isRequired,
-    editGameModalOpen: PropTypes.func.isRequired,
-    editGameModalClose: PropTypes.func.isRequired,
-    fetchSingleGame: PropTypes.func.isRequired,
     fetchGames: PropTypes.func.isRequired,
-    editGame: PropTypes.func.isRequired,
-    newGame: PropTypes.func.isRequired,
     deleteGame: PropTypes.func.isRequired,
     changeOrder: PropTypes.func.isRequired,
-    getMaxOrder: PropTypes.func.isRequired,
   }).isRequired,
+  modalActions: PropTypes.shape({
+    setMode: PropTypes.func.isRequired,
+    setGame: PropTypes.func.isRequired,
+    modalOpen: PropTypes.func.isRequired,
+  }).isRequired,
+  modalIsOpen: PropTypes.bool.isRequired,
   component: PropTypes.shape({
     setSort: PropTypes.func.isRequired,
     setFilter: PropTypes.func.isRequired,
@@ -282,7 +231,7 @@ GamesTable.propTypes = {
   filterFields: PropTypes.objectOf(PropTypes.object).isRequired,
 };
 
-function mapStateToProps({ domain: { gamesTable }, entities: { games } }) {
+function mapStateToProps({ domain: { gamesTable, gameFormModal }, entities: { games } }) {
   const gamesArray = gamesTable.visible.map(id => games[id]);
 
   const filterFields = {
@@ -299,11 +248,14 @@ function mapStateToProps({ domain: { gamesTable }, entities: { games } }) {
     },
   };
 
-  return { ...gamesTable, filterFields, gamesArray };
+  return { ...gamesTable, modalIsOpen: gameFormModal.open, filterFields, gamesArray };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(ownActions, dispatch) };
+  return {
+    actions: bindActionCreators(ownActions, dispatch),
+    modalActions: bindActionCreators({ setMode, setGame, modalOpen }, dispatch),
+  };
 }
 
 export default

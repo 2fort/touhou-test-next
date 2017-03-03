@@ -45,7 +45,7 @@ export default function request(endpoint, options = {}) {
     fetch(endpoint, options)
       .then(parseJSON)
       .then((response) => {
-        // responce can be OK and without json
+        // response can be OK and without json
         if (response.ok) {
           return resolve(response);
         }

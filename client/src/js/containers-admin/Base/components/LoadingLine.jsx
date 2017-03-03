@@ -15,7 +15,7 @@ LoadingLine.propTypes = {
 };
 
 function mapStateToProps({ domain }) {
-  const active = Object.values(domain).some(dom => (dom && dom.pending));
+  const active = Object.values(domain).some(dom => (dom && dom.activeRequests > 0));
 
   return { active };
 }

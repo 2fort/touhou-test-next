@@ -58,6 +58,8 @@ export default childOptions => (ComposedComponent) => {
   };
 
   function mapDispatchToProps(dispatch) {
+    if (!options.name) throw new Error('name property must be set');
+
     const domainActions = generateComponent(options.name);
 
     return {

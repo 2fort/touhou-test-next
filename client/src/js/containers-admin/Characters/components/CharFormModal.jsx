@@ -101,7 +101,7 @@ class CharFormModal extends Component {
     newList.splice(currentValues.link.order - 1, 0, newObj);
 
     const tableBody = newList.map((char, i) => (
-      <tr className={char.id === initialValues.id ? 'info' : ''} key={char.name}>
+      <tr className={char.id === initialValues.id ? 'info' : ''} key={char.name || i}>
         <td>{i + 1}</td>
         <td>
           {char.image &&
@@ -145,8 +145,8 @@ class CharFormModal extends Component {
     const { mode, title, buttonName, currentValues, hide, handleSubmit, submitting, error, reset, filePreview } = this.props;
 
     const gameOptions = this.prepareGameOptionsForSelectField();
-    const charList = this.prepareCharListForOrderField();
     const currentRel = currentValues.link ? currentValues.link.rel : undefined;
+    const charList = currentRel ? this.prepareCharListForOrderField() : undefined;
 
     return (
       <div className="static-modal">
