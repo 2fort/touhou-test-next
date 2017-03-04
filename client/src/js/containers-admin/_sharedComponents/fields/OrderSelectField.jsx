@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 
-const OrderSelectField = ({ input, list }) => (
+const OrderSelectField = ({ input, list, max }) => (
   <div className="form-group" style={{ display: 'flex', flexFlow: 'row nowrap', alignItems: 'center' }}>
-    <label htmlFor="link.rel" className="col-sm-2 control-label" style={{ alignSelf: 'flex-start' }}>Order</label>
+    <label htmlFor="link.order" className="col-sm-2 control-label" style={{ alignSelf: 'flex-start' }}>Order</label>
     <div className="col-sm-9">
       {list}
     </div>
@@ -20,7 +20,7 @@ const OrderSelectField = ({ input, list }) => (
         type="button"
         className="btn btn-default"
         onClick={() => input.onChange(input.value + 1)}
-        disabled={input.value === list.length}
+        disabled={input.value === max}
       >
         <i className="fa fa-chevron-down" aria-hidden="true" />
       </button>
@@ -35,6 +35,7 @@ OrderSelectField.propTypes = {
     onChange: PropTypes.func.isRequired,
   }).isRequired,
   list: PropTypes.node.isRequired,
+  max: PropTypes.number.isRequired,
 };
 
 export default OrderSelectField;

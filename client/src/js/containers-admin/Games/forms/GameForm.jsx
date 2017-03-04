@@ -6,6 +6,9 @@ import { TextField, ImageField } from '../../_sharedComponents/fields';
 import { required, number, maxValue, moreThan0 } from '../../_sharedComponents/validationFields';
 import FilePreviewHoc from '../../_sharedComponents/FilePreviewHoc';
 
+const rangeOrder = num =>
+  (value, previousValue) => (parseFloat(value) > 0 && parseFloat(value) <= num ? value : previousValue);
+
 const GameForm = ({ maxOrder, filePreview, error, handleSubmit }) => (
   <form encType="multipart/form-data" className="form-horizontal" onSubmit={handleSubmit}>
     <Field name="id" type="hidden" component="input" />
@@ -25,6 +28,7 @@ const GameForm = ({ maxOrder, filePreview, error, handleSubmit }) => (
       type="number"
       component={TextField}
       label="Order"
+      normalize={rangeOrder(maxOrder)}
       validate={[required, number, maxValue(maxOrder), moreThan0]}
     />
 

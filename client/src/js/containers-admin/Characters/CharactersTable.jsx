@@ -5,11 +5,12 @@ import { Link } from 'react-router';
 
 import { domainHoc } from '../../ducks/domain';
 import QueryStringHOC from '../Base/hocs/QueryStringHOC';
-import * as ownActions from './duck';
+import * as ownActions from './CharactersTable.duck';
+import { setMode, setCharId, openModal } from './CharFormModal.duck';
 import { prepareFormData } from '../_sharedComponents/utils';
 import { IMG_THUMBNAIL } from '../../config';
 
-import CharFormModal from './components/CharFormModal';
+import CharFormModal from './CharFormModal';
 import SortButton from '../Base/components/SortButton';
 import Pagination from '../Base/components/Pagination';
 import LimitSelect from '../Base/components/LimitSelect';
@@ -26,18 +27,17 @@ class CharactersTable extends Component {
     queryFunc(...args);
     this.props.qs.setQueryString();
     this.props.actions.fetchCharacters();
-  };
+  }
 
   newCharBtnHandler = () => {
-    const { link } = this.props.query.filter;
-    this.props.actions.newCharModalOpen(link && link.rel);
+    this.props.modalActions.setMode('new');
+    this.props.modalActions.openModal();
   }
 
   editCharBtnHandler = id => () => {
-    this.props.actions.fetchSingleCharacter(id)
-      .then((char) => {
-        this.props.actions.editCharModalOpen(char);
-      });
+    this.props.modalActions.setMode('edit');
+    this.props.modalActions.setCharId(id);
+    this.props.modalActions.openModal();
   }
 
   deleteCharBtnHandler = id => () => {
@@ -65,8 +65,8 @@ class CharactersTable extends Component {
   }
 
   render() {
-    const { charsArray, gamesList, actions, allGames, component, qs, fetchedAt, total, query,
-      newCharModalVisible, editCharModalVisible, filterFields } = this.props;
+    const { charsArray, gamesList, actions, allGames, component, qs, fetchedAt, total, query, filterFields,
+      modalIsOpen, modalActions } = this.props;
 
     const Sort = props => <SortButton reduxField={query.sort} setSort={this.cb(component.setSort)} {...props} />;
     const nonOrderMode = !query.filter.link || !query.filter.link.rel;
@@ -201,27 +201,11 @@ class CharactersTable extends Component {
 
         <Pagination page={query.page} limit={query.limit} total={total} setPage={this.cb(component.setPage)} />
 
-        {newCharModalVisible &&
+        {modalIsOpen &&
           <CharFormModal
-            onSubmit={this.newCharModalSubmit}
-            hide={actions.newCharModalClose}
-            title="New Character"
-            buttonName="Create"
+            cb={actions.fetchCharacters}
             allGames={allGames}
-            getCharsFromGame={actions.getCharsFromGame}
-            mode="new"
-          />
-        }
-
-        {editCharModalVisible &&
-          <CharFormModal
-            onSubmit={this.editCharModalSubmit}
-            hide={actions.editCharModalClose}
-            title="Edit Character"
-            buttonName="Edit"
-            allGames={allGames}
-            getCharsFromGame={actions.getCharsFromGame}
-            mode="edit"
+            queryRel={query.filter.link ? query.filter.link.rel : ''}
           />
         }
       </div>
@@ -232,11 +216,10 @@ class CharactersTable extends Component {
 CharactersTable.propTypes = {
   fetchedAt: PropTypes.number.isRequired,
   total: PropTypes.number.isRequired,
-  newCharModalVisible: PropTypes.bool.isRequired,
-  editCharModalVisible: PropTypes.bool.isRequired,
   charsArray: PropTypes.arrayOf(PropTypes.object).isRequired,
   gamesList: PropTypes.objectOf(PropTypes.object).isRequired,
   allGames: PropTypes.objectOf(PropTypes.object).isRequired,
+  modalIsOpen: PropTypes.bool.isRequired,
   query: PropTypes.shape({
     page: PropTypes.number.isRequired,
     limit: PropTypes.number.isRequired,
@@ -244,16 +227,14 @@ CharactersTable.propTypes = {
     filter: PropTypes.objectOf(PropTypes.any).isRequired,
   }).isRequired,
   actions: PropTypes.shape({
-    fetchSingleCharacter: PropTypes.func.isRequired,
-    newCharModalOpen: PropTypes.func.isRequired,
-    newCharModalClose: PropTypes.func.isRequired,
-    editCharModalOpen: PropTypes.func.isRequired,
-    editCharModalClose: PropTypes.func.isRequired,
     fetchCharacters: PropTypes.func.isRequired,
     fetchAllGames: PropTypes.func.isRequired,
-    editCharacter: PropTypes.func.isRequired,
-    newCharacter: PropTypes.func.isRequired,
     deleteCharacter: PropTypes.func.isRequired,
+  }).isRequired,
+  modalActions: PropTypes.shape({
+    setMode: PropTypes.func.isRequired,
+    setCharId: PropTypes.func.isRequired,
+    openModal: PropTypes.func.isRequired,
   }).isRequired,
   component: PropTypes.shape({
     setSort: PropTypes.func.isRequired,
@@ -269,7 +250,7 @@ CharactersTable.propTypes = {
   filterFields: PropTypes.objectOf(PropTypes.object).isRequired,
 };
 
-function mapStateToProps({ entities, domain: { charactersTable } }) {
+function mapStateToProps({ entities, domain: { charactersTable, charFormModal } }) {
   const charsArray = charactersTable.visible.map(char => entities.characters[char]);
 
   const filterFields = {
@@ -295,11 +276,20 @@ function mapStateToProps({ entities, domain: { charactersTable } }) {
     },
   };
 
-  return { ...charactersTable, filterFields, charsArray, gamesList: entities.games };
+  return {
+    ...charactersTable,
+    filterFields,
+    charsArray,
+    gamesList: entities.games,
+    modalIsOpen: charFormModal.open,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(ownActions, dispatch) };
+  return {
+    actions: bindActionCreators(ownActions, dispatch),
+    modalActions: bindActionCreators({ setMode, setCharId, openModal }, dispatch),
+  };
 }
 
 export default

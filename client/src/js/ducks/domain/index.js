@@ -120,7 +120,7 @@ export default function domainSlice(componentName, reducer = defaultDomainReduce
       }
 
       case CONTAINER_DESTROY: {
-        return null;
+        return initState;
       }
 
       case REQUEST_BEGIN: {

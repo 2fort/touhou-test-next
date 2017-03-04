@@ -8,7 +8,7 @@ import QueryStringHOC from '../../Base/hocs/QueryStringHOC';
 import * as ownActions from './duck';
 import { IMG_THUMBNAIL } from '../../../config';
 
-import CharFormModal from '../../Characters/components/CharFormModal';
+import CharFormModal from '../../Characters/CharFormModal';
 import SortButton from '../../Base/components/SortButton';
 import Pagination from '../../Base/components/Pagination';
 import LimitSelect from '../../Base/components/LimitSelect';

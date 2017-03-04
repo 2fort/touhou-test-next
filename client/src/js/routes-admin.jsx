@@ -6,7 +6,7 @@ import Index from './containers-admin/Base';
 import Home from './containers-admin/Base/Home';
 
 import GamesTable from './containers-admin/Games/GamesTable';
-import Characters from './containers-admin/Characters';
+import Characters from './containers-admin/Characters/CharactersTable';
 import GameCharacters from './containers-admin/Games/GameCharacters';
 
 export default (

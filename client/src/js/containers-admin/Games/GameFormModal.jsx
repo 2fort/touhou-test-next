@@ -21,7 +21,7 @@ class GameFormModal extends Component {
         actions.getMaxOrder(),
         actions.fetchSingleGame(gameId),
       ])
-      .then(() => { actions.markReady(); });
+        .then(() => { actions.markReady(); });
     }
   }
 
@@ -48,8 +48,16 @@ class GameFormModal extends Component {
     const buttonName = mode === 'new' ? 'Create' : 'Edit';
 
     const formProps = mode === 'new'
-      ? { onSubmit: this.newGameModalSubmit, maxOrder: maxOrder + 1, initialValues: { order: maxOrder + 1 } }
-      : { onSubmit: this.editGameModalSubmit, maxOrder, initialValues: game };
+      ? {
+        onSubmit: this.newGameModalSubmit,
+        maxOrder: maxOrder + 1,
+        initialValues: { order: maxOrder + 1 },
+      }
+      : {
+        onSubmit: this.editGameModalSubmit,
+        maxOrder,
+        initialValues: game,
+      };
 
     return (
       <div className="static-modal">
@@ -60,12 +68,7 @@ class GameFormModal extends Component {
 
           <Modal.Body>
             {ready
-              ?
-                <GameForm
-                  onSubmit={formProps.onSubmit}
-                  maxOrder={formProps.maxOrder}
-                  initialValues={formProps.initialValues}
-                />
+              ? <GameForm {...formProps} />
               : <Loading />
             }
           </Modal.Body>
@@ -96,7 +99,15 @@ GameFormModal.propTypes = {
   ready: PropTypes.bool.isRequired,
   mode: PropTypes.string.isRequired,
   gameId: PropTypes.string.isRequired,
-  game: PropTypes.object.isRequired,
+  game: PropTypes.shape({
+    id: PropTypes.string,
+    prefix: PropTypes.string,
+    title: PropTypes.string,
+    year: PropTypes.number,
+    cover: PropTypes.string,
+    slug: PropTypes.string,
+    order: PropTypes.number,
+  }).isRequired,
   maxOrder: PropTypes.number.isRequired,
   actions: PropTypes.shape({
     setMode: PropTypes.func.isRequired,

@@ -49,7 +49,7 @@ class GamesTable extends Component {
   }
 
   render() {
-    const { gamesArray, actions, component, qs, fetchedAt, total, query, filterFields } = this.props;
+    const { gamesArray, actions, component, qs, fetchedAt, total, query, filterFields, modalIsOpen } = this.props;
 
     const Sort = props => <SortButton reduxField={query.sort} setSort={this.cb(component.setSort)} {...props} />;
 
@@ -179,7 +179,7 @@ class GamesTable extends Component {
 
         <Pagination page={query.page} limit={query.limit} total={total} setPage={this.cb(component.setPage)} />
 
-        {this.props.modalIsOpen &&
+        {modalIsOpen &&
           <GameFormModal cb={actions.fetchGames} />
         }
       </div>
