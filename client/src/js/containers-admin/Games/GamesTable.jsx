@@ -6,7 +6,7 @@ import { Link } from 'react-router';
 import { domainHoc } from '../../ducks/domain';
 import QueryStringHOC from '../Base/hocs/QueryStringHOC';
 import * as ownActions from './GamesTable.duck';
-import { setMode, setGame, modalOpen } from './GameFormModal.duck';
+import { setMode, setGameId, openModal } from './GameFormModal.duck';
 import { IMG_THUMBNAIL } from '../../config';
 
 import GameFormModal from './GameFormModal';
@@ -29,13 +29,13 @@ class GamesTable extends Component {
 
   newGameBtnHandler = () => {
     this.props.modalActions.setMode('new');
-    this.props.modalActions.modalOpen();
+    this.props.modalActions.openModal();
   }
 
   editGameBtnHandler = id => () => {
     this.props.modalActions.setMode('edit');
-    this.props.modalActions.setGame(id);
-    this.props.modalActions.modalOpen();
+    this.props.modalActions.setGameId(id);
+    this.props.modalActions.openModal();
   }
 
   deleteGameBtnHandler = id => () => {
@@ -123,7 +123,7 @@ class GamesTable extends Component {
             {gamesArray[0] && gamesArray.map((game, i) => (
               <tr key={game.id}>
                 <td>
-                  <Link to={`/admin/characters?filter[_game]=${game.id}`}>{game.title}</Link>
+                  <Link to={`/admin/games/${game.id}/characters`}>{game.title}</Link>
                 </td>
                 <td className="text-center">
                   <button
@@ -213,8 +213,8 @@ GamesTable.propTypes = {
   }).isRequired,
   modalActions: PropTypes.shape({
     setMode: PropTypes.func.isRequired,
-    setGame: PropTypes.func.isRequired,
-    modalOpen: PropTypes.func.isRequired,
+    setGameId: PropTypes.func.isRequired,
+    openModal: PropTypes.func.isRequired,
   }).isRequired,
   modalIsOpen: PropTypes.bool.isRequired,
   component: PropTypes.shape({
@@ -254,7 +254,7 @@ function mapStateToProps({ domain: { gamesTable, gameFormModal }, entities: { ga
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(ownActions, dispatch),
-    modalActions: bindActionCreators({ setMode, setGame, modalOpen }, dispatch),
+    modalActions: bindActionCreators({ setMode, setGameId, openModal }, dispatch),
   };
 }
 

@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const _ = require('lodash');
 const Game = require('../../models/game');
+const Character = require('../../models/character');
 const controller = require('../../controller/admin');
 const multer = require('../../controller/multer');
 const gameController = require('./games.controller');
@@ -146,5 +147,35 @@ router.route('/:id')
       return next(e);
     }
   });
+
+router.get('/:id/characters', async (req, res, next) => {
+  try {
+    const params = controller.queryParams(req.query);
+    const match = Object.assign({}, { 'link.rel': req.params.id }, params.filter);
+
+    let func = Character.find(match);
+
+    if (params.sort) {
+      func = func.sort(params.sort);
+    }
+
+    if (params.skip) {
+      func = func.skip(params.skip);
+    }
+
+    if (params.limit) {
+      func = func.limit(params.limit);
+    }
+
+    const characters = await func.exec();
+
+    const count = await Character.count(match);
+    res.set({ 'X-Total-Count': count });
+
+    return res.json(characters);
+  } catch (e) {
+    return next(e);
+  }
+});
 
 module.exports = router;

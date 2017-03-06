@@ -4,15 +4,18 @@ import { reducer as formReducer } from 'redux-form';
 
 import { domainSlice, entities, flashMessage } from './ducks';
 import gamesTable from './containers-admin/Games/GamesTable.duck';
-import gameFormModal from './containers-admin/Games/GameFormModal.duck';
-import charactersTable from './containers-admin/Characters/CharactersTable.duck';
-import charFormModal from './containers-admin/Characters/CharFormModal.duck';
+import gameCharactersTable from './containers-admin/Games/GameCharacters/duck';
 
+import charactersTable from './containers-admin/Characters/CharactersTable.duck';
+
+import gameFormModal from './containers-admin/Games/GameFormModal.duck';
+import charFormModal from './containers-admin/Characters/CharFormModal.duck';
 
 const domain = combineReducers({
   gamesTable: domainSlice('GamesTable', gamesTable.reducer, gamesTable.defaultState),
-  gameFormModal: domainSlice('GameFormModal', gameFormModal.reducer, gameFormModal.defaultState),
+  gameCharactersTable: domainSlice('GameCharactersTable', gameCharactersTable.reducer, gameCharactersTable.defaultState),
   charactersTable: domainSlice('CharactersTable', charactersTable.reducer, charactersTable.defaultState),
+  gameFormModal: domainSlice('GameFormModal', gameFormModal.reducer, gameFormModal.defaultState),
   charFormModal: domainSlice('CharFormModal', charFormModal.reducer, charFormModal.defaultState),
 });
 

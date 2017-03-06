@@ -29,7 +29,7 @@ class GameFormModal extends Component {
     this.props.actions.newGame(values)
       .then(() => {
         this.props.cb();
-        this.props.actions.modalClose();
+        this.props.actions.closeModal();
       });
   }
 
@@ -37,7 +37,7 @@ class GameFormModal extends Component {
     this.props.actions.editGame(values)
       .then(() => {
         this.props.cb();
-        this.props.actions.modalClose();
+        this.props.actions.closeModal();
       });
   }
 
@@ -61,7 +61,7 @@ class GameFormModal extends Component {
 
     return (
       <div className="static-modal">
-        <Modal show onHide={actions.modalClose}>
+        <Modal show onHide={actions.closeModal}>
           <Modal.Header>
             <Modal.Title>{title}</Modal.Title>
           </Modal.Header>
@@ -78,7 +78,7 @@ class GameFormModal extends Component {
               {submitting && <i className="fa fa-spinner fa-spin" />} {buttonName}
             </Button>
             {mode === 'edit' && <Button onClick={actions.resetForm}>Reset</Button>}
-            <Button onClick={actions.modalClose}>Cancel</Button>
+            <Button onClick={actions.closeModal}>Cancel</Button>
           </Modal.Footer>
         </Modal>
       </div>
@@ -110,10 +110,7 @@ GameFormModal.propTypes = {
   }).isRequired,
   maxOrder: PropTypes.number.isRequired,
   actions: PropTypes.shape({
-    setMode: PropTypes.func.isRequired,
-    modalOpen: PropTypes.func.isRequired,
-    modalClose: PropTypes.func.isRequired,
-    setGame: PropTypes.func.isRequired,
+    closeModal: PropTypes.func.isRequired,
     fetchSingleGame: PropTypes.func.isRequired,
     getMaxOrder: PropTypes.func.isRequired,
     markReady: PropTypes.func.isRequired,

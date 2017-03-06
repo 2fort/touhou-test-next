@@ -9,7 +9,7 @@ const upload = multer.single('image');
 router.route('/')
   .get(async (req, res, next) => {
     try {
-      const params = controller.queryParams(req.query, 'link.rel');
+      const params = controller.queryParams(req.query, ['link.rel']);
 
       let func = Character.aggregate()
         .match(params.filter)

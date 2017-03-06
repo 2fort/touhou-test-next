@@ -22,15 +22,15 @@ export function setMode(mode) {
   return { type: SET_MODE, mode };
 }
 
-export function modalOpen() {
+export function openModal() {
   return { type: MODAL_OPEN };
 }
 
-export function modalClose() {
+export function closeModal() {
   return { type: MODAL_CLOSE };
 }
 
-export function setGame(id) {
+export function setGameId(id) {
   return { type: SET_GAME_ID, id };
 }
 

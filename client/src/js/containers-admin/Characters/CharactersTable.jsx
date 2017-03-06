@@ -7,7 +7,6 @@ import { domainHoc } from '../../ducks/domain';
 import QueryStringHOC from '../Base/hocs/QueryStringHOC';
 import * as ownActions from './CharactersTable.duck';
 import { setMode, setCharId, openModal } from './CharFormModal.duck';
-import { prepareFormData } from '../_sharedComponents/utils';
 import { IMG_THUMBNAIL } from '../../config';
 
 import CharFormModal from './CharFormModal';
@@ -45,31 +44,11 @@ class CharactersTable extends Component {
       .then(() => this.props.actions.fetchCharacters());
   }
 
-  newCharModalSubmit = ({ fileImage, ...values }) => {
-    const formDataValues = prepareFormData(values, fileImage, 'image');
-
-    return this.props.actions.newCharacter(formDataValues)
-      .then(() => this.props.actions.fetchCharacters())
-      .then(() => this.props.actions.newCharModalClose());
-  }
-
-  editCharModalSubmit = (values) => {
-    return this.props.actions.editCharacter(values.id, values)
-      .then(() => this.props.actions.fetchCharacters())
-      .then(() => this.props.actions.editCharModalClose());
-  }
-
-  swapOrderBtnHandler = (id, num) => () => {
-    this.props.actions.changeOrder(id, num)
-      .then(() => this.props.actions.fetchCharacters());
-  }
-
   render() {
-    const { charsArray, gamesList, actions, allGames, component, qs, fetchedAt, total, query, filterFields,
-      modalIsOpen, modalActions } = this.props;
+    const { charsArray, gamesList, actions, component, qs, fetchedAt, total, query, filterFields,
+      modalIsOpen } = this.props;
 
     const Sort = props => <SortButton reduxField={query.sort} setSort={this.cb(component.setSort)} {...props} />;
-    const nonOrderMode = !query.filter.link || !query.filter.link.rel;
 
     return (
       <div>
@@ -108,19 +87,12 @@ class CharactersTable extends Component {
           </button>
         </div>
 
-        <table className={nonOrderMode ? 'table table-striped table-chars' : 'table table-striped table-order-chars'}>
+        <table className="table table-striped table-chars">
           <thead>
             <tr>
               <th>
                 <Sort field="name">Name</Sort>
               </th>
-              {nonOrderMode ||
-                <th className="text-center">
-                  <Sort field="link.order">
-                    Order
-                  </Sort>
-                </th>
-              }
               <th className="text-center">
                 Image
               </th>
@@ -142,27 +114,6 @@ class CharactersTable extends Component {
                 <td>
                   {char.name}
                 </td>
-                {nonOrderMode ||
-                  <td className="text-center">
-                    <button
-                      type="button"
-                      className="btn btn-link"
-                      onClick={this.swapOrderBtnHandler(char.id, char.link.order - 1)}
-                      disabled={char.link.order === 1}
-                    >
-                      <i className="fa fa-sort-asc" aria-hidden="true" />
-                    </button>
-                    {char.link.order}
-                    <button
-                      type="button"
-                      className="btn btn-link"
-                      onClick={this.swapOrderBtnHandler(char.id, char.link.order + 1)}
-                      disabled={char.link.order === total}
-                    >
-                      <i className="fa fa-sort-desc" aria-hidden="true" />
-                    </button>
-                  </td>
-                }
                 <td className="table-image text-center">
                   {char.image && <img alt={char.name} src={IMG_THUMBNAIL + char.image} />}
                 </td>
@@ -204,7 +155,6 @@ class CharactersTable extends Component {
         {modalIsOpen &&
           <CharFormModal
             cb={actions.fetchCharacters}
-            allGames={allGames}
             queryRel={query.filter.link ? query.filter.link.rel : ''}
           />
         }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { IndexLinkContainer } from 'react-router-bootstrap';
+import { IndexLinkContainer, LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 
 const NavbarHeader = () => (
@@ -15,7 +15,7 @@ const NavbarHeader = () => (
       <Navbar.Collapse>
         <Nav>
           <IndexLinkContainer to="/admin"><NavItem eventKey={1} href="#">Home</NavItem></IndexLinkContainer>
-          <IndexLinkContainer to="/admin/games"><NavItem eventKey={2} href="#">Games</NavItem></IndexLinkContainer>
+          <LinkContainer to="/admin/games"><NavItem eventKey={2} href="#">Games</NavItem></LinkContainer>
           <IndexLinkContainer to="/admin/characters"><NavItem eventKey={3} href="#">Characters</NavItem></IndexLinkContainer>
         </Nav>
         <Nav pullRight>

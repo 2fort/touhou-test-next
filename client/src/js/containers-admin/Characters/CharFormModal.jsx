@@ -58,6 +58,20 @@ class CharFormModal extends Component {
       });
   }
 
+  newCharModalSubmit = ({ fileImage, ...values }) => {
+    const formDataValues = prepareFormData(values, fileImage, 'image');
+
+    return this.props.actions.newCharacter(formDataValues)
+      .then(() => this.props.actions.fetchCharacters())
+      .then(() => this.props.actions.newCharModalClose());
+  }
+
+  editCharModalSubmit = (values) => {
+    return this.props.actions.editCharacter(values.id, values)
+      .then(() => this.props.actions.fetchCharacters())
+      .then(() => this.props.actions.editCharModalClose());
+  }
+
   render() {
     const { activeRequests, mode, actions, ready, editCharData, submitting, charsFromSelectedGame, allGames,
       initialOrder, queryRel } = this.props;
