@@ -4,10 +4,10 @@ import { bindActionCreators } from 'redux';
 import { Modal, Button } from 'react-bootstrap';
 import { isSubmitting } from 'redux-form';
 
-import { domainHoc } from '../../ducks/domain';
+import { domainHoc } from '../../../ducks/domain';
 import * as ownActions from './GameFormModal.duck';
-import GameForm from './forms/GameForm';
-import Loading from '../../containers/Base/components/Loading';
+import GameForm from '../forms/GameForm';
+import Loading from '../../../containers/Base/components/Loading';
 
 class GameFormModal extends Component {
   componentDidMount() {
@@ -25,21 +25,19 @@ class GameFormModal extends Component {
     }
   }
 
-  newGameModalSubmit = (values) => {
+  newGameModalSubmit = values =>
     this.props.actions.newGame(values)
       .then(() => {
         this.props.cb();
         this.props.actions.closeModal();
       });
-  }
 
-  editGameModalSubmit = (values) => {
+  editGameModalSubmit = values =>
     this.props.actions.editGame(values)
       .then(() => {
         this.props.cb();
         this.props.actions.closeModal();
       });
-  }
 
   render() {
     const { actions, mode, maxOrder, game, ready, submitting } = this.props;

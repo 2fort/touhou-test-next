@@ -1,10 +1,14 @@
 import { charactersEntity } from '../../schemas/appSchemas';
 import { generateComponent } from '../../ducks/domain';
-import fetchAndSave from '../../actions/fetchAndSave';
+import { getData } from '../../actions/fetchAndSave';
 
 const component = generateComponent('CharactersList');
 
 export default function fetchCharacters(game) {
   return dispatch =>
-    dispatch(fetchAndSave(`/api/characters/${game}`, [charactersEntity], component));
+    dispatch(getData(`/api/characters/${game}`))
+      .normalize([charactersEntity])
+      .save()
+      .asJson()
+      .exec(component);
 }

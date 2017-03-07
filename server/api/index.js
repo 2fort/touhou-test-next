@@ -23,9 +23,9 @@ router.get('/characters/:game', (req, res, next) => {
       }
 
       return Character
-        .find({ _game: game[0]._id }, 'name image slug wiki _game')
-        .populate('_game', 'title slug')
-        .sort('_order')
+        .find({ 'link.rel': game[0]._id }, 'name image slug wiki _game')
+        .populate('link.rel', 'title slug')
+        .sort('link.order')
         .exec();
     })
     .then(characters => res.json(characters))  // setTimeout(() => res.json(characters), 1000);
@@ -34,15 +34,16 @@ router.get('/characters/:game', (req, res, next) => {
 
 router.get('/character/:char', async (req, res, next) => {
   try {
-    let charInfo = await Character.find({ slug: req.params.char }).populate('_game').exec();
+    let charInfo = await Character.find({ slug: req.params.char }).populate('link.rel').exec();
 
     if (!charInfo[0]) {
       throw new Error('404'); // character not found!
     }
 
     charInfo = charInfo[0].toObject();
-    const allCharsFromGame = await Character.find({ _game: charInfo._game.id }, '_id slug').lean().exec();
+    const allCharsFromGame = await Character.find({ 'link.rel': charInfo.link.rel.id }, '_id slug').lean().exec();
 
+    // move this to LINK header
     allCharsFromGame.forEach((charId, i) => {
       if (charId._id.toString() === charInfo.id.toString()) {
         charInfo.prevCharacter = (i !== 0) ? allCharsFromGame[i - 1].slug : '';

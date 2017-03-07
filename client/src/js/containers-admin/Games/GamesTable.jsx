@@ -6,10 +6,10 @@ import { Link } from 'react-router';
 import { domainHoc } from '../../ducks/domain';
 import QueryStringHOC from '../Base/hocs/QueryStringHOC';
 import * as ownActions from './GamesTable.duck';
-import { setMode, setGameId, openModal } from './GameFormModal.duck';
+import { setMode, setGameId, openModal } from './modals/GameFormModal.duck';
 import { IMG_THUMBNAIL } from '../../config';
 
-import GameFormModal from './GameFormModal';
+import GameFormModal from './modals/GameFormModal';
 import SortButton from '../Base/components/SortButton';
 import Pagination from '../Base/components/Pagination';
 import LimitSelect from '../Base/components/LimitSelect';

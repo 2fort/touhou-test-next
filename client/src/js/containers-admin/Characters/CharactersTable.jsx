@@ -6,10 +6,10 @@ import { Link } from 'react-router';
 import { domainHoc } from '../../ducks/domain';
 import QueryStringHOC from '../Base/hocs/QueryStringHOC';
 import * as ownActions from './CharactersTable.duck';
-import { setMode, setCharId, openModal } from './CharFormModal.duck';
+import { setMode, setCharId, openModal } from './modals/CharFormModal.duck';
 import { IMG_THUMBNAIL } from '../../config';
 
-import CharFormModal from './CharFormModal';
+import CharFormModal from './modals/CharFormModal';
 import SortButton from '../Base/components/SortButton';
 import Pagination from '../Base/components/Pagination';
 import LimitSelect from '../Base/components/LimitSelect';

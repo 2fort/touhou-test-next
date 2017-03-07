@@ -1,8 +1,8 @@
 import Immutable from 'seamless-immutable';
-import { reset, submit, startSubmit, stopSubmit } from 'redux-form';
+import { reset, submit } from 'redux-form';
 
-import { generateComponent } from '../../ducks/domain';
-import { getData, formSubmit } from '../../actions/fetchAndSave';
+import { generateComponent } from '../../../ducks/domain';
+import { getData, submitData } from '../../../actions/fetchAndSave';
 
 const componentName = 'CharFormModal';
 const SET_MODE = `${componentName}/SET_MODE`;
@@ -58,7 +58,7 @@ export function submitForm() {
 
 export function fetchSingleCharacter(id) {
   return dispatch =>
-     dispatch(getData(`${route}/${id}`)).exec(component)
+     dispatch(getData(`${route}/${id}`)).asJson().exec(component)
       .then((char) => {
         dispatch({ type: SET_CHAR, char });
         return char;
@@ -67,7 +67,7 @@ export function fetchSingleCharacter(id) {
 
 export function getCharsFromGame(gameId) {
   return dispatch =>
-    dispatch(getData(`${route}?filter[link][rel]=${gameId}&sort=link.rel`)).exec(component)
+    dispatch(getData(`${route}?filter[link][rel]=${gameId}&sort=link.rel`)).asJson().exec(component)
       .then((chars) => {
         dispatch({ type: ADD_CHARS_FROM_GAME, chars });
         return chars;
@@ -80,21 +80,30 @@ export function cleanCharsFromGame() {
 
 export function fetchAllGames() {
   return dispatch =>
-    dispatch(getData('/api/admin/games')).exec(component)
+    dispatch(getData('/api/admin/games')).asJson().exec(component)
       .then((games) => {
         dispatch({ type: ADD_ALL_GAMES, games });
         return games;
       });
 }
 
-export function newCharacter(values) {
-  return dispatch =>
-    dispatch(formSubmit(route, { method: 'POST', body: values }));
+export function newCharacter({ image, ...values }) {
+  return (dispatch) => {
+    const formData = new FormData();
+
+    if (image && image[0]) {
+      formData.append('image', image[0], image[0].name);
+    }
+
+    formData.append('payload', JSON.stringify(values));
+
+    return dispatch(submitData(route)).post().form(values).exec();
+  };
 }
 
 export function editCharacter(id, values) {
   return dispatch =>
-    dispatch(formSubmit(`${route}/${id}`, { method: 'PATCH', body: values }));
+    dispatch(submitData(`${route}/${id}`)).patch().form(values).exec();
 }
 
 const defaultState = Immutable({

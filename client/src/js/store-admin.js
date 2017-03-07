@@ -8,11 +8,11 @@ import gameCharactersTable from './containers-admin/Games/GameCharacters/duck';
 
 import charactersTable from './containers-admin/Characters/CharactersTable.duck';
 
-import gameFormModal from './containers-admin/Games/GameFormModal.duck';
-import charFormModal from './containers-admin/Characters/CharFormModal.duck';
+import gameFormModal from './containers-admin/Games/modals/GameFormModal.duck';
+import charFormModal from './containers-admin/Characters/modals/CharFormModal.duck';
 
 const domain = combineReducers({
-  gamesTable: domainSlice('GamesTable', gamesTable.reducer, gamesTable.defaultState),
+  gamesTable: domainSlice('GamesTable', undefined, gamesTable.defaultState),
   gameCharactersTable: domainSlice('GameCharactersTable', gameCharactersTable.reducer, gameCharactersTable.defaultState),
   charactersTable: domainSlice('CharactersTable', charactersTable.reducer, charactersTable.defaultState),
   gameFormModal: domainSlice('GameFormModal', gameFormModal.reducer, gameFormModal.defaultState),

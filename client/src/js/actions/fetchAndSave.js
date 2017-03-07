@@ -13,6 +13,7 @@ class GetData {
       schema: null,
       save: false,
       raw: false,
+      asJson: false,
       asObject: false,
     };
   }
@@ -24,6 +25,11 @@ class GetData {
 
   save = () => {
     this.props.save = true;
+    return this;
+  }
+
+  asJson = () => {
+    this.props.asJson = true;
     return this;
   }
 
@@ -43,7 +49,7 @@ class GetData {
       hashTable: undefined,
     };
 
-    const { url, save, dispatch, schema, raw, asObject } = this.props;
+    const { url, save, dispatch, schema, asJson, asObject, raw } = this.props;
 
     const promise = new Promise((resolve, reject) => {
       dispatch(component.requestBegin(url));
@@ -64,10 +70,12 @@ class GetData {
 
           dispatch(component.requestSuccess(url));
 
-          if (asObject) {
+          if (asJson) {
+            return resolve(data.json);
+          } else if (asObject) {
             return resolve(data.hashTable);
           }
-          return resolve(data.json);
+          return response;
         })
         .catch((err) => {
           dispatch(component.requestFail(url));
@@ -88,55 +96,74 @@ export function getData(url) {
   return dispatch => new GetData(url, dispatch);
 }
 
-export default function (url, schema, component, saveVisible = true) {
-  return (dispatch) => {
-    dispatch(component.fetchBegin());
+class SubmitData {
+  constructor(url, dispatch) {
+    this.props = {
+      url,
+      dispatch,
+      asFormData: false,
+      asJson: false,
+    };
 
-    return request(url)
+    this.options = {
+      method: '',
+      headers: {},
+      body: {},
+    };
+  }
+
+  post = () => {
+    this.options.method = 'POST';
+    return this;
+  }
+
+  put = () => {
+    this.options.method = 'PUT';
+    return this;
+  }
+
+  patch = () => {
+    this.options.method = 'PATCH';
+    return this;
+  }
+
+  delete = () => {
+    this.options.method = 'DELETE';
+    return this;
+  }
+
+  form = (formData) => {
+    this.props.asFormData = true;
+    this.options.body = formData;
+    return this;
+  }
+
+  json = (object) => {
+    this.props.asJson = true;
+    this.options.headers = { 'Content-Type': 'application/json' };
+    this.options.body = JSON.stringify(object);
+    return this;
+  }
+
+  exec = () => {
+    const { url, dispatch, asFormData } = this.props;
+
+    return request(url, this.options)
       .then((response) => {
-        const data = normalize(response.json, schema);
-        dispatch(entitiesActions.addEntities(data.entities));
-
-        if (saveVisible) {
-          dispatch(component.addVisible(data.result, response.headers.total));
+        const message = response.json ? response.json.message : response.statusText;
+        dispatch(flashMessageActions.add(response.status, message, 0));
+        return true;
+      })
+      .catch((err) => {
+        if (asFormData) {
+          throw new SubmissionError({ _error: err.message });
+        } else {
+          dispatch(flashMessageActions.add(err.status, err.message, 3));
         }
-
-        dispatch(component.fetchSuccess());
-        return response.json;
-      })
-      .catch((err) => {
-        dispatch(component.fetchFail());
-        dispatch(flashMessageActions.add(err.status, err.message, 3));
       });
-  };
+  }
 }
 
-export function formSubmit(route, options) {
-  return dispatch =>
-    request(route, options)
-      .then((response) => {
-        const message = response.json ? response.json.message : response.statusText;
-        dispatch(flashMessageActions.add(response.status, message, 0));
-      })
-      .catch((err) => {
-        throw new SubmissionError({ _error: err.message });
-      });
-}
-
-export function jsonSubmit(route, method, fields) {
-  return dispatch =>
-    request(route, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(fields),
-    })
-      .then((response) => {
-        const message = response.json ? response.json.message : response.statusText;
-        dispatch(flashMessageActions.add(response.status, message, 0));
-      })
-      .catch((err) => {
-        dispatch(flashMessageActions.add(err.status, err.message, 3));
-      });
+export function submitData(url) {
+  return dispatch => new SubmitData(url, dispatch);
 }

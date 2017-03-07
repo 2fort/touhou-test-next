@@ -1,8 +1,8 @@
 import Immutable from 'seamless-immutable';
-import { reset, submit, startSubmit, stopSubmit } from 'redux-form';
+import { reset, submit } from 'redux-form';
 
-import { generateComponent } from '../../ducks/domain';
-import { getData, formSubmit } from '../../actions/fetchAndSave';
+import { generateComponent } from '../../../ducks/domain';
+import { getData, submitData } from '../../../actions/fetchAndSave';
 
 const componentName = 'GameFormModal';
 const SET_MODE = `${componentName}/SET_MODE`;
@@ -52,7 +52,7 @@ export function submitForm() {
 
 export function fetchSingleGame(id) {
   return dispatch =>
-    dispatch(getData(`${route}/${id}`)).exec(component)
+    dispatch(getData(`${route}/${id}`)).asJson().exec(component)
       .then((game) => {
         dispatch({ type: SET_GAME, game });
       });
@@ -60,7 +60,7 @@ export function fetchSingleGame(id) {
 
 export function getMaxOrder() {
   return dispatch =>
-    dispatch(getData(`${route}?action=maxorder`)).exec(component)
+    dispatch(getData(`${route}?action=maxorder`)).asJson().exec(component)
       .then(({ maxOrder }) => {
         dispatch({ type: GET_MAX_ORDER, maxOrder });
       });
@@ -76,12 +76,7 @@ export function newGame({ cover, ...values }) {
 
     formData.append('payload', JSON.stringify(values));
 
-    dispatch(startSubmit(formName));
-    return dispatch(formSubmit(route, { method: 'POST', body: formData }))
-      .then(() => {
-        dispatch(stopSubmit(formName));
-        return true;
-      });
+    return dispatch(submitData(route)).post().form(formData).exec();
   };
 }
 
@@ -96,12 +91,7 @@ export function editGame({ id, cover, ...values }) {
 
     formData.append('payload', JSON.stringify(Object.assign({}, values, coverStringName)));
 
-    dispatch(startSubmit(formName));
-    return dispatch(formSubmit(`${route}/${id}`, { method: 'PUT', body: formData }))
-      .then(() => {
-        dispatch(stopSubmit(formName));
-        return true;
-      });
+    return dispatch(submitData(`${route}/${id}`)).put().form(formData).exec();
   };
 }
 

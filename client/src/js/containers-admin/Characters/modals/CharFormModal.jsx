@@ -5,9 +5,9 @@ import { isSubmitting } from 'redux-form';
 import { bindActionCreators } from 'redux';
 
 import * as ownActions from './CharFormModal.duck';
-import { domainHoc } from '../../ducks/domain';
-import CharForm from './forms/CharForm';
-import Loading from '../../containers/Base/components/Loading';
+import { domainHoc } from '../../../ducks/domain';
+import CharForm from '../forms/CharForm';
+import Loading from '../../../containers/Base/components/Loading';
 
 class CharFormModal extends Component {
   componentDidMount() {

@@ -3,7 +3,7 @@ import { stringify } from 'qs';
 
 import { charactersEntity } from '../../../schemas/adminSchemas';
 import { generateComponent } from '../../../ducks/domain';
-import { getData, formSubmit, jsonSubmit } from '../../../actions/fetchAndSave';
+import { getData, submitData } from '../../../actions/fetchAndSave';
 
 const componentName = 'GameCharactersTable';
 const ADD_GAME_INFO = `${componentName}/ADD_GAME_INFO`;
@@ -20,7 +20,7 @@ export function setGameId(id) {
 
 export function changeOrder(id, order) {
   return dispatch =>
-    dispatch(jsonSubmit(routeGameChars(id), 'PATCH', { link: { rel: order } }));
+    dispatch(submitData(routeGameChars(id))).patch().json({ link: { rel: order } });
 }
 
 export function fetchCharacters() {
@@ -45,7 +45,7 @@ export function fetchGameInfo() {
 
 export function deleteCharacter(id) {
   return dispatch =>
-    dispatch(formSubmit(`${route}/${id}`, { method: 'DELETE' }));
+    dispatch(submitData(`${route}/${id}`)).delete().exec();
 }
 
 const defaultState = Immutable({

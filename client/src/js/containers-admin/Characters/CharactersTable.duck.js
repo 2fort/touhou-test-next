@@ -3,7 +3,7 @@ import { stringify } from 'qs';
 
 import { charactersEntity, gameEntity } from '../../schemas/adminSchemas';
 import { generateComponent } from '../../ducks/domain';
-import { getData, formSubmit, jsonSubmit } from '../../actions/fetchAndSave';
+import { getData, submitData } from '../../actions/fetchAndSave';
 
 const componentName = 'CharactersTable';
 const ADD_ALL_GAMES = `${componentName}/ADD_ALL_GAMES`;
@@ -14,7 +14,11 @@ const route = '/api/admin/characters';
 export function fetchCharacters() {
   return (dispatch) => {
     const query = dispatch(component.getState()).query;
-    return dispatch(getData(`${route}?${stringify(query)}`)).normalize([charactersEntity]).save().exec(component);
+    return dispatch(getData(`${route}?${stringify(query)}`))
+      .normalize([charactersEntity])
+      .save()
+      .asJson()
+      .exec(component);
   };
 }
 
@@ -28,7 +32,7 @@ export function fetchAllGames() {
 
 export function deleteCharacter(id) {
   return dispatch =>
-    dispatch(formSubmit(`${route}/${id}`, { method: 'DELETE' }));
+    dispatch(submitData(`${route}/${id}`)).delete().exec();
 }
 
 const defaultState = Immutable({

@@ -45,7 +45,7 @@ function mapStateToProps({ domain: { test } }) {
   const state = { pending: false, inProgress: false };
   if (!test) return { state };
 
-  state.pending = test.pending;
+  state.pending = test.activeRequests > 0;
   state.inProgress = (test.steps.length > 0);
   return { state };
 }

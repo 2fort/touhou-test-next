@@ -1,7 +1,7 @@
 import Immutable from 'seamless-immutable';
 import { charactersEntity } from '../../schemas/appSchemas';
 
-import fetchAndSave from '../../actions/fetchAndSave';
+import { getData } from '../../actions/fetchAndSave';
 import { generateComponent } from '../../ducks/domain';
 
 const componentName = 'Test';
@@ -66,11 +66,15 @@ export function testBegin(steps, maxSteps) {
 
 export function fetchCharsAndBeginTest(maxSteps) {
   return dispatch =>
-    dispatch(fetchAndSave('/api/characters', [charactersEntity], component))
-      .then((characters) => {
-        const steps = generateTest(characters, maxSteps);
-        dispatch(testBegin(steps, maxSteps));
-      });
+    dispatch(getData('/api/characters'))
+      .normalize([charactersEntity])
+      .save()
+      .asJson()
+      .exec(component)
+        .then((characters) => {
+          const steps = generateTest(characters, maxSteps);
+          dispatch(testBegin(steps, maxSteps));
+        });
 }
 
 export const resetTest = fetchCharsAndBeginTest;

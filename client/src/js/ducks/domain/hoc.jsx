@@ -48,8 +48,12 @@ export default childOptions => (ComposedComponent) => {
     }
   }
 
+  DomainHOC.defaultProps = {
+    fetchedAt: 0,
+  };
+
   DomainHOC.propTypes = {
-    fetchedAt: PropTypes.number.isRequired,
+    fetchedAt: PropTypes.number,
     component: PropTypes.shape({
       containerMount: PropTypes.func.isRequired,
       containerUnmount: PropTypes.func.isRequired,

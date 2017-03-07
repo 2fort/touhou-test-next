@@ -7,12 +7,12 @@ import { Breadcrumb } from 'react-bootstrap';
 import { domainHoc } from '../../../ducks/domain';
 import QueryStringHOC from '../../Base/hocs/QueryStringHOC';
 import * as ownActions from './duck';
-import * as GameFormModalActions from '../GameFormModal.duck';
-import * as CharFormModalActions from '../../Characters/CharFormModal.duck';
+import * as GameFormModalActions from '../modals/GameFormModal.duck';
+import * as CharFormModalActions from '../../Characters/modals/CharFormModal.duck';
 import { IMG_THUMBNAIL } from '../../../config';
 
-import GameFormModal from '../GameFormModal';
-import CharFormModal from '../../Characters/CharFormModal';
+import GameFormModal from '../modals/GameFormModal';
+import CharFormModal from '../../Characters/modals/CharFormModal';
 import SortButton from '../../Base/components/SortButton';
 import Pagination from '../../Base/components/Pagination';
 import LimitSelect from '../../Base/components/LimitSelect';

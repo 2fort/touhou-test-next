@@ -107,6 +107,7 @@ router.route('/:id')
         await controller.deleteAllImg(staleData.cover);
       }
 
+      // return setTimeout(() => res.status(200).json({ message: 'Game successfully updated.' }), 3000);
       return res.status(200).json({ message: 'Game successfully updated.' });
     } catch (e) {
       return next(e);
