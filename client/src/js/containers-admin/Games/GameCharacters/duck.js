@@ -18,11 +18,6 @@ export function setGameId(id) {
   return { type: SET_GAME_ID, id };
 }
 
-export function changeOrder(id, order) {
-  return dispatch =>
-    dispatch(submitData(routeGameChars(id))).patch().json({ link: { rel: order } });
-}
-
 export function fetchCharacters() {
   return (dispatch) => {
     const { gameId, query } = dispatch(component.getState());
@@ -41,6 +36,11 @@ export function fetchGameInfo() {
         dispatch({ type: ADD_GAME_INFO, game });
       });
   };
+}
+
+export function changeOrder(id, order) {
+  return dispatch =>
+    dispatch(submitData(`${route}/${id}?action=swaporder`)).patch().json({ link: { order } }).exec();
 }
 
 export function deleteCharacter(id) {

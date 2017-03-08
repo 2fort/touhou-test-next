@@ -145,7 +145,33 @@ router.route('/:id')
       return next(e);
     }
   })
+  .patch(async (req, res, next) => {
+    try {
+      switch (req.query.action) {
+        case 'swaporder': {
+          const data = req.body;
 
+          const character = await Character.findOne({ _id: req.params.id }).exec();
+          const neighbor = await Character.findOne({ 'link.rel': character.link.rel, 'link.order': data.link.order }).exec();
+
+          neighbor.link.order = character.link.order;
+          neighbor.save();
+
+          character.link.order = data.link.order;
+          character.save();
+
+          break;
+        }
+        default: {
+          return res.status(500).json({ message: 'Unknown action' });
+        }
+      }
+
+      return res.status(200).json({ message: 'Game successfully updated.' });
+    } catch (e) {
+      return next(e);
+    }
+  })
   .delete(async (req, res, next) => {
     try {
       const deletedCharacter = await Character.findByIdAndRemove(req.params.id);
