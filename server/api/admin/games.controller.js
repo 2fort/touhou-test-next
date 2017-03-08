@@ -1,4 +1,5 @@
 const Game = require('../../models/game');
+const Character = require('../../models/character');
 
 this.reorderAfterUpdate = async function reorderAfterUpdate(order, previousOrder, id) {
   const range = (order > previousOrder)
@@ -22,4 +23,8 @@ this.actions = async function actions(action, res) {
     default:
       throw new Error('Unknown action');
   }
+};
+
+this.removeLinkAfterDelete = async function removeLinkAfterDelete(gameId) {
+  await Character.updateMany({ 'link.rel': gameId }, { 'link.rel': null, 'link.order': null });
 };

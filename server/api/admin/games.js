@@ -19,25 +19,25 @@ router.route('/')
       const params = controller.queryParams(req.query);
 
       let func = Game
-          .aggregate()
-          .match(params.filter)
-          .lookup({
-            from: 'characters',
-            localField: '_id',
-            foreignField: 'link.rel',
-            as: 'chars',
-          })
-          .append({
-            $addFields: {
-              chars: { $size: '$chars' },
-              id: '$_id',
-            },
-          })
-          .project({
-            _id: 0,
-            __v: 0,
-          })
-          .sort(params.sort || 'order');
+        .aggregate()
+        .match(params.filter)
+        .lookup({
+          from: 'characters',
+          localField: '_id',
+          foreignField: 'link.rel',
+          as: 'chars',
+        })
+        .append({
+          $addFields: {
+            chars: { $size: '$chars' },
+            id: '$_id',
+          },
+        })
+        .project({
+          _id: 0,
+          __v: 0,
+        })
+        .sort(params.sort || 'order');
 
       if (params.skip) {
         func = func.skip(params.skip);
@@ -124,7 +124,7 @@ router.route('/:id')
           break;
         }
         default: {
-          break;
+          return res.status(500).json({ message: 'Unknown action' });
         }
       }
 
@@ -142,6 +142,7 @@ router.route('/:id')
       }
 
       await Game.updateMany({ order: { $gt: deletedGame.order } }, { $inc: { order: -1 } });
+      await gameController.removeLinkAfterDelete(deletedGame._id);
 
       return res.status(200).json({ message: 'Game successfully deleted' });
     } catch (e) {

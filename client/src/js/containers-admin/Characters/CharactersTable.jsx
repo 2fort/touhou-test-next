@@ -118,7 +118,11 @@ class CharactersTable extends Component {
                   {char.image && <img alt={char.name} src={IMG_THUMBNAIL + char.image} />}
                 </td>
                 <td>
-                  {char.link && char.link.rel && gamesList[char.link.rel].title}
+                  {char.link && char.link.rel &&
+                    <Link to={`/admin/games/${char.link.rel}/characters`}>
+                      {char.game}
+                    </Link>
+                  }
                 </td>
                 <td className="toowide">
                   {char.art && char.art.author}

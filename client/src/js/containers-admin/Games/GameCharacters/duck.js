@@ -36,7 +36,7 @@ export function fetchCharacters() {
 export function fetchGameInfo() {
   return (dispatch) => {
     const gameId = dispatch(component.getState()).gameId;
-    return dispatch(getData(`/api/admin/games/${gameId}`)).exec(component)
+    return dispatch(getData(`/api/admin/games/${gameId}`)).asJson().exec(component)
       .then((game) => {
         dispatch({ type: ADD_GAME_INFO, game });
       });

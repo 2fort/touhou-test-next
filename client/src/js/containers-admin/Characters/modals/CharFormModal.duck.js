@@ -67,7 +67,7 @@ export function fetchSingleCharacter(id) {
 
 export function getCharsFromGame(gameId) {
   return dispatch =>
-    dispatch(getData(`${route}?filter[link][rel]=${gameId}&sort=link.rel`)).asJson().exec(component)
+    dispatch(getData(`${route}?filter[link][rel]=${gameId}&sort=link.order`)).asJson().exec(component)
       .then((chars) => {
         dispatch({ type: ADD_CHARS_FROM_GAME, chars });
         return chars;
@@ -97,13 +97,23 @@ export function newCharacter({ image, ...values }) {
 
     formData.append('payload', JSON.stringify(values));
 
-    return dispatch(submitData(route)).post().form(values).exec();
+    return dispatch(submitData(route)).post().form(formData).exec();
   };
 }
 
-export function editCharacter(id, values) {
-  return dispatch =>
-    dispatch(submitData(`${route}/${id}`)).patch().form(values).exec();
+export function editCharacter({ id, image, ...values }) {
+  return (dispatch) => {
+    const formData = new FormData();
+    const imageStringName = typeof cover === 'string' && { image };
+
+    if (typeof cover === 'object' && image[0]) {
+      formData.append('cover', image[0], image[0].name);
+    }
+
+    formData.append('payload', JSON.stringify(Object.assign({}, values, imageStringName)));
+
+    return dispatch(submitData(`${route}/${id}`)).put().form(formData).exec();
+  };
 }
 
 const defaultState = Immutable({

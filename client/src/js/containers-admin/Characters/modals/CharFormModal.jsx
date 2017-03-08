@@ -58,19 +58,19 @@ class CharFormModal extends Component {
       });
   }
 
-  newCharModalSubmit = ({ fileImage, ...values }) => {
-    const formDataValues = prepareFormData(values, fileImage, 'image');
+  newCharModalSubmit = values =>
+    this.props.actions.newCharacter(values)
+      .then(() => {
+        this.props.cb();
+        this.props.actions.closeModal();
+      });
 
-    return this.props.actions.newCharacter(formDataValues)
-      .then(() => this.props.actions.fetchCharacters())
-      .then(() => this.props.actions.newCharModalClose());
-  }
-
-  editCharModalSubmit = (values) => {
-    return this.props.actions.editCharacter(values.id, values)
-      .then(() => this.props.actions.fetchCharacters())
-      .then(() => this.props.actions.editCharModalClose());
-  }
+  editCharModalSubmit = values =>
+    this.props.actions.editCharacter(values)
+      .then(() => {
+        this.props.cb();
+        this.props.actions.closeModal();
+      });
 
   render() {
     const { activeRequests, mode, actions, ready, editCharData, submitting, charsFromSelectedGame, allGames,
@@ -113,7 +113,7 @@ class CharFormModal extends Component {
           </Modal.Body>
 
           <Modal.Footer>
-            <Button type="submit" disabled={submitting || pending} bsStyle="primary">
+            <Button disabled={submitting || pending} bsStyle="primary" onClick={actions.submitForm}>
               {(submitting || pending) && <i className="fa fa-spinner fa-spin" />} {buttonName}
             </Button>
             {mode === 'edit' && <Button onClick={actions.resetForm}>Reset</Button>}
@@ -164,6 +164,7 @@ CharFormModal.propTypes = {
     newCharacter: PropTypes.func.isRequired,
     editCharacter: PropTypes.func.isRequired,
   }).isRequired,
+  cb: PropTypes.func.isRequired,
   submitting: PropTypes.bool.isRequired,
 };
 

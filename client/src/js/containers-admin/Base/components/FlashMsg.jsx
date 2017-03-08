@@ -5,14 +5,6 @@ import timestamp from 'time-stamp';
 import { del } from '../../../ducks/flashMessage';
 
 class FlashMsg extends Component {
-  componentWillReceiveProps(nextProps) {
-    const { msg, location } = this.props;
-
-    if (msg.text && location.pathname !== nextProps.location.pathname) {
-      this.props.dispatch(del());
-    }
-  }
-
   componentWillUnmount() {
     if (this.props.msg.text) {
       this.props.dispatch(del());
@@ -30,7 +22,7 @@ class FlashMsg extends Component {
 
     return (
       <div className={`alert alert-${msg.type} alert-dismissible sticky`} role="alert">
-        <button type="button" className="close" aria-label="Close" onClick={this.closeBtnHandler}>
+        <button type="button" className="close" id="flashMessageBtn" aria-label="Close" onClick={this.closeBtnHandler}>
           <span aria-hidden="true">&times;</span>
         </button>
         <div className="pull-left">
@@ -53,9 +45,6 @@ FlashMsg.propTypes = {
     date: PropTypes.date,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string.isRequired,
-  }).isRequired,
 };
 
 function mapStateToProps({ flashMessage }) {
