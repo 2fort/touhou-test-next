@@ -46,9 +46,10 @@ class CharactersTable extends Component {
 
   render() {
     const { charsArray, gamesList, actions, component, qs, fetchedAt, total, query, filterFields,
-      modalIsOpen } = this.props;
+      modalIsOpen, activeRequests } = this.props;
 
     const Sort = props => <SortButton reduxField={query.sort} setSort={this.cb(component.setSort)} {...props} />;
+    const pending = activeRequests > 0;
 
     return (
       <div>
@@ -108,7 +109,7 @@ class CharactersTable extends Component {
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className={pending ? 'loading' : ''}>
             {charsArray[0] && charsArray.map((char, i) => (
               <tr key={char.name}>
                 <td>
@@ -168,6 +169,7 @@ class CharactersTable extends Component {
 }
 
 CharactersTable.propTypes = {
+  activeRequests: PropTypes.number.isRequired,
   fetchedAt: PropTypes.number.isRequired,
   total: PropTypes.number.isRequired,
   charsArray: PropTypes.arrayOf(PropTypes.object).isRequired,

@@ -49,9 +49,11 @@ class GamesTable extends Component {
   }
 
   render() {
-    const { gamesArray, actions, component, qs, fetchedAt, total, query, filterFields, modalIsOpen } = this.props;
+    const { gamesArray, actions, component, qs, fetchedAt, total, query, filterFields, modalIsOpen, 
+      activeRequests } = this.props;
 
     const Sort = props => <SortButton reduxField={query.sort} setSort={this.cb(component.setSort)} {...props} />;
+    const pending = activeRequests > 0;
 
     return (
       <div>
@@ -119,7 +121,7 @@ class GamesTable extends Component {
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className={pending ? 'loading' : ''}>
             {gamesArray[0] && gamesArray.map((game, i) => (
               <tr key={game.id}>
                 <td>
@@ -188,6 +190,7 @@ class GamesTable extends Component {
 }
 
 GamesTable.propTypes = {
+  activeRequests: PropTypes.number.isRequired,
   fetchedAt: PropTypes.number.isRequired,
   total: PropTypes.number.isRequired,
   query: PropTypes.shape({
