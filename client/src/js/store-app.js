@@ -2,13 +2,15 @@ import { combineReducers, createStore, applyMiddleware } from 'redux';
 import reduxThunk from 'redux-thunk';
 
 import { domainSlice, entities, flashMessage } from './ducks';
+import charactersList from './containers/Characters/CharactersList.duck';
+import singleCharacter from './containers/Characters/SingleCharacter.duck';
 import base from './containers/Base/duck';
 import test from './containers/Test/duck';
 
 const domain = combineReducers({
   gamesList: domainSlice('GamesList'),
-  charactersList: domainSlice('CharactersList'),
-  singleCharacter: domainSlice('SingleCharacter'),
+  charactersList: domainSlice('CharactersList', charactersList.reducer, charactersList.defaultState),
+  singleCharacter: domainSlice('SingleCharacter', singleCharacter.reducer, singleCharacter.defaultState),
   test: domainSlice('Test', test.reducer, test.defaultState),
 });
 

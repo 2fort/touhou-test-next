@@ -1,55 +1,66 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Link } from 'react-router';
 import Helmet from 'react-helmet';
 
 import { CharsGrid, CharsTable } from './components/gridsAndTables';
 import { TopContainer, Breadcrumbs, ModeButtons } from './components';
-import Fetch404 from '../Base/components/Fetch404';
+// import Fetch404 from '../Base/components/Fetch404';
 
 import { domainHoc } from '../../ducks/domain';
-import fetchCharacters from './CharactersList.duck';
+import * as ownActions from './CharactersList.duck';
 
 class CharactersList extends Component {
   componentDidMount() {
-    this.props.fetchCharacters(this.props.params.game);
+    const { params: { game }, actions } = this.props;
+    actions.getGameInfo(game);
+    actions.fetchCharacters(game);
   }
 
   render() {
-    const { ready, data, router, params, location } = this.props;
+    const { charaters, mode, gameInfo, router, location } = this.props;
 
-    if (!ready) return null;
-    if (!data) return <Fetch404>Game not found!</Fetch404>;
+    // if (!data) return <Fetch404>Game not found!</Fetch404>;
 
     return (
       <div>
-        <Helmet title="Characters" />
+        <Helmet title={`Characters from ${gameInfo.title}`} />
 
         <TopContainer>
-          <Breadcrumbs params={params} />
+          <Breadcrumbs>
+            <Link to="/characters">Characters</Link>
+            <span>{gameInfo.title}</span>
+          </Breadcrumbs>
           <ModeButtons router={router} location={location} />
         </TopContainer>
 
-        {(data.mode === 'grid')
-            ? <CharsGrid entity={data.entity} pathname={location.pathname} />
-            : <CharsTable entity={data.entity} pathname={location.pathname} />
-        }
+        {mode === 'grid' && <CharsGrid entity={charaters} pathname={location.pathname} />}
+        {mode === 'table' && <CharsTable entity={charaters} pathname={location.pathname} />}
       </div>
     );
   }
 }
 
-CharactersList.defaultProps = {
-  data: undefined,
-};
-
 CharactersList.propTypes = {
-  ready: PropTypes.bool.isRequired,
-  data: PropTypes.shape({
-    entity: PropTypes.arrayOf(PropTypes.object).isRequired,
-    title: PropTypes.string.isRequired,
-    mode: PropTypes.string.isRequired,
-  }),
-  fetchCharacters: PropTypes.func.isRequired,
+  charaters: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    image: PropTypes.string,
+    wiki: PropTypes.string,
+    slug: PropTypes.string.isRequired,
+    art: PropTypes.shape({
+      author: PropTypes.string,
+      url: PropTypes.string,
+    }),
+  })).isRequired,
+  mode: PropTypes.string.isRequired,
+  gameInfo: PropTypes.shape({
+    title: PropTypes.string,
+  }).isRequired,
+  actions: PropTypes.shape({
+    getGameInfo: PropTypes.func.isRequired,
+    fetchCharacters: PropTypes.func.isRequired,
+  }).isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
@@ -62,25 +73,21 @@ CharactersList.propTypes = {
   }).isRequired,
 };
 
-function mapStateToProps({ entities, domain: { charactersList }, base: { mode } }, { params }) {
-  if (!charactersList || charactersList.pending) {
-    return { ready: false };
-  }
+function mapStateToProps({ entities, domain: { charactersList }, base: { mode } }) {
+  const charaters = charactersList.visible.map(slug => entities.characters[slug]);
 
-  if (!entities.games[params.game]) {
-    return { ready: true, data: undefined };
-  }
-
-  const data = {
+  return {
+    gameInfo: charactersList.gameInfo,
+    charaters,
     mode,
-    title: entities.games[params.game].title,
-    entity: charactersList.visible.map(slug => entities.characters[slug]),
   };
+}
 
-  return { ready: true, data };
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(ownActions, dispatch) };
 }
 
 export default
-  connect(mapStateToProps, { fetchCharacters })(
+  connect(mapStateToProps, mapDispatchToProps)(
     domainHoc({ name: 'CharactersList' })(CharactersList),
   );

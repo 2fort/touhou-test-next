@@ -5,13 +5,14 @@ import { IMG_THUMBNAIL } from '../../../../config';
 const Grid = ({ entity, pathname }) => {
   const data = entity.map(char => (
     <div key={char.name} className="flex-item">
-      {char.image &&
-        <p>
-          <Link className="imagelink" to={`${pathname}/${char.slug}`}>
-            <img alt="char" src={IMG_THUMBNAIL + char.image} />
-          </Link>
-        </p>
-      }
+      <p>
+        <Link className="imagelink" to={`${pathname}/${char.slug}`}>
+          {char.image
+            ? <img alt="char" src={IMG_THUMBNAIL + char.image} />
+            : <i className="fa fa-file-image-o fa-5x" aria-hidden="true" style={{ marginBottom: '3px' }} />
+          }
+        </Link>
+      </p>
       <p>
         <Link to={`${pathname}/${char.slug}`}>{char.name}</Link>
       </p>

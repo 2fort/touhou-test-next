@@ -1,59 +1,84 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Link } from 'react-router';
 import Helmet from 'react-helmet';
 
-import { TopContainer, Breadcrumbs, CharNavButton } from './components';
+import { TopContainer, Breadcrumbs, NavButtons } from './components';
 import { IMG_COMPRESSED } from '../../config';
-import Fetch404 from '../Base/components/Fetch404';
+// import Fetch404 from '../Base/components/Fetch404';
 
 import { domainHoc } from '../../ducks/domain';
-import fetchCharacter from './SingleCharacter.duck';
+import * as ownActions from './SingleCharacter.duck';
 
 class SingleCharacter extends Component {
   componentDidMount() {
-    this.props.fetchCharacter(this.props.params.char);
+    const { params: { game }, actions } = this.props;
+    actions.getGameInfo(game);
+    actions.fetchCharacters(game);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.params.char !== nextProps.params.char) {
-      this.props.fetchCharacter(nextProps.params.char);
-    }
-  }
+  // possible upgrading: if params: { game } was changed, dispatch getGameInfo(game) and fetchCharacters(game)
 
   render() {
-    const { character, ready, params } = this.props;
+    const { gameInfo, characters, params } = this.props;
 
-    if (!ready) return null;
-    if (!character) return <Fetch404 title={'Character not found!'}>Character not found!</Fetch404>;
+    const currentCharacter = characters[params.char] || {};
+
+    const prevCharacter = (function getPrevCharacter() {
+      const pos = Object.keys(characters).indexOf(params.char) - 1;
+      const slug = Object.keys(characters)[pos];
+      return characters[slug];
+    }()) || {};
+
+    const nextCharacter = (function getNextCharacter() {
+      const pos = Object.keys(characters).indexOf(params.char) + 1;
+      const slug = Object.keys(characters)[pos];
+      return characters[slug];
+    }()) || {};
+
+    // if (!character) return <Fetch404 title={'Character not found!'}>Character not found!</Fetch404>;
 
     return (
       <div>
         <TopContainer>
-          <Breadcrumbs params={params} />
+          <Breadcrumbs>
+            <Link to="/characters">Characters</Link>
+            <Link to={`/characters/${gameInfo.slug}`}>{gameInfo.title}</Link>
+            <span>{currentCharacter.name}</span>
+          </Breadcrumbs>
         </TopContainer>
 
         <div itemScope itemType="http://schema.org/Person" className="singlechar">
-          <Helmet title={character.name} />
+          <Helmet title={currentCharacter.name} />
 
-          <h1 itemProp="name">{character.name}</h1>
+          <h1 itemProp="name">{currentCharacter.name}</h1>
 
           <div className="singlechar-container">
-            <CharNavButton game={character._game} char={character.prevCharacter}>&nbsp;&lt;&nbsp;</CharNavButton>
+            <NavButtons.Left disabled={!prevCharacter.name} to={`/characters/${params.game}/${prevCharacter.slug}`} />
 
             <div className="singlechar-flex">
               <div className="singlechar-img">
-                {character.image
-                  ? <img itemProp="image" alt="char" src={IMG_COMPRESSED + character.image} />
+                {currentCharacter.image
+                  ? <img itemProp="image" alt="char" src={IMG_COMPRESSED + currentCharacter.image} />
                   : <i className="fa fa-file-image-o fa-5x" aria-hidden="true" />
                 }
               </div>
               <div className="singlechar-desc">
-                <p>Character info: <a itemProp="sameAs" href={character.wiki}>{character.wiki.substring(7)}</a></p>
-                <p>Illustration author: <a href={character.art.url}> {character.art.author}</a></p>
+                <p>Character info:&nbsp;
+                  <a itemProp="sameAs" href={currentCharacter.wiki}>
+                    {currentCharacter.wiki && currentCharacter.wiki.substring(7)}
+                  </a>
+                </p>
+                <p>Illustration author:
+                  {currentCharacter.art &&
+                    <a href={currentCharacter.art.url}> {currentCharacter.art.author}</a>
+                  }
+                </p>
               </div>
             </div>
 
-            <CharNavButton game={character._game} char={character.nextCharacter}>&nbsp;&gt;&nbsp;</CharNavButton>
+            <NavButtons.Right disabled={!nextCharacter.name} to={`/characters/${params.game}/${nextCharacter.slug}`} />
           </div>
         </div>
       </div>
@@ -61,35 +86,49 @@ class SingleCharacter extends Component {
   }
 }
 
-SingleCharacter.defaultProps = {
-  character: undefined,
-};
-
 SingleCharacter.propTypes = {
+  gameInfo: PropTypes.shape({
+    title: PropTypes.string,
+    slug: PropTypes.string,
+  }).isRequired,
   params: PropTypes.shape({
+    game: PropTypes.string.isRequired,
     char: PropTypes.string.isRequired,
   }).isRequired,
-  fetchCharacter: PropTypes.func.isRequired,
-  ready: PropTypes.bool.isRequired,
-  character: PropTypes.shape({
+  actions: PropTypes.shape({
+    getGameInfo: PropTypes.func.isRequired,
+    fetchCharacters: PropTypes.func.isRequired,
+  }).isRequired,
+  characters: PropTypes.objectOf(PropTypes.shape({
     name: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    wiki: PropTypes.string.isRequired,
+    image: PropTypes.string,
+    wiki: PropTypes.string,
+    slug: PropTypes.string.isRequired,
     art: PropTypes.shape({
-      author: PropTypes.string.isRequired,
-      url: PropTypes.string.isRequired,
-    }).isRequired,
-  }),
+      author: PropTypes.string,
+      url: PropTypes.string,
+    }),
+  })).isRequired,
 };
 
-function mapStateToProps({ domain: { singleCharacter }, entities: { characters } }) {
-  if (!singleCharacter || singleCharacter.pending) return { ready: false };
+function mapStateToProps({ domain: { singleCharacter }, entities }) {
+  const characters = {};
 
-  const character = singleCharacter.visible.map(slug => characters[slug])[0];
-  return { ready: true, character };
+  singleCharacter.visible.forEach((slug) => {
+    characters[slug] = entities.characters[slug];
+  });
+
+  return {
+    gameInfo: singleCharacter.gameInfo,
+    characters,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(ownActions, dispatch) };
 }
 
 export default
-  connect(mapStateToProps, { fetchCharacter })(
+  connect(mapStateToProps, mapDispatchToProps)(
     domainHoc({ name: 'SingleCharacter' })(SingleCharacter),
   );

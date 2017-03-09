@@ -1,6 +1,6 @@
 import Breadcrumbs from './Breadcrumbs';
-import CharNavButton from './CharNavButton';
+import NavButtons from './NavButtons';
 import ModeButtons from './ModeButtons';
 import TopContainer from './TopContainer';
 
-export { Breadcrumbs, CharNavButton, ModeButtons, TopContainer };
+export { Breadcrumbs, NavButtons, ModeButtons, TopContainer };

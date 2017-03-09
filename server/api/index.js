@@ -15,52 +15,32 @@ router.get('/games', async (req, res, next) => {
   }
 });
 
-router.get('/characters/:game', (req, res, next) => {
-  Game.find({ slug: req.params.game }).lean().exec()
-    .then((game) => {
-      if (!game[0]) {
-        throw new Error('404'); // game not found!
-      }
-
-      return Character
-        .find({ 'link.rel': game[0]._id }, 'name image slug wiki _game')
-        .populate('link.rel', 'title slug')
-        .sort('link.order')
-        .exec();
-    })
-    .then(characters => res.json(characters))  // setTimeout(() => res.json(characters), 1000);
-    .catch(e => next(e));
-});
-
-router.get('/character/:char', async (req, res, next) => {
+router.get('/characters', async (req, res, next) => {
   try {
-    let charInfo = await Character.find({ slug: req.params.char }).populate('link.rel').exec();
-
-    if (!charInfo[0]) {
-      throw new Error('404'); // character not found!
-    }
-
-    charInfo = charInfo[0].toObject();
-    const allCharsFromGame = await Character.find({ 'link.rel': charInfo.link.rel.id }, '_id slug').lean().exec();
-
-    // move this to LINK header
-    allCharsFromGame.forEach((charId, i) => {
-      if (charId._id.toString() === charInfo.id.toString()) {
-        charInfo.prevCharacter = (i !== 0) ? allCharsFromGame[i - 1].slug : '';
-        charInfo.nextCharacter = (i !== allCharsFromGame.length - 1) ? allCharsFromGame[i + 1].slug : '';
-      }
-    });
-
-    return res.json([charInfo]);
+    const characters = await Character.find({}, 'name image slug').exec();
+    return res.json(characters);
   } catch (e) {
     return next(e);
   }
 });
 
-router.get('/characters', (req, res, next) => {
-  Character.find({}, 'name image slug').exec()
-    .then(characters => res.json(characters))
-    .catch(e => next(e));
+router.get('/games/:slug', async (req, res, next) => {
+  try {
+    const game = await Game.findOne({ slug: req.params.slug }).exec();
+    return res.json(game);
+  } catch (e) {
+    return next(e);
+  }
+});
+
+router.get('/games/:slug/characters', async (req, res, next) => {
+  try {
+    const game = await Game.findOne({ slug: req.params.slug }).exec();
+    const characters = await Character.find({ 'link.rel': game._id }).sort('link.order').exec();
+    return res.json(characters);
+  } catch (e) {
+    return next(e);
+  }
 });
 
 module.exports = router;

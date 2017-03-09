@@ -8,4 +8,6 @@ const charactersEntity = new schema.Entity('characters', {
   },
 }, { idAttribute: 'slug' });
 
-export { charactersEntity, gameEntity };
+const characterEntityOnly = new schema.Entity('characters', {}, { idAttribute: 'slug' });
+
+export { gameEntity, charactersEntity, characterEntityOnly };
