@@ -21,7 +21,7 @@ class SingleCharacter extends Component {
   // possible upgrading: if params: { game } was changed, dispatch getGameInfo(game) and fetchCharacters(game)
 
   render() {
-    const { gameInfo, characters, params } = this.props;
+    const { pending, gameInfo, characters, params } = this.props;
 
     const currentCharacter = characters[params.char] || {};
 
@@ -41,6 +41,8 @@ class SingleCharacter extends Component {
 
     return (
       <div>
+        <Helmet title={currentCharacter.name} />
+
         <TopContainer>
           <Breadcrumbs>
             <Link to="/characters">Characters</Link>
@@ -49,44 +51,45 @@ class SingleCharacter extends Component {
           </Breadcrumbs>
         </TopContainer>
 
-        <div itemScope itemType="http://schema.org/Person" className="singlechar">
-          <Helmet title={currentCharacter.name} />
+        {pending ||
+          <div itemScope itemType="http://schema.org/Person" className="singlechar">
+            <h1 itemProp="name">{currentCharacter.name}</h1>
 
-          <h1 itemProp="name">{currentCharacter.name}</h1>
+            <div className="singlechar-container">
+              <NavButtons.Left disabled={!prevCharacter.name} to={`/characters/${params.game}/${prevCharacter.slug}`} />
 
-          <div className="singlechar-container">
-            <NavButtons.Left disabled={!prevCharacter.name} to={`/characters/${params.game}/${prevCharacter.slug}`} />
-
-            <div className="singlechar-flex">
-              <div className="singlechar-img">
-                {currentCharacter.image
-                  ? <img itemProp="image" alt="char" src={IMG_COMPRESSED + currentCharacter.image} />
-                  : <i className="fa fa-file-image-o fa-5x" aria-hidden="true" />
-                }
-              </div>
-              <div className="singlechar-desc">
-                <p>Character info:&nbsp;
-                  <a itemProp="sameAs" href={currentCharacter.wiki}>
-                    {currentCharacter.wiki && currentCharacter.wiki.substring(7)}
-                  </a>
-                </p>
-                <p>Illustration author:
-                  {currentCharacter.art &&
-                    <a href={currentCharacter.art.url}> {currentCharacter.art.author}</a>
+              <div className="singlechar-flex">
+                <div className="singlechar-img">
+                  {currentCharacter.image
+                    ? <img itemProp="image" alt="char" src={IMG_COMPRESSED + currentCharacter.image} />
+                    : <i className="fa fa-file-image-o fa-5x" aria-hidden="true" />
                   }
-                </p>
+                </div>
+                <div className="singlechar-desc">
+                  <p>Character info:&nbsp;
+                    <a itemProp="sameAs" href={currentCharacter.wiki}>
+                      {currentCharacter.wiki && currentCharacter.wiki.substring(7)}
+                    </a>
+                  </p>
+                  <p>Illustration author:
+                    {currentCharacter.art &&
+                      <a href={currentCharacter.art.url}> {currentCharacter.art.author}</a>
+                    }
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <NavButtons.Right disabled={!nextCharacter.name} to={`/characters/${params.game}/${nextCharacter.slug}`} />
+              <NavButtons.Right disabled={!nextCharacter.name} to={`/characters/${params.game}/${nextCharacter.slug}`} />
+            </div>
           </div>
-        </div>
+        }
       </div>
     );
   }
 }
 
 SingleCharacter.propTypes = {
+  pending: PropTypes.bool.isRequired,
   gameInfo: PropTypes.shape({
     title: PropTypes.string,
     slug: PropTypes.string,
@@ -119,6 +122,7 @@ function mapStateToProps({ domain: { singleCharacter }, entities }) {
   });
 
   return {
+    pending: !singleCharacter.active || singleCharacter.activeRequests > 0,
     gameInfo: singleCharacter.gameInfo,
     characters,
   };

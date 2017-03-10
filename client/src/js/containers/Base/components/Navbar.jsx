@@ -20,10 +20,6 @@ class Navbar extends Component {
     this.setState({ expanded: false });
   }
 
-  resetBtnHandler = () => {
-    this.props.dispatch(resetTest(20));
-  }
-
   render() {
     const { router } = this.props;
 
@@ -37,7 +33,7 @@ class Navbar extends Component {
             &nbsp;<LoadingSignal />
 
             {router.isActive('/test') &&
-              <button type="button" className="reload" title="Reset" onClick={this.resetBtnHandler}>
+              <button type="button" className="reload" title="Reset" onClick={() => { this.props.resetTest(); }}>
                 <i className="fa fa-fw fa-lg fa-refresh" aria-hidden="true" />
                 <span className="mobile-hide"> Reset</span>
               </button>
@@ -65,7 +61,7 @@ Navbar.propTypes = {
   router: PropTypes.shape({
     isActive: PropTypes.func.isRequired,
   }).isRequired,
-  dispatch: PropTypes.func,
+  resetTest: PropTypes.func.isRequired,
 };
 
-export default connect()(withRouter(Navbar));
+export default connect(null, { resetTest })(withRouter(Navbar));

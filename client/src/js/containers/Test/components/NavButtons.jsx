@@ -1,79 +1,58 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { goPrevStep, goNextStep } from '../duck';
 
-const NavButton = ({ structure: { color, disabled }, onButtonClick, children }) => (
-  <div className="navigation">
-    <button disabled={disabled} type="button" className={color} onClick={onButtonClick}>
-      {children}
-    </button>
-  </div>
-);
+const NavButtons = {
+  Prev: ({ steps, activeStep, goPrevStep }) => {
+    const prevStep = steps[activeStep - 2];
+    const disabled = activeStep === 1;
 
-NavButton.propTypes = {
-  structure: PropTypes.shape({
-    color: PropTypes.string.isRequired,
-    disabled: PropTypes.bool.isRequired,
-  }).isRequired,
-  onButtonClick: PropTypes.func.isRequired,
-  children: PropTypes.string.isRequired,
+    const color = (function decideColor() {
+      if (disabled) return '';
+      if (prevStep.givenAnswer === prevStep.rightAnswer) return 'txt-green';
+      return 'txt-red';
+    }());
+
+    return (
+      <div className="navigation">
+        <button type="button" disabled={disabled} className={color} onClick={goPrevStep}>
+          &nbsp;&lt;&nbsp;
+        </button>
+      </div>
+    );
+  },
+
+  Next: ({ steps, activeStep, passedSteps, maxSteps, goNextStep }) => {
+    const nextStep = steps[activeStep];
+    const disabled = activeStep === maxSteps || activeStep === passedSteps + 1;
+
+    const color = (function decideColor() {
+      if (disabled) return '';
+      if (!nextStep.givenAnswer) return 'txt-blue';
+      if (nextStep.givenAnswer === nextStep.rightAnswer) return 'txt-green';
+      return 'txt-red';
+    }());
+
+    return (
+      <div className="navigation">
+        <button type="button" disabled={disabled} className={color} onClick={goNextStep}>
+          &nbsp;&gt;&nbsp;
+        </button>
+      </div>
+    );
+  },
 };
 
-const PrevButton = (() => {
-  function mapStateToProps({ domain: { test: { steps, activeStep } } }) {
-    const structure = { color: '', disabled: false };
+NavButtons.Prev.propTypes = {
+  steps: PropTypes.arrayOf(PropTypes.object).isRequired,
+  activeStep: PropTypes.number.isRequired,
+  goPrevStep: PropTypes.func.isRequired,
+};
 
-    if (activeStep === 1) {
-      structure.disabled = true;
-    } else {
-      const prevStep = steps[activeStep - 2];
-      structure.color = (prevStep.givenAnswer === prevStep.rightAnswer) ? 'txt-green' : 'txt-red';
-    }
+NavButtons.Next.propTypes = {
+  steps: PropTypes.arrayOf(PropTypes.object).isRequired,
+  activeStep: PropTypes.number.isRequired,
+  passedSteps: PropTypes.number.isRequired,
+  maxSteps: PropTypes.number.isRequired,
+  goNextStep: PropTypes.func.isRequired,
+};
 
-    return { structure };
-  }
-
-  function mapDispatchToProps(dispatch) {
-    return {
-      onButtonClick: () => {
-        dispatch(goPrevStep());
-      },
-    };
-  }
-
-  return connect(mapStateToProps, mapDispatchToProps)(NavButton);
-})();
-
-const NextButton = (() => {
-  function mapStateToProps({ domain: { test: { steps, activeStep, passedSteps, maxSteps } } }) {
-    const structure = { color: '', disabled: false };
-
-    if (activeStep === maxSteps || activeStep === passedSteps + 1) {
-      structure.disabled = true;
-      return { structure };
-    }
-
-    const nextStep = steps[activeStep];
-
-    if (nextStep.givenAnswer) {
-      structure.color = (nextStep.givenAnswer === nextStep.rightAnswer) ? 'txt-green' : 'txt-red';
-    } else {
-      structure.color = 'txt-blue';
-    }
-
-    return { structure };
-  }
-
-  function mapDispatchToProps(dispatch) {
-    return {
-      onButtonClick: () => {
-        dispatch(goNextStep());
-      },
-    };
-  }
-
-  return connect(mapStateToProps, mapDispatchToProps)(NavButton);
-})();
-
-export default NavButton;
-export { PrevButton, NextButton };
+export default NavButtons;

@@ -1,5 +1,5 @@
 import Immutable from 'seamless-immutable';
-import { charactersEntity } from '../../schemas/appSchemas';
+import { characterEntityOnly } from '../../schemas/appSchemas';
 
 import { getData } from '../../actions/fetchAndSave';
 import { generateComponent } from '../../ducks/domain';
@@ -64,10 +64,10 @@ export function testBegin(steps, maxSteps) {
   };
 }
 
-export function fetchCharsAndBeginTest(maxSteps) {
+export function fetchCharsAndBeginTest(maxSteps = 20) {
   return dispatch =>
     dispatch(getData('/api/characters'))
-      .normalize([charactersEntity])
+      .normalize([characterEntityOnly])
       .save()
       .asJson()
       .exec(component)
@@ -125,7 +125,6 @@ export function answerGiven(name) {
     name,
   };
 }
-
 
 const defaultState = Immutable({
   steps: [],

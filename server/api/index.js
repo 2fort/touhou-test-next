@@ -38,6 +38,7 @@ router.get('/games/:slug/characters', async (req, res, next) => {
     const game = await Game.findOne({ slug: req.params.slug }).exec();
     const characters = await Character.find({ 'link.rel': game._id }).sort('link.order').exec();
     return res.json(characters);
+    // return setTimeout(() => res.json(characters), 3000);
   } catch (e) {
     return next(e);
   }

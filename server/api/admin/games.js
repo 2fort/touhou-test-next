@@ -71,7 +71,7 @@ router.route('/')
       await Game.updateMany({ order: { $gte: newData.order }, _id: { $ne: newGame._id } }, { $inc: { order: 1 } });
 
       // return setTimeout(() => res.status(201).json({ message: 'Game successfully created.' }), 3000);
-      return res.status(201).json({ message: 'Game successfully created.' });
+      return res.status(201).json({ message: `Game ${newData.title} successfully created.` });
     } catch (e) {
       return next(e);
     }
@@ -108,7 +108,7 @@ router.route('/:id')
       }
 
       // return setTimeout(() => res.status(200).json({ message: 'Game successfully updated.' }), 3000);
-      return res.status(200).json({ message: 'Game successfully updated.' });
+      return res.status(200).json({ message: `Game ${newData.title} successfully updated.` });
     } catch (e) {
       return next(e);
     }

@@ -1,44 +1,29 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { setStep } from '../duck';
 
-const Slider = ({ structure: { value, max }, onSliderMove }) => (
-  <div className="myslider">
-    <div className="inside">
-      <input
-        onChange={onSliderMove}
-        type="range" min="1" max={max} step="1"
-        value={value} className={`width-${max}`}
-      />
+const Slider = ({ activeStep, passedSteps, maxSteps, setStep }) => {
+  const max = (passedSteps !== maxSteps) ? passedSteps + 1 : maxSteps;
+  return (
+    <div className="myslider">
+      <div className="inside">
+        <input
+          onChange={(e) => {
+            e.preventDefault();
+            const step = parseInt(e.target.value, 10);
+            setStep(step);
+          }}
+          type="range" min="1" max={max} step="1"
+          value={activeStep} className={`width-${max}`}
+        />
+      </div>
     </div>
-  </div>
-);
-
-function mapStateToProps({ domain: { test: { activeStep, passedSteps, maxSteps } } }) {
-  const structure = {
-    value: activeStep,
-    max: (passedSteps !== maxSteps) ? passedSteps + 1 : maxSteps,
-  };
-
-  return { structure };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    onSliderMove: (e) => {
-      e.preventDefault();
-      const step = parseInt(e.target.value, 10);
-      dispatch(setStep(step));
-    },
-  };
-}
-
-Slider.propTypes = {
-  structure: PropTypes.shape({
-    value: PropTypes.number.isRequired,
-    max: PropTypes.number.isRequired,
-  }).isRequired,
-  onSliderMove: PropTypes.func.isRequired,
+  );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Slider);
+Slider.propTypes = {
+  activeStep: PropTypes.number.isRequired,
+  passedSteps: PropTypes.number.isRequired,
+  maxSteps: PropTypes.number.isRequired,
+  setStep: PropTypes.func.isRequired,
+};
+
+export default Slider;

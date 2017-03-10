@@ -1,23 +1,24 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import Modal from 'react-modal';
-import { closeResultsWindow, resetTest } from '../duck';
 
 class TestResultModal extends Component {
-  shouldComponentUpdate(nextProps) {
-    if (nextProps.structure.isOpen !== this.props.structure.isOpen) {
-      return true;
-    }
-    return false;
+  onResetButtonClick = () => {
+    this.props.actions.resetTest();
+    this.props.actions.closeResultsWindow();
+  }
+
+  onCloseButtonClick = () => {
+    this.props.actions.closeResultsWindow();
   }
 
   render() {
-    const { onResetButtonClick, onCloseButtonClick } = this.props;
-    const { isOpen, correctAnswers, incorrectAnswers } = this.props.structure;
-
-    if (!isOpen) {
+    if (!this.props.isOpen) {
       return null;
     }
+
+    const { isOpen, steps } = this.props;
+    const correctAnswers = steps.filter(step => step.rightAnswer === step.givenAnswer).length;
+    const incorrectAnswers = steps.filter(step => step.rightAnswer !== step.givenAnswer).length;
 
     const customStyles = {
       content: {
@@ -31,58 +32,28 @@ class TestResultModal extends Component {
     };
 
     return (
-      <Modal isOpen={isOpen} style={customStyles} onRequestClose={onCloseButtonClick} contentLabel="Results" >
+      <Modal isOpen={isOpen} style={customStyles} onRequestClose={this.onCloseButtonClick} contentLabel="Results" >
         <div className="my-modal">
           <h2>Results:</h2>
           <span className="correct">right answers: {correctAnswers}</span> <br />
           <span className="incorrect">wrong answers: {incorrectAnswers}</span> <br />
-          <button className="blue btn-left" onClick={onResetButtonClick}>
+          <button className="blue btn-left" onClick={this.onResetButtonClick}>
             <i className="fa fa-fw fa-lg fa-refresh" aria-hidden="true" /> Reset
           </button>
-          <button className="green btn-right" onClick={onCloseButtonClick}>Close</button>
+          <button className="green btn-right" onClick={this.onCloseButtonClick}>Close</button>
         </div>
       </Modal>
     );
   }
 }
 
-function mapStateToProps({ domain: { test: { steps, modalIsOpen } } }) {
-  const structure = {
-    isOpen: modalIsOpen,
-    correctAnswers: 0,
-    incorrectAnswers: 0,
-  };
-
-  if (!modalIsOpen) {
-    return { structure };
-  }
-
-  structure.correctAnswers = steps.filter(step => step.rightAnswer === step.givenAnswer).length;
-  structure.incorrectAnswers = steps.filter(step => step.rightAnswer !== step.givenAnswer).length;
-
-  return { structure };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    onResetButtonClick: () => {
-      dispatch(resetTest());
-      dispatch(closeResultsWindow());
-    },
-    onCloseButtonClick: () => {
-      dispatch(closeResultsWindow());
-    },
-  };
-}
-
 TestResultModal.propTypes = {
-  structure: PropTypes.shape({
-    isOpen: PropTypes.bool.isRequired,
-    correctAnswers: PropTypes.number.isRequired,
-    incorrectAnswers: PropTypes.number.isRequired,
+  actions: PropTypes.shape({
+    resetTest: PropTypes.func.isRequired,
+    closeResultsWindow: PropTypes.func.isRequired,
   }).isRequired,
-  onResetButtonClick: PropTypes.func.isRequired,
-  onCloseButtonClick: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  steps: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TestResultModal);
+export default TestResultModal;

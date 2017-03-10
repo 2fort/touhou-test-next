@@ -1,64 +1,100 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Helmet from 'react-helmet';
 
-import { ResultModal, Slider, TopButtons, CharacterImage, CharacterButtons } from './components';
-import { NextButton, PrevButton } from './components/NavButtons';
-import TestCore from './TestCore';
+import { CharacterButtons, CharacterImage, Core, NavButtons, ResultModal, Slider, TopButtons } from './components';
 import Loading from '../Base/components/Loading';
 
 import { domainHoc } from '../../ducks/domain';
-import { fetchCharsAndBeginTest } from './duck';
+import * as ownActions from './duck';
 
 class Test extends Component {
   componentDidMount() {
-    if (!this.props.state.inProgress) {
-      this.props.fetchCharsAndBeginTest(20);
+    if (!this.props.inProgress) {
+      this.props.actions.fetchCharsAndBeginTest();
     }
   }
 
   render() {
-    const { state } = this.props;
+    const { pending, inProgress, steps, activeStep, modalIsOpen, maxSteps, passedSteps, actions } = this.props;
 
-    if (!state.inProgress || state.pending) return <Loading />;
+    if (!inProgress || pending) return <Loading />;
 
     return (
       <div>
         <Helmet title="Test" />
 
-        <Slider />
-        <TopButtons />
-        <TestCore>
-          <PrevButton>&nbsp;&lt;&nbsp;</PrevButton>
-          <CharacterImage />
-          <CharacterButtons />
-          <NextButton>&nbsp;&gt;&nbsp;</NextButton>
-        </TestCore>
+        <Slider setStep={actions.setStep} activeStep={activeStep} passedSteps={passedSteps} maxSteps={maxSteps} />
 
-        <ResultModal />
+        <TopButtons steps={steps} passedSteps={passedSteps} activeStep={activeStep} />
+
+        <Core goPrevStep={actions.goPrevStep} goNextStep={actions.goNextStep} >
+
+          <NavButtons.Prev steps={steps} activeStep={activeStep} goPrevStep={actions.goPrevStep} />
+
+          <CharacterImage steps={steps} activeStep={activeStep} />
+
+          <CharacterButtons
+            actions={{
+              answerGiven: actions.answerGiven,
+              openResultsWindow: actions.openResultsWindow,
+              goNextStep: actions.goNextStep }}
+            steps={steps}
+            activeStep={activeStep}
+            maxSteps={maxSteps}
+          />
+
+          <NavButtons.Next
+            steps={steps}
+            activeStep={activeStep}
+            passedSteps={passedSteps}
+            maxSteps={maxSteps}
+            goNextStep={actions.goNextStep}
+          />
+
+        </Core>
+
+        <ResultModal
+          isOpen={modalIsOpen}
+          steps={steps}
+          actions={{ closeResultsWindow: actions.closeResultsWindow, resetTest: actions.resetTest }}
+        />
       </div>
     );
   }
 }
 
-function mapStateToProps({ domain: { test } }) {
-  const state = { pending: false, inProgress: false };
-  if (!test) return { state };
-
-  state.pending = test.activeRequests > 0;
-  state.inProgress = (test.steps.length > 0);
-  return { state };
-}
-
 Test.propTypes = {
-  state: PropTypes.shape({
-    pending: PropTypes.bool.isRequired,
-    inProgress: PropTypes.bool.isRequired,
+  pending: PropTypes.bool.isRequired,
+  inProgress: PropTypes.bool.isRequired,
+  steps: PropTypes.arrayOf(PropTypes.object).isRequired,
+  activeStep: PropTypes.number.isRequired,
+  modalIsOpen: PropTypes.bool.isRequired,
+  maxSteps: PropTypes.number.isRequired,
+  passedSteps: PropTypes.number.isRequired,
+  actions: PropTypes.shape({
+    fetchCharsAndBeginTest: PropTypes.func.isRequired,
+    setStep: PropTypes.func.isRequired,
+    goPrevStep: PropTypes.func.isRequired,
+    goNextStep: PropTypes.func.isRequired,
+    openResultsWindow: PropTypes.func.isRequired,
+    closeResultsWindow: PropTypes.func.isRequired,
+    answerGiven: PropTypes.func.isRequired,
   }).isRequired,
-  fetchCharsAndBeginTest: PropTypes.func.isRequired,
 };
 
+function mapStateToProps({ domain: { test } }) {
+  const pending = !test.active || test.activeRequests > 0;
+  const inProgress = test.steps.length > 0;
+  return { pending, inProgress, ...test };
+}
+
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(ownActions, dispatch) };
+}
+
 export default
-  connect(mapStateToProps, { fetchCharsAndBeginTest })(
+  connect(mapStateToProps, mapDispatchToProps)(
     domainHoc({ name: 'Test', persist: true })(Test),
   );

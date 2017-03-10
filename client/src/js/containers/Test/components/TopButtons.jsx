@@ -1,12 +1,24 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
 
-const TopButtons = ({ structure }) => {
-  const topButtons = structure.map((step, i) => (
-    <div key={i} className={(step.active) ? `${step.color} active` : step.color}>
-      &nbsp;
-    </div>
-  ));
+const TopButtons = ({ steps, passedSteps, activeStep }) => {
+  const topButtons = steps.map((step, i) => {
+    let color = 'gray';
+    const active = i + 1 === activeStep;
+
+    if (step.passed && step.rightAnswer === step.givenAnswer) {
+      color = 'green';
+    } else if (step.passed && step.rightAnswer !== step.givenAnswer) {
+      color = 'red';
+    } else if (i === passedSteps) {
+      color = 'blue';
+    }
+
+    return (
+      <div key={i} className={active ? `${color} active` : color}>
+        &nbsp;
+      </div>
+    );
+  });
 
   return (
     <div className="topbuttons">
@@ -15,34 +27,10 @@ const TopButtons = ({ structure }) => {
   );
 };
 
-function mapStateToProps({ domain: { test: { steps, passedSteps, activeStep } } }) {
-  const structure = steps.map((step, i) => {
-    const params = {
-      color: 'gray',
-      active: (i + 1 === activeStep),
-    };
-
-    if (step.passed && step.rightAnswer === step.givenAnswer) {
-      params.color = 'green';
-    } else if (step.passed && step.rightAnswer !== step.givenAnswer) {
-      params.color = 'red';
-    } else if (i === passedSteps) {
-      params.color = 'blue';
-    }
-
-    return params;
-  });
-
-  return {
-    structure,
-  };
-}
-
 TopButtons.propTypes = {
-  structure: PropTypes.arrayOf(PropTypes.shape({
-    color: PropTypes.string,
-    active: PropTypes.bool,
-  })).isRequired,
+  steps: PropTypes.arrayOf(PropTypes.object).isRequired,
+  passedSteps: PropTypes.number.isRequired,
+  activeStep: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps)(TopButtons);
+export default TopButtons;
