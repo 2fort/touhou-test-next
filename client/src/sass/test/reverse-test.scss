@@ -1,0 +1,64 @@
+.reverse-test {
+  background: #f9f9f9;
+  border-radius: 2px;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .14);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  margin: 0 auto;
+  max-width: $container-width;
+  padding: 0;
+
+  .test-center {
+    flex: 1 1 90%;
+
+    .character-name {
+      margin: 1rem auto 0 auto;
+      text-align: center;
+    }
+
+    .buttons-img {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin: .85rem .85rem 0;
+      justify-content: space-around;
+
+      .variant-outer {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-content: center;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-bottom: .85rem;
+        padding: .5rem;
+        text-align: center;
+        justify-content: center;
+
+        &.active {
+          border-color: gray;
+        }
+
+        img {
+          background-color: white;
+        }
+      }
+
+      .btn-expand {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-top: 3px;
+        padding: .1rem .4rem;
+
+        &:hover {
+          border-color: gray;
+        }
+      }
+
+      button {
+        padding: 0;
+      }
+    }
+  }
+}

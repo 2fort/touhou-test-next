@@ -4,7 +4,7 @@ import { characterEntityOnly } from '../../schemas/appSchemas';
 import { getData } from '../../actions/fetchAndSave';
 import { generateComponent } from '../../ducks/domain';
 
-const componentName = 'Test';
+const componentName = 'ReverseTest';
 const component = generateComponent(componentName);
 
 const TEST_BEGIN = `${componentName}/BEGIN`;
@@ -26,7 +26,6 @@ export function generateTest(characters, maxSteps) {
 
     const oneStep = {
       step: st,
-      image: rndCharacter.image,
       passed: false,
       buttons: [rndCharacter],
       rightAnswer: rndCharacter.name,
@@ -88,7 +87,7 @@ export function setStep(stepNumber) {
 
 export function goPrevStep() {
   return (dispatch, getState) => {
-    const test = getState().domain.test;
+    const test = getState().domain.reverseTest;
 
     if (test.activeStep !== 1) {
       dispatch(setStep(test.activeStep - 1));
@@ -98,7 +97,7 @@ export function goPrevStep() {
 
 export function goNextStep() {
   return (dispatch, getState) => {
-    const test = getState().domain.test;
+    const test = getState().domain.reverseTest;
 
     if (test.activeStep <= test.passedSteps && test.activeStep < test.maxSteps) {
       dispatch(setStep(test.activeStep + 1));

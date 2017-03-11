@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Helmet from 'react-helmet';
 
-import { Variants, Image, Core, NavButtons, ResultModal, Slider, TopButtons } from './components';
+import { Variants, Core, NavButtons, ResultModal, Slider, TopButtons } from './components';
 import Loading from '../Base/components/Loading';
 
 import { domainHoc } from '../../ducks/domain';
-import * as ownActions from './duck';
+import * as ownActions from './ReverseTest.duck';
 
-class Test extends Component {
+class ReverseTest extends Component {
   componentDidMount() {
     if (!this.props.inProgress) {
       this.props.actions.fetchCharsAndBeginTest();
@@ -23,27 +23,29 @@ class Test extends Component {
 
     return (
       <div>
-        <Helmet title="Test" />
+        <Helmet title="Reverse-Test" />
 
         <Slider setStep={actions.setStep} activeStep={activeStep} passedSteps={passedSteps} maxSteps={maxSteps} />
 
         <TopButtons steps={steps} passedSteps={passedSteps} activeStep={activeStep} />
 
-        <Core goPrevStep={actions.goPrevStep} goNextStep={actions.goNextStep} >
+        <Core reverse goPrevStep={actions.goPrevStep} goNextStep={actions.goNextStep} >
 
           <NavButtons.Prev steps={steps} activeStep={activeStep} goPrevStep={actions.goPrevStep} />
 
-          <Image steps={steps} activeStep={activeStep} />
+          <div className="test-center">
+            <div className="character-name"><h1>{steps[activeStep - 1].rightAnswer}</h1></div>
 
-          <Variants.Name
-            actions={{
-              answerGiven: actions.answerGiven,
-              openResultsWindow: actions.openResultsWindow,
-              goNextStep: actions.goNextStep }}
-            steps={steps}
-            activeStep={activeStep}
-            maxSteps={maxSteps}
-          />
+            <Variants.Image
+              actions={{
+                answerGiven: actions.answerGiven,
+                openResultsWindow: actions.openResultsWindow,
+                goNextStep: actions.goNextStep }}
+              steps={steps}
+              activeStep={activeStep}
+              maxSteps={maxSteps}
+            />
+          </div>
 
           <NavButtons.Next
             steps={steps}
@@ -65,7 +67,7 @@ class Test extends Component {
   }
 }
 
-Test.propTypes = {
+ReverseTest.propTypes = {
   pending: PropTypes.bool.isRequired,
   inProgress: PropTypes.bool.isRequired,
   steps: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -84,10 +86,10 @@ Test.propTypes = {
   }).isRequired,
 };
 
-function mapStateToProps({ domain: { test } }) {
-  const pending = !test.active || test.activeRequests > 0;
-  const inProgress = test.steps.length > 0;
-  return { pending, inProgress, ...test };
+function mapStateToProps({ domain: { reverseTest } }) {
+  const pending = !reverseTest.active || reverseTest.activeRequests > 0;
+  const inProgress = reverseTest.steps.length > 0;
+  return { pending, inProgress, ...reverseTest };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -96,5 +98,5 @@ function mapDispatchToProps(dispatch) {
 
 export default
   connect(mapStateToProps, mapDispatchToProps)(
-    domainHoc({ name: 'Test', persist: true })(Test),
+    domainHoc({ name: 'ReverseTest', persist: true })(ReverseTest),
   );

@@ -4,6 +4,7 @@ import { Route, IndexRoute } from 'react-router';
 import Base from './containers/Base';
 import Home from './containers/Base/Home';
 import Test from './containers/Test';
+import ReverseTest from './containers/Test/ReverseTest';
 import Characters from './containers/Characters';
 import GamesList from './containers/Characters/GamesList';
 import CharactersList from './containers/Characters/CharactersList';
@@ -14,6 +15,7 @@ export default (
   <Route path="/" component={Base}>
     <IndexRoute component={Home} />
     <Route path="test" component={Test} />
+    <Route path="reverse-test" component={ReverseTest} />
     <Route path="characters" component={Characters}>
       <IndexRoute component={GamesList} />
       <Route path=":game" component={CharactersList} />

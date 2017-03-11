@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { IMG_COMPRESSED } from '../../../config';
 
-const CharacterImage = ({ steps, activeStep }) => {
+const Image = ({ steps, activeStep }) => {
   const image = steps[activeStep - 1].image;
   return (
     <div className="character-image">
@@ -13,9 +13,9 @@ const CharacterImage = ({ steps, activeStep }) => {
   );
 };
 
-CharacterImage.propTypes = {
+Image.propTypes = {
   steps: PropTypes.arrayOf(PropTypes.object).isRequired,
   activeStep: PropTypes.number.isRequired,
 };
 
-export default CharacterImage;
+export default Image;

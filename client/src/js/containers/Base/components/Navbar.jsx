@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
 import React, { PropTypes, Component } from 'react';
 import { Link, withRouter } from 'react-router';
-import { resetTest } from '../../Test/duck';
+import { resetTest as testReset } from '../../Test/duck';
+import { resetTest as reverseTestReset } from '../../Test/ReverseTest.duck';
 import LoadingSignal from './LoadingSignal';
 
 const NavLink = props => <Link activeClassName="active" {...props} />;
@@ -33,7 +34,14 @@ class Navbar extends Component {
             &nbsp;<LoadingSignal />
 
             {router.isActive('/test') &&
-              <button type="button" className="reload" title="Reset" onClick={() => { this.props.resetTest(); }}>
+              <button type="button" className="reload" title="Reset" onClick={() => { this.props.testReset(); }}>
+                <i className="fa fa-fw fa-lg fa-refresh" aria-hidden="true" />
+                <span className="mobile-hide"> Reset</span>
+              </button>
+            }
+
+            {router.isActive('/reverse-test') &&
+              <button type="button" className="reload" title="Reset" onClick={() => { this.props.reverseTestReset(); }}>
                 <i className="fa fa-fw fa-lg fa-refresh" aria-hidden="true" />
                 <span className="mobile-hide"> Reset</span>
               </button>
@@ -45,6 +53,7 @@ class Navbar extends Component {
 
             <div className={`collapsible ${inButton}`}>
               <NavLink onClick={this.hideMenu} to="/test">Test</NavLink>
+              <NavLink onClick={this.hideMenu} to="/reverse-test">Reverse Test</NavLink>
               <NavLink onClick={this.hideMenu} to="/characters">Characters</NavLink>
               <a href="https://github.com/2fort/touhou-test-jsx">
                 <i className="fa fa-github fa-fw fa-lg" aria-hidden="true" /> Github
@@ -61,7 +70,8 @@ Navbar.propTypes = {
   router: PropTypes.shape({
     isActive: PropTypes.func.isRequired,
   }).isRequired,
-  resetTest: PropTypes.func.isRequired,
+  testReset: PropTypes.func.isRequired,
+  reverseTestReset: PropTypes.func.isRequired,
 };
 
-export default connect(null, { resetTest })(withRouter(Navbar));
+export default connect(null, { testReset, reverseTestReset })(withRouter(Navbar));

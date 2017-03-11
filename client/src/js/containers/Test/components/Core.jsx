@@ -25,14 +25,19 @@ class Core extends Component {
 
   render() {
     return (
-      <div className="test">
+      <div className={this.props.reverse ? 'reverse-test' : 'test'}>
         {this.props.children}
       </div>
     );
   }
 }
 
+Core.defaultProps = {
+  reverse: false,
+};
+
 Core.propTypes = {
+  reverse: PropTypes.bool,
   goNextStep: PropTypes.func.isRequired,
   goPrevStep: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,

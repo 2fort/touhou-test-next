@@ -6,12 +6,14 @@ import charactersList from './containers/Characters/CharactersList.duck';
 import singleCharacter from './containers/Characters/SingleCharacter.duck';
 import base from './containers/Base/duck';
 import test from './containers/Test/duck';
+import reverseTest from './containers/Test/ReverseTest.duck';
 
 const domain = combineReducers({
   gamesList: domainSlice('GamesList'),
   charactersList: domainSlice('CharactersList', charactersList.reducer, charactersList.defaultState),
   singleCharacter: domainSlice('SingleCharacter', singleCharacter.reducer, singleCharacter.defaultState),
   test: domainSlice('Test', test.reducer, test.defaultState),
+  reverseTest: domainSlice('ReverseTest', reverseTest.reducer, reverseTest.defaultState),
 });
 
 const rootReducer = combineReducers({
