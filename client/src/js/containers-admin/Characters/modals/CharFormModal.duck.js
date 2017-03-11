@@ -104,10 +104,10 @@ export function newCharacter({ image, ...values }) {
 export function editCharacter({ id, image, ...values }) {
   return (dispatch) => {
     const formData = new FormData();
-    const imageStringName = typeof cover === 'string' && { image };
+    const imageStringName = typeof image === 'string' && { image };
 
-    if (typeof cover === 'object' && image[0]) {
-      formData.append('cover', image[0], image[0].name);
+    if (typeof image === 'object' && image[0]) {
+      formData.append('image', image[0], image[0].name);
     }
 
     formData.append('payload', JSON.stringify(Object.assign({}, values, imageStringName)));

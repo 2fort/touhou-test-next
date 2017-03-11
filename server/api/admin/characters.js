@@ -136,8 +136,8 @@ router.route('/:id')
         await charController.reorderAfterUpdate(newData.order, staleData.order, req.params.id);
       }
 
-      if (staleData.cover && staleData.cover !== newData.cover) {
-        await controller.deleteAllImg(staleData.cover);
+      if (staleData.image && staleData.image !== newData.image) {
+        await controller.deleteAllImg(staleData.image);
       }
 
       return res.status(200).json({ message: `Character "${newData.name}" successfully updated.` });
