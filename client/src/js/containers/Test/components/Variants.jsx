@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import FullImg from './FullImg';
 import { IMG_THUMBNAIL } from '../../../config';
 
 function answer(name, activeStep, maxSteps, actions) {
@@ -85,9 +86,7 @@ const Variants = {
             >
               <img alt={`variant ${i}`} src={IMG_THUMBNAIL + bt.image} />
             </button>
-            <button type="button" className="btn-expand white">
-              <i className="fa fa-expand" aria-hidden="true" />
-            </button>
+            <FullImg image={bt.image} />
           </div>
         );
       });

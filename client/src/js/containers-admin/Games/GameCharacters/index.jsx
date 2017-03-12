@@ -178,7 +178,7 @@ class GameCharactersTable extends Component {
                     <Link
                       target="_blank"
                       className="btn btn-default"
-                      to={`/characters/${gameInfo.slug}/${char.slug}`}
+                      to={`/browse/${gameInfo.slug}/${char.slug}`}
                     >
                       <i className="fa fa-eye" aria-hidden="true" />
                     </Link>

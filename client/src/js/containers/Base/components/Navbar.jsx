@@ -54,7 +54,7 @@ class Navbar extends Component {
             <div className={`collapsible ${inButton}`}>
               <NavLink onClick={this.hideMenu} to="/test">Test</NavLink>
               <NavLink onClick={this.hideMenu} to="/reverse-test">Reverse Test</NavLink>
-              <NavLink onClick={this.hideMenu} to="/characters">Characters</NavLink>
+              <NavLink onClick={this.hideMenu} to="/browse">Browse</NavLink>
               <a href="https://github.com/2fort/touhou-test-jsx">
                 <i className="fa fa-github fa-fw fa-lg" aria-hidden="true" /> Github
               </a>

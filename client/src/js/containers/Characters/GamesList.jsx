@@ -19,11 +19,11 @@ class GamesList extends Component {
 
     return (
       <div>
-        <Helmet title="Characters" />
+        <Helmet title="Games" />
 
         <TopContainer>
           <Breadcrumbs>
-            <span>Characters</span>
+            <span>Games</span>
           </Breadcrumbs>
           <ModeButtons router={router} location={location} />
         </TopContainer>

@@ -29,7 +29,7 @@ class CharactersList extends Component {
 
         <TopContainer>
           <Breadcrumbs>
-            <Link to="/characters">Characters</Link>
+            <Link to="/browse">Games</Link>
             <span>{gameInfo.title}</span>
           </Breadcrumbs>
           <ModeButtons router={router} location={location} />

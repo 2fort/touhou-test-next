@@ -136,7 +136,7 @@ class CharactersTable extends Component {
                     <Link
                       target="_blank"
                       className="btn btn-default"
-                      to={`/characters/${gamesList[char.link.rel].slug}/${char.slug}`}
+                      to={`/browse/${gamesList[char.link.rel].slug}/${char.slug}`}
                     >
                       <i className="fa fa-eye" aria-hidden="true" />
                     </Link>

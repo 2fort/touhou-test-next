@@ -45,8 +45,8 @@ class SingleCharacter extends Component {
 
         <TopContainer>
           <Breadcrumbs>
-            <Link to="/characters">Characters</Link>
-            <Link to={`/characters/${gameInfo.slug}`}>{gameInfo.title}</Link>
+            <Link to="/browse">Games</Link>
+            <Link to={`/browse/${gameInfo.slug}`}>{gameInfo.title}</Link>
             <span>{currentCharacter.name}</span>
           </Breadcrumbs>
         </TopContainer>
@@ -56,7 +56,7 @@ class SingleCharacter extends Component {
             <h1 itemProp="name">{currentCharacter.name}</h1>
 
             <div className="singlechar-container">
-              <NavButtons.Left disabled={!prevCharacter.name} to={`/characters/${params.game}/${prevCharacter.slug}`} />
+              <NavButtons.Left disabled={!prevCharacter.name} to={`/browse/${params.game}/${prevCharacter.slug}`} />
 
               <div className="singlechar-flex">
                 <div className="singlechar-img">
@@ -79,7 +79,7 @@ class SingleCharacter extends Component {
                 </div>
               </div>
 
-              <NavButtons.Right disabled={!nextCharacter.name} to={`/characters/${params.game}/${nextCharacter.slug}`} />
+              <NavButtons.Right disabled={!nextCharacter.name} to={`/browse/${params.game}/${nextCharacter.slug}`} />
             </div>
           </div>
         }

@@ -16,7 +16,7 @@ export default (
     <IndexRoute component={Home} />
     <Route path="test" component={Test} />
     <Route path="reverse-test" component={ReverseTest} />
-    <Route path="characters" component={Characters}>
+    <Route path="browse" component={Characters}>
       <IndexRoute component={GamesList} />
       <Route path=":game" component={CharactersList} />
       <Route path=":game/:char" component={SingleCharacter} />
