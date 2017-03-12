@@ -3,6 +3,7 @@ import { characterEntityOnly } from '../../schemas/appSchemas';
 
 import { getData } from '../../actions/fetchAndSave';
 import { generateComponent } from '../../ducks/domain';
+import generateTest from './generateTest';
 
 const componentName = 'ReverseTest';
 const component = generateComponent(componentName);
@@ -12,47 +13,6 @@ const TEST_SET_STEP = `${componentName}/SET_STEP`;
 const TEST_OPEN_RESULTS_WINDOW = `${componentName}/OPEN_RESULTS_WINDOW`;
 const TEST_CLOSE_RESULTS_WINDOW = `${componentName}/CLOSE_RESULTS_WINDOW`;
 const TEST_ANSWER_GIVEN = `${componentName}/ANSWER_GIVEN`;
-
-function randomNumber(scopeLength) {
-  return Math.floor(Math.random() * scopeLength);
-}
-
-export function generateTest(characters, maxSteps) {
-  const steps = [];
-
-  for (let st = 1; st <= maxSteps; st++) {
-    let rndCharacterPosition = randomNumber(characters.length);
-    const rndCharacter = characters[rndCharacterPosition];
-
-    const oneStep = {
-      step: st,
-      passed: false,
-      buttons: [rndCharacter],
-      rightAnswer: rndCharacter.name,
-      givenAnswer: '',
-    };
-
-    characters.splice(rndCharacterPosition, 1);
-    const variantsArray = characters.slice();
-
-    for (let i = 1; i <= 4; i++) {
-      rndCharacterPosition = randomNumber(variantsArray.length);
-      oneStep.buttons[i] = variantsArray[rndCharacterPosition];
-      variantsArray.splice(rndCharacterPosition, 1);
-    }
-
-    for (let i = oneStep.buttons.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const temp = oneStep.buttons[i];
-      oneStep.buttons[i] = oneStep.buttons[j];
-      oneStep.buttons[j] = temp;
-    }
-
-    steps.push(oneStep);
-  }
-
-  return steps;
-}
 
 export function testBegin(steps, maxSteps) {
   return {
