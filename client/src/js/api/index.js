@@ -52,7 +52,7 @@ export default function request(endpoint, options = {}) {
 
         // if json exists, return json
         if (response.json) {
-          reject({ status: response.status, message: response.json.message });
+          reject({ status: response.status, message: response.json.message || response.json });
         }
 
         // if not, return message

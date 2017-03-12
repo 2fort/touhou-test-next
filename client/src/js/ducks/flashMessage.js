@@ -39,7 +39,7 @@ const msgColors = [
   'danger',
 ];
 
-export default function msg(state = Immutable({ status: '', text: '', color: '', date: 0 }), action) {
+export default function msg(state = Immutable({ status: 0, text: '', type: '', date: 0 }), action) {
   switch (action.type) {
     case ADD_FLASH_MESSAGE:
       return Immutable.merge(state, {
@@ -50,7 +50,7 @@ export default function msg(state = Immutable({ status: '', text: '', color: '',
       });
 
     case DELETE_FLASH_MESSAGE:
-      return Immutable.merge(state, { status: '', text: '', type: '', date: 0 });
+      return Immutable.merge(state, { status: 0, text: '', type: '', date: 0 });
 
     default: {
       return state;

@@ -6,7 +6,7 @@ import Helmet from 'react-helmet';
 
 import { CharsGrid, CharsTable } from './components/gridsAndTables';
 import { TopContainer, Breadcrumbs, ModeButtons } from './components';
-// import Fetch404 from '../Base/components/Fetch404';
+import Fetch404 from '../Base/components/Fetch404';
 
 import { domainHoc } from '../../ducks/domain';
 import * as ownActions from './CharactersList.duck';
@@ -19,9 +19,11 @@ class CharactersList extends Component {
   }
 
   render() {
-    const { charaters, mode, gameInfo, router, location } = this.props;
+    const { charaters, mode, gameInfo, router, location, pending } = this.props;
 
-    // if (!data) return <Fetch404>Game not found!</Fetch404>;
+    if (!pending && !gameInfo.title) {
+      return <Fetch404>Game not found!</Fetch404>;
+    }
 
     return (
       <div>
@@ -37,12 +39,17 @@ class CharactersList extends Component {
 
         {mode === 'grid' && <CharsGrid entity={charaters} pathname={location.pathname} />}
         {mode === 'table' && <CharsTable entity={charaters} pathname={location.pathname} />}
+
+        {!pending && !charaters[0] &&
+          <div>This category is empty!</div>
+        }
       </div>
     );
   }
 }
 
 CharactersList.propTypes = {
+  pending: PropTypes.bool.isRequired,
   charaters: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string.isRequired,
     image: PropTypes.string,
@@ -77,6 +84,7 @@ function mapStateToProps({ entities, domain: { charactersList }, base: { mode } 
   const charaters = charactersList.visible.map(slug => entities.characters[slug]);
 
   return {
+    pending: !charactersList.active || charactersList.activeRequests > 0,
     gameInfo: charactersList.gameInfo,
     charaters,
     mode,

@@ -4,9 +4,9 @@ import { bindActionCreators } from 'redux';
 import { Link } from 'react-router';
 import Helmet from 'react-helmet';
 
-import { TopContainer, Breadcrumbs, NavButtons } from './components';
 import { IMG_COMPRESSED } from '../../config';
-// import Fetch404 from '../Base/components/Fetch404';
+import { TopContainer, Breadcrumbs, NavButtons } from './components';
+import Fetch404 from '../Base/components/Fetch404';
 
 import { domainHoc } from '../../ducks/domain';
 import * as ownActions from './SingleCharacter.duck';
@@ -23,7 +23,15 @@ class SingleCharacter extends Component {
   render() {
     const { pending, gameInfo, characters, params } = this.props;
 
+    if (!pending && !gameInfo.title) {
+      return <Fetch404>Game not found!</Fetch404>;
+    }
+
     const currentCharacter = characters[params.char] || {};
+
+    if (!pending && !currentCharacter.name) {
+      return <Fetch404>Character not found!</Fetch404>;
+    }
 
     const prevCharacter = (function getPrevCharacter() {
       const pos = Object.keys(characters).indexOf(params.char) - 1;
@@ -36,8 +44,6 @@ class SingleCharacter extends Component {
       const slug = Object.keys(characters)[pos];
       return characters[slug];
     }()) || {};
-
-    // if (!character) return <Fetch404 title={'Character not found!'}>Character not found!</Fetch404>;
 
     return (
       <div>
@@ -67,13 +73,15 @@ class SingleCharacter extends Component {
                 </div>
                 <div className="singlechar-desc">
                   <p>Character info:&nbsp;
-                    <a itemProp="sameAs" href={currentCharacter.wiki}>
+                    <a target="_blank" rel="noopener noreferrer" itemProp="sameAs" href={currentCharacter.wiki}>
                       {currentCharacter.wiki && currentCharacter.wiki.substring(7)}
                     </a>
                   </p>
-                  <p>Illustration author:
+                  <p>Illustration author:{' '}
                     {currentCharacter.art &&
-                      <a href={currentCharacter.art.url}> {currentCharacter.art.author}</a>
+                      <a target="_blank" rel="noopener noreferrer" href={currentCharacter.art.url}>
+                        {currentCharacter.art.author}
+                      </a>
                     }
                   </p>
                 </div>

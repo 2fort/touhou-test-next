@@ -12,7 +12,7 @@ export function getGameInfo(gameId) {
   return dispatch =>
     dispatch(getData(`/api/games/${gameId}`)).asJson().exec(component)
       .then((game) => {
-        dispatch({ type: ADD_GAME_INFO, game });
+        if (game) dispatch({ type: ADD_GAME_INFO, game });
       });
 }
 
