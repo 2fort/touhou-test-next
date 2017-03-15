@@ -1,10 +1,10 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-// const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+const commitHash = require('child_process').execSync('git rev-parse --short HEAD').toString();
+
+const BASE_URL = 'http://localhost';
 
 module.exports = {
-
   entry: {
     dev: [
       'react-hot-loader/patch',
@@ -23,8 +23,6 @@ module.exports = {
     path: '/build',
     publicPath: '/',
     filename: '[hash].[name].js',
-    // path: '/',
-    // filename: 'apps/[name]/build/bundle.js',
   },
 
   resolve: {
@@ -56,28 +54,30 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract({
-          loader: [
-            {
-              loader: 'css-loader',
-              // current extract-text-plugin supports query not never options format
-              query: {
-                importLoaders: 3,
-                minimize: true,
-                // Even if disabled sourceMaps gets generated
-                sourceMap: false,
-              },
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'resolve-url-loader',
+            options: {
+              silent: true,
             },
-            { loader: 'resolve-url-loader' },
-            {
-              loader: 'sass-loader',
-              query: {
-                // Enable sourcemaps for resolve-url-loader to work properly
-                sourceMap: true,
-              },
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
             },
-          ],
-        }),
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+        ],
       },
       {
         test: /\.(js|jsx)$/,
@@ -93,9 +93,7 @@ module.exports = {
       },
       {
         test: /\.(svg|ttf|woff|woff2|eot)$/,
-        // exclude: /node_modules(?!\/bootstrap)/, // exclude node_modules except bootstrap
         exclude: /node_modules/,
-        // exclude: /node_modules(?!\/font-awesome)/,
         use: [
           {
             loader: 'file-loader',
@@ -128,9 +126,9 @@ module.exports = {
   },
 
   plugins: [
-    // new LodashModuleReplacementPlugin, // _.snakeCase('SinGyoku') -> 'singyoku' instead of 'sin_gyoku', ?
     new HtmlWebpackPlugin({
-      title: 'Touhou | Comiket',
+      title: 'Touhou Test - Do you know Touhou characters well? Test your skills!',
+      baseurl: BASE_URL,
       template: './src/index.ejs',
       chunks: ['dev', 'app'],
       filename: 'index.html',
@@ -147,16 +145,21 @@ module.exports = {
       'process.env': {
         NODE_ENV: JSON.stringify('development'),
       },
+      'process.commitHash': {
+        COMMIT_HASH: JSON.stringify(commitHash),
+      },
+      'process.config': {
+        BASE_URL: JSON.stringify(BASE_URL),
+        IMG_ORIG: JSON.stringify('/images/l/'),
+        IMG_COMPRESSED: JSON.stringify('/images/m/'),
+        IMG_THUMBNAIL: JSON.stringify('/images/s/'),
+      },
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
-    new ExtractTextPlugin({
-      filename: '[contenthash].[name].css',
-    }),
   ],
 
   // devtool: 'cheap-module-eval-source-map',
-
   devtool: 'source-map',
 
   performance: { hints: false },

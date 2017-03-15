@@ -1,9 +1,10 @@
 const webpack = require('webpack');
-const autoprefixer = require('autoprefixer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin');
-// const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+const commitHash = require('child_process').execSync('git rev-parse --short HEAD').toString();
+
+const BASE_URL = 'http://touhou-jsx.dev';
 
 function chunksSortModeExp(chunk1, chunk2, orders) {
   const order1 = orders.indexOf(chunk1.names[0]);
@@ -19,11 +20,25 @@ function chunksSortModeExp(chunk1, chunk2, orders) {
 module.exports = {
 
   entry: {
-    vendorCommon: ['react', 'react-dom', 'redux', 'react-redux', 'react-router', 'react-helmet'],
-    vendorApp: ['react-modal', 'hammerjs', 'react-helmet', 'redux-thunk', 'seamless-immutable', 'normalizr'],
-    vendorAdmin: ['react-bootstrap', 'react-router-bootstrap', 'redux-form', 'time-stamp'],
+    common: [
+      'normalizr',
+      'react',
+      'react-dom',
+      'react-redux',
+      'react-router',
+      'redux',
+      'redux-form',
+      'redux-thunk',
+      'seamless-immutable',
+    ],
+    vendorApp: [
+      'hammerjs', 'react-helmet', 'react-modal',
+    ],
+    vendorAdmin: [
+      'flat', 'qs', 'react-bootstrap', 'react-progress-bar-plus', 'react-router-bootstrap', 'time-stamp',
+    ],
     app: ['./src/js/app.jsx'],
-    admin: ['./src-admin/js/app-admin.jsx'],
+    admin: ['./src/js/app-admin.jsx'],
   },
 
   output: {
@@ -63,27 +78,15 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract({
-          loader: [
+        exclude: /node_modules/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
             {
               loader: 'css-loader',
-              query: {
-                importLoaders: 3,
-                minimize: true,
-                // Even if disabled sourceMaps gets generated
-                sourceMap: false,
-              },
+              options: { autoprefixer: false, sourceMap: true, importLoaders: 1 },
             },
-            { loader: 'postcss-loader' },
-            { loader: 'resolve-url-loader' },
-            {
-              loader: 'sass-loader',
-              query: {
-                // Enable sourcemaps for resolve-url-loader to work properly
-                sourceMap: true,
-              },
-            },
-          ],
+            'postcss-loader', 'resolve-url-loader', 'sass-loader'],
         }),
       },
       {
@@ -98,7 +101,14 @@ module.exports = {
               plugins: ['lodash'],
               presets: [
                 [
-                  'es2015', { modules: false },
+                  'env', {
+                    targets: {
+                      browsers: ['last 2 versions'],
+                    },
+                    loose: true, // ?
+                    modules: false,
+                    debug: true,
+                  },
                 ],
                 'stage-2',
                 'react',
@@ -141,77 +151,59 @@ module.exports = {
     ],
   },
 
+  recordsPath: 'records.json',
+
   plugins: [
-    /* new webpack.optimize.UglifyJsPlugin({
-      minimize: true,
-      compress: {
-        warnings: false,
-      },
-    }),*/
-    // new LodashModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
-      title: 'Touhou | Comiket',
-      template: './src/my-index.ejs',
-      chunks: ['vendorCommon', 'app', 'vendorApp'],
+      title: 'Touhou Test - Do you know Touhou characters well? Test your skills!',
+      baseurl: BASE_URL,
+      template: './src/index.ejs',
+      chunks: ['common', 'vendorApp', 'app'],
       filename: 'index.html',
       inject: 'body',
       chunksSortMode: (chunk1, chunk2) => {
-        const orders = ['vendorCommon', 'vendorApp', 'app'];
+        const orders = ['common', 'vendorApp', 'app'];
         return chunksSortModeExp(chunk1, chunk2, orders);
       },
     }),
     new HtmlWebpackPlugin({
       title: 'Admin | Touhou-test',
-      template: './src-admin/admin-index.ejs',
-      chunks: ['vendorCommon', 'vendorAdmin', 'admin'],
+      template: './src/index-admin.ejs',
+      chunks: ['common', 'vendorAdmin', 'admin'],
       filename: 'admin.html',
       inject: 'body',
       chunksSortMode: (chunk1, chunk2) => {
-        const orders = ['vendorCommon', 'vendorAdmin', 'admin'];
+        const orders = ['common', 'vendorAdmin', 'admin'];
         return chunksSortModeExp(chunk1, chunk2, orders);
       },
+    }),
+    new InlineManifestWebpackPlugin({
+      name: 'webpackManifest',
     }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
       },
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendorAdmin', 'vendorApp', 'vendorCommon', 'manifest'],
-      minChunks: Infinity,
-    }),
-    new InlineManifestWebpackPlugin({
-      name: 'webpackManifest',
-    }),
-    new webpack.NamedModulesPlugin(),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true,
-      debug: false,
-      options: {
-        /**
-         * resolve-url-loader fix
-         * @reference https://github.com/bholloway/resolve-url-loader/issues/33#issuecomment-249830601
-         */
-        context: 'src',
-        output: {
-          path: 'build',
-        },
-        /**
-         * Legacy postCSS config
-         * @reference https://github.com/azat-io/webpack2-css-modules-demo/blob/master/scripts/webpack.config.babel.js
-         */
-        postcss: [
-          autoprefixer({
-            browsers: ['last 2 versions', 'IE > 10'],
-          }),
-        ],
+      'process.commitHash': {
+        COMMIT_HASH: JSON.stringify(commitHash),
+      },
+      'process.config': {
+        BASE_URL: JSON.stringify(BASE_URL),
+        IMG_ORIG: JSON.stringify('/images/l/'),
+        IMG_COMPRESSED: JSON.stringify('/images/m/'),
+        IMG_THUMBNAIL: JSON.stringify('/images/s/'),
       },
     }),
+    new webpack.optimize.CommonsChunkPlugin({
+      names: ['vendorAdmin', 'vendorApp', 'common', 'manifest'],
+      minChunks: Infinity,
+    }),
+    new webpack.NamedModulesPlugin(),
     new ExtractTextPlugin({
       filename: '[hash].[name].css',
       allChunks: true,
     }),
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
   ],
 };

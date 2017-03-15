@@ -1,8 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html prefix="og: http://ogp.me/ns#">
     <head>
         <meta charset="utf-8">
         <title><%= htmlWebpackPlugin.options.title %></title>
+        <meta property="og:title" content="<%= htmlWebpackPlugin.options.title %>" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="<%= htmlWebpackPlugin.options.baseurl %>" />
+        <meta property="og:image" content="http://ia.media-imdb.com/images/rock.jpg" />
         <meta name="viewport" content="initial-scale=1.0,width=device-width">
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
     </head>
