@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const Game = require('../models/game');
-const Character = require('../models/character');
+const Game = require('../models/Game');
+const Character = require('../models/Character');
 
 router.use('/import', require('./import'));
 router.use('/admin', require('./admin'));

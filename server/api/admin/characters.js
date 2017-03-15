@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const _ = require('lodash');
-const Character = require('../../models/character');
+const Character = require('../../models/Character');
 const controller = require('../../controller/admin');
 const multer = require('../../controller/multer');
 const charController = require('./characters.controller');

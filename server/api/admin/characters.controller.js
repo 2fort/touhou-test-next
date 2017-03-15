@@ -1,4 +1,4 @@
-const Character = require('../../models/character');
+const Character = require('../../models/Character');
 
 this.addCharacterToGame = async function addCharacterToGame(gameId, charId, order) {
   await Character.updateMany({

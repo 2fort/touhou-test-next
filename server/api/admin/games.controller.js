@@ -1,5 +1,5 @@
-const Game = require('../../models/game');
-const Character = require('../../models/character');
+const Game = require('../../models/Game');
+const Character = require('../../models/Character');
 
 this.reorderAfterUpdate = async function reorderAfterUpdate(order, previousOrder, id) {
   const range = (order > previousOrder)
