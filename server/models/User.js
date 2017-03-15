@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt-nodejs');
+const bcryptPr = require('../lib/bcryptPr');
 
 const Schema = mongoose.Schema;
 
@@ -12,29 +12,16 @@ const userSchema = new Schema({
   password: String,
 });
 
-userSchema.pre('save', function userPreSave(next) {
+userSchema.pre('save', async function userPreSave(next) {
   const user = this;
 
-  bcrypt.genSalt(10, (saltErr, salt) => {
-    if (saltErr) { return next(saltErr); }
-
-    bcrypt.hash(user.password, salt, null, (hashErr, hash) => {
-      if (hashErr) { return next(hashErr); }
-
-      user.password = hash;
-      return next();
-    });
-
-    return null;
-  });
+  try {
+    const salt = await bcryptPr.genSalt();
+    user.password = await bcryptPr.hash(user.password, salt);
+    return next();
+  } catch (e) {
+    return next(e);
+  }
 });
-
-userSchema.methods.comparePassword = function comparePassword(candidatePassword, callback) {
-  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-    if (err) { return callback(err); }
-
-    return callback(null, isMatch);
-  });
-};
 
 module.exports = mongoose.model('user', userSchema);

@@ -2,8 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const passport = require('passport');
 
 const config = require('./config');
+require('./controller/passport');
 
 const app = express();
 
@@ -15,6 +17,8 @@ app.use(express.static('public'));
 app.use(morgan('combined'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(passport.initialize());
 
 app.use('/api', require('./api'));
 

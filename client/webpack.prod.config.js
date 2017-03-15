@@ -118,7 +118,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(svg|ttf|woff|woff2|eot)$/,
+        test: /\.(ttf|woff|woff2|eot)$/,
         exclude: /node_modules/,
         use: [
           {
@@ -127,7 +127,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|jpg|jpeg|gif)$/,
+        test: /\.(svg|png|jpg|jpeg|gif)$/,
         exclude: /node_modules/,
         use: [
           {

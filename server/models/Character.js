@@ -41,7 +41,7 @@ schema.set('toObject', {
   virtuals: true,
 });
 
-schema.pre('save', function saveHook(next) {
+/* schema.pre('save', function saveHook(next) {
   this.slug = utils.makeSlug(this.name);
   return next();
 });
@@ -49,6 +49,6 @@ schema.pre('save', function saveHook(next) {
 schema.pre('findOneAndUpdate', function updateHook(next) {
   this.getUpdate().slug = utils.makeSlug(this.getUpdate().name);
   return next();
-});
+});*/
 
 module.exports = mongoose.model('Character', schema);

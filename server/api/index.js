@@ -1,9 +1,16 @@
 const router = require('express').Router();
+const passport = require('passport');
 const Game = require('../models/Game');
 const Character = require('../models/Character');
+const authentication = require('../controller/authentication');
+
+const requireSignin = passport.authenticate('local', { session: false });
 
 router.use('/import', require('./import'));
 router.use('/admin', require('./admin'));
+
+router.post('/signup', authentication.signup);
+router.post('/signin', requireSignin, authentication.signin);
 
 router.get('/games', async (req, res, next) => {
   try {
