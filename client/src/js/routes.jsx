@@ -9,6 +9,7 @@ import Characters from './containers/Characters';
 import GamesList from './containers/Characters/GamesList';
 import CharactersList from './containers/Characters/CharactersList';
 import SingleCharacter from './containers/Characters/SingleCharacter';
+import Login from './containers/Base/Login';
 import Route404 from './containers/Base/components/Page404';
 
 export default (
@@ -21,6 +22,7 @@ export default (
       <Route path=":game" component={CharactersList} />
       <Route path=":game/:char" component={SingleCharacter} />
     </Route>
+    <Route path="login" component={Login} />
     <Route path="*" component={Route404} />
   </Route>
 );

@@ -1,5 +1,6 @@
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import reduxThunk from 'redux-thunk';
+import { reducer as formReducer } from 'redux-form';
 
 import { domainSlice, entities, flashMessage } from './ducks';
 import charactersList from './containers/Characters/CharactersList.duck';
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   domain,
   entities,
   flashMessage,
+  form: formReducer,
 });
 
 export default function configureStore() {

@@ -146,20 +146,19 @@ class SubmitData {
   }
 
   exec = () => {
-    const { url, dispatch, asFormData } = this.props;
+    const { url, dispatch, asJson } = this.props;
 
     return request(url, this.options)
       .then((response) => {
         const message = response.json ? response.json.message : response.statusText;
         dispatch(flashMessageActions.add(response.status, message, 0));
-        return true;
+        return response.json || response;
       })
       .catch((err) => {
-        if (asFormData) {
-          throw new SubmissionError({ _error: err.message });
-        } else {
+        if (asJson) {
           dispatch(flashMessageActions.add(err.status, err.message, 3));
         }
+        throw new SubmissionError({ _error: err.message });
       });
   }
 }
