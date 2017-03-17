@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server",
     "build": "cd build && ls | xargs rm -rf && cd .. && NODE_ENV=production webpack -p --config webpack.prod.config.js --json > stats.json",
-    "lint": "sass-lint 'src/sass/**/*.scss' -v -q && eslint \"./src/js/**/*\"; exit 0"
+    "lint": "sass-lint 'src/sass/**/*.scss' -v -q && eslint \"./src/js/**/*\""
   },
   "author": "Alexander Kirsanov",
   "license": "MIT",

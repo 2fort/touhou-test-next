@@ -16,13 +16,15 @@ class FullImg extends Component {
     const { image } = this.props;
     const { expanded } = this.state;
 
+    const imgProps = { onClick: this.trigger };
+
     return (
       <div>
         <button type="button" onClick={this.trigger} className="btn-expand white">
           <i className="fa fa-expand" aria-hidden="true" />
         </button>
-        <Modal isOpen={expanded} className="fullimgmodal" onRequestClose={this.trigger} contentLabel="FullImg" >
-          <img alt="full" src={IMG_COMPRESSED + image} className="fullimg" onClick={this.trigger} />
+        <Modal isOpen={expanded} className="fullimgmodal" onRequestClose={this.trigger} contentLabel="FullImg">
+          <img alt="full" src={IMG_COMPRESSED + image} className="fullimg" {...imgProps} />
         </Modal>
       </div>
     );

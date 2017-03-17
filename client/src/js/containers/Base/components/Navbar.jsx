@@ -3,7 +3,6 @@ import React, { PropTypes, Component } from 'react';
 import { Link, withRouter } from 'react-router';
 import { resetTest as testReset } from '../../Test/duck';
 import { resetTest as reverseTestReset } from '../../Test/ReverseTest.duck';
-import LoadingSignal from './LoadingSignal';
 
 const NavLink = props => <Link activeClassName="active" {...props} />;
 
@@ -31,7 +30,7 @@ class Navbar extends Component {
         <div className="menu">
           <nav>
             <Link onClick={this.hideMenu} className="logo" to="/">Touhou @ Comiket</Link>
-            &nbsp;<LoadingSignal />
+            &nbsp;<div className="nav-noop" />
 
             {router.isActive('/test') &&
               <button type="button" className="reload" title="Reset" onClick={() => { this.props.testReset(); }}>

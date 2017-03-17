@@ -14,7 +14,7 @@ const TopButtons = ({ steps, passedSteps, activeStep }) => {
     }
 
     return (
-      <div key={i} className={active ? `${color} active` : color}>
+      <div key={step.step} className={active ? `${color} active` : color}>
         &nbsp;
       </div>
     );

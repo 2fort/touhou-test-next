@@ -49,7 +49,7 @@ class GamesTable extends Component {
   }
 
   render() {
-    const { gamesArray, actions, component, qs, fetchedAt, total, query, filterFields, modalIsOpen, 
+    const { gamesArray, actions, component, qs, fetchedAt, total, query, filterFields, modalIsOpen,
       activeRequests } = this.props;
 
     const Sort = props => <SortButton reduxField={query.sort} setSort={this.cb(component.setSort)} {...props} />;

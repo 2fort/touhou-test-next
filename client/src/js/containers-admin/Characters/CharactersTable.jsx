@@ -174,7 +174,7 @@ CharactersTable.propTypes = {
   total: PropTypes.number.isRequired,
   charsArray: PropTypes.arrayOf(PropTypes.object).isRequired,
   gamesList: PropTypes.objectOf(PropTypes.object).isRequired,
-  allGames: PropTypes.objectOf(PropTypes.object).isRequired,
+  // allGames: PropTypes.objectOf(PropTypes.object).isRequired,
   modalIsOpen: PropTypes.bool.isRequired,
   query: PropTypes.shape({
     page: PropTypes.number.isRequired,

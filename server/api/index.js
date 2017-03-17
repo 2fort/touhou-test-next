@@ -6,7 +6,6 @@ const authentication = require('../controller/authentication');
 
 const requireSignin = passport.authenticate('local', { session: false });
 
-router.use('/import', require('./import'));
 router.use('/admin', require('./admin'));
 
 router.post('/signup', authentication.signup);

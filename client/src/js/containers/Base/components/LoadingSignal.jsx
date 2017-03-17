@@ -13,9 +13,9 @@ LoadingSignal.propTypes = {
 };
 
 function mapStateToProps({ domain }) {
-  // const active = Object.values(domain).some(dom => (dom && dom.pending));
+  const active = Object.values(domain).some(dom => (dom && dom.activeRequests > 0));
 
-  return { active: false };
+  return { active };
 }
 
 export default connect(mapStateToProps)(LoadingSignal);

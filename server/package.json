@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "NODE_PATH=. supervisor app.js"
+    "start": "NODE_PATH=. supervisor app.js",
+    "lint": "eslint \"./api/**/*\" \"./controller/**/*\" \"./lib/**/*\" \"./models/**/*\""
   },
   "author": "Alexander Kirsanov",
   "license": "MIT",
