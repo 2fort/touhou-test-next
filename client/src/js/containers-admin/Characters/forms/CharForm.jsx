@@ -177,7 +177,10 @@ CharForm.defaultProps = {
 CharForm.propTypes = {
   pending: PropTypes.bool.isRequired,
   allGames: PropTypes.arrayOf(PropTypes.object).isRequired,
-  mode: PropTypes.string.isRequired,
+  mode: PropTypes.oneOf([
+    'new',
+    'edit',
+  ]).isRequired,
   charsList: PropTypes.arrayOf(PropTypes.object).isRequired,
   actions: PropTypes.shape({
     getCharsFromGame: PropTypes.func.isRequired,

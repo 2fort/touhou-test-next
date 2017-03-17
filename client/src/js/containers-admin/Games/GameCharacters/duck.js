@@ -3,7 +3,7 @@ import { stringify } from 'qs';
 
 import { charactersEntity } from '../../../schemas/adminSchemas';
 import { generateComponent } from '../../../ducks/domain';
-import { getData, submitData } from '../../../actions/fetchAndSave';
+import { getDataAuth, submitDataAuth } from '../../../actions/fetchAndSave';
 
 const componentName = 'GameCharactersTable';
 const ADD_GAME_INFO = `${componentName}/ADD_GAME_INFO`;
@@ -21,7 +21,7 @@ export function setGameId(id) {
 export function fetchCharacters() {
   return (dispatch) => {
     const { gameId, query } = dispatch(component.getState());
-    return dispatch(getData(`${routeGameChars(gameId)}?${stringify(query)}`))
+    return dispatch(getDataAuth(`${routeGameChars(gameId)}?${stringify(query)}`))
       .normalize([charactersEntity])
       .save()
       .exec(component);
@@ -31,7 +31,7 @@ export function fetchCharacters() {
 export function fetchGameInfo() {
   return (dispatch) => {
     const gameId = dispatch(component.getState()).gameId;
-    return dispatch(getData(`/api/admin/games/${gameId}`)).asJson().exec(component)
+    return dispatch(getDataAuth(`/api/admin/games/${gameId}`)).asJson().exec(component)
       .then((game) => {
         dispatch({ type: ADD_GAME_INFO, game });
       });
@@ -40,12 +40,12 @@ export function fetchGameInfo() {
 
 export function changeOrder(id, order) {
   return dispatch =>
-    dispatch(submitData(`${route}/${id}?action=swaporder`)).patch().json({ link: { order } }).exec();
+    dispatch(submitDataAuth(`${route}/${id}?action=swaporder`)).patch().json({ link: { order } }).exec();
 }
 
 export function deleteCharacter(id) {
   return dispatch =>
-    dispatch(submitData(`${route}/${id}`)).delete().exec();
+    dispatch(submitDataAuth(`${route}/${id}`)).delete().exec();
 }
 
 const defaultState = Immutable({

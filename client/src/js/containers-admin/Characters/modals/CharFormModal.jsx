@@ -129,7 +129,10 @@ CharFormModal.propTypes = {
   activeRequests: PropTypes.number.isRequired,
   allGames: PropTypes.arrayOf(PropTypes.object).isRequired,
   queryRel: PropTypes.string.isRequired,
-  mode: PropTypes.string.isRequired,
+  mode: PropTypes.oneOf([
+    'new',
+    'edit',
+  ]).isRequired,
   editCharId: PropTypes.string.isRequired,
   editCharData: PropTypes.shape({
     id: PropTypes.string,

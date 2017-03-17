@@ -2,7 +2,7 @@ import Immutable from 'seamless-immutable';
 import { reset, submit } from 'redux-form';
 
 import { generateComponent } from '../../../ducks/domain';
-import { getData, submitData } from '../../../actions/fetchAndSave';
+import { getDataAuth, submitDataAuth } from '../../../actions/fetchAndSave';
 
 const componentName = 'CharFormModal';
 const SET_MODE = `${componentName}/SET_MODE`;
@@ -58,7 +58,7 @@ export function submitForm() {
 
 export function fetchSingleCharacter(id) {
   return dispatch =>
-     dispatch(getData(`${route}/${id}`)).asJson().exec(component)
+     dispatch(getDataAuth(`${route}/${id}`)).asJson().exec(component)
       .then((char) => {
         dispatch({ type: SET_CHAR, char });
         return char;
@@ -67,7 +67,7 @@ export function fetchSingleCharacter(id) {
 
 export function getCharsFromGame(gameId) {
   return dispatch =>
-    dispatch(getData(`${route}?filter[link][rel]=${gameId}&sort=link.order`)).asJson().exec(component)
+    dispatch(getDataAuth(`${route}?filter[link][rel]=${gameId}&sort=link.order`)).asJson().exec(component)
       .then((chars) => {
         dispatch({ type: ADD_CHARS_FROM_GAME, chars });
         return chars;
@@ -80,7 +80,7 @@ export function cleanCharsFromGame() {
 
 export function fetchAllGames() {
   return dispatch =>
-    dispatch(getData('/api/admin/games')).asJson().exec(component)
+    dispatch(getDataAuth('/api/admin/games')).asJson().exec(component)
       .then((games) => {
         dispatch({ type: ADD_ALL_GAMES, games });
         return games;
@@ -97,7 +97,7 @@ export function newCharacter({ image, ...values }) {
 
     formData.append('payload', JSON.stringify(values));
 
-    return dispatch(submitData(route)).post().form(formData).exec();
+    return dispatch(submitDataAuth(route)).post().form(formData).exec();
   };
 }
 
@@ -112,7 +112,7 @@ export function editCharacter({ id, image, ...values }) {
 
     formData.append('payload', JSON.stringify(Object.assign({}, values, imageStringName)));
 
-    return dispatch(submitData(`${route}/${id}`)).put().form(formData).exec();
+    return dispatch(submitDataAuth(`${route}/${id}`)).put().form(formData).exec();
   };
 }
 

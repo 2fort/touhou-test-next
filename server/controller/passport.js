@@ -31,7 +31,7 @@ const jwtOptions = {
 
 const jwtLogin = new JwtStrategy(jwtOptions, async (payload, done) => {
   try {
-    const user = User.findById(payload.sub).exec();
+    const user = await User.findById(payload.sub).exec();
 
     if (!user) return done(null, false);
 

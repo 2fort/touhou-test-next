@@ -3,7 +3,7 @@ import { stringify } from 'qs';
 
 import { gameEntity } from '../../schemas/adminSchemas';
 import { generateComponent } from '../../ducks/domain';
-import { getData, submitData } from '../../actions/fetchAndSave';
+import { getDataAuth, submitDataAuth } from '../../actions/fetchAndSave';
 
 const componentName = 'GamesTable';
 const component = generateComponent(componentName);
@@ -12,7 +12,7 @@ const route = '/api/admin/games';
 export function fetchGames() {
   return (dispatch) => {
     const query = dispatch(component.getState()).query;
-    return dispatch(getData(`${route}?${stringify(query)}`))
+    return dispatch(getDataAuth(`${route}?${stringify(query)}`))
       .normalize([gameEntity])
       .save()
       .asJson()
@@ -22,12 +22,12 @@ export function fetchGames() {
 
 export function deleteGame(id) {
   return dispatch =>
-    dispatch(submitData(`${route}/${id}`)).delete().exec();
+    dispatch(submitDataAuth(`${route}/${id}`)).delete().exec();
 }
 
 export function changeOrder(id, order) {
   return dispatch =>
-    dispatch(submitData(`${route}/${id}?action=swaporder`)).patch().json({ order }).exec();
+    dispatch(submitDataAuth(`${route}/${id}?action=swaporder`)).patch().json({ order }).exec();
 }
 
 const defaultState = Immutable({

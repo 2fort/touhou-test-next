@@ -3,6 +3,9 @@ import reduxThunk from 'redux-thunk';
 import { reducer as formReducer } from 'redux-form';
 
 import { domainSlice, entities, flashMessage } from './ducks';
+
+import base from './containers-admin/Base/duck';
+
 import gamesTable from './containers-admin/Games/GamesTable.duck';
 import gameCharactersTable from './containers-admin/Games/GameCharacters/duck';
 
@@ -20,6 +23,7 @@ const domain = combineReducers({
 });
 
 const rootReducer = combineReducers({
+  base,
   domain,
   entities,
   flashMessage,

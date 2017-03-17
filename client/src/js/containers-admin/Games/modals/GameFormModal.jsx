@@ -95,7 +95,10 @@ function mapDispatchToProps(dispatch) {
 
 GameFormModal.propTypes = {
   ready: PropTypes.bool.isRequired,
-  mode: PropTypes.string.isRequired,
+  mode: PropTypes.oneOf([
+    'new',
+    'edit',
+  ]).isRequired,
   gameId: PropTypes.string.isRequired,
   game: PropTypes.shape({
     id: PropTypes.string,

@@ -10,6 +10,7 @@ const userSchema = new Schema({
     lowercase: true,
   },
   password: String,
+  role: String,
 });
 
 userSchema.pre('save', async function userPreSave(next) {

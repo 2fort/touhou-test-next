@@ -6,7 +6,7 @@ import * as entitiesActions from '../ducks/entities';
 import * as flashMessageActions from '../ducks/flashMessage';
 
 class GetData {
-  constructor(url, dispatch) {
+  constructor(url, dispatch, options = {}) {
     this.props = {
       url,
       dispatch,
@@ -16,6 +16,7 @@ class GetData {
       asJson: false,
       asObject: false,
     };
+    this.options = options;
   }
 
   normalize = (schema) => {
@@ -54,7 +55,7 @@ class GetData {
     const promise = new Promise((resolve, reject) => {
       dispatch(component.requestBegin(url));
 
-      request(url)
+      request(url, this.options)
         .then((response) => {
           data.json = response.json;
 
@@ -92,12 +93,8 @@ class GetData {
   }
 }
 
-export function getData(url) {
-  return dispatch => new GetData(url, dispatch);
-}
-
 class SubmitData {
-  constructor(url, dispatch) {
+  constructor(url, dispatch, options = {}) {
     this.props = {
       url,
       dispatch,
@@ -109,6 +106,7 @@ class SubmitData {
       method: '',
       headers: {},
       body: {},
+      ...options,
     };
   }
 
@@ -140,7 +138,7 @@ class SubmitData {
 
   json = (object) => {
     this.props.asJson = true;
-    this.options.headers = { 'Content-Type': 'application/json' };
+    this.options.headers['Content-Type'] = 'application/json';
     this.options.body = JSON.stringify(object);
     return this;
   }
@@ -163,6 +161,24 @@ class SubmitData {
   }
 }
 
+function getTokenHeader() {
+  return localStorage.getItem('token');
+}
+
+export function getData(url) {
+  return dispatch => new GetData(url, dispatch);
+}
+
+export function getDataAuth(url) {
+  const token = getTokenHeader();
+  return dispatch => new GetData(url, dispatch, { headers: { authorization: token } });
+}
+
 export function submitData(url) {
   return dispatch => new SubmitData(url, dispatch);
+}
+
+export function submitDataAuth(url) {
+  const token = getTokenHeader();
+  return dispatch => new SubmitData(url, dispatch, { headers: { authorization: token } });
 }

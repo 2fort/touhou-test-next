@@ -2,7 +2,7 @@ import Immutable from 'seamless-immutable';
 import { reset, submit } from 'redux-form';
 
 import { generateComponent } from '../../../ducks/domain';
-import { getData, submitData } from '../../../actions/fetchAndSave';
+import { getDataAuth, submitDataAuth } from '../../../actions/fetchAndSave';
 
 const componentName = 'GameFormModal';
 const SET_MODE = `${componentName}/SET_MODE`;
@@ -52,7 +52,7 @@ export function submitForm() {
 
 export function fetchSingleGame(id) {
   return dispatch =>
-    dispatch(getData(`${route}/${id}`)).asJson().exec(component)
+    dispatch(getDataAuth(`${route}/${id}`)).asJson().exec(component)
       .then((game) => {
         dispatch({ type: SET_GAME, game });
       });
@@ -60,7 +60,7 @@ export function fetchSingleGame(id) {
 
 export function getMaxOrder() {
   return dispatch =>
-    dispatch(getData(`${route}?action=maxorder`)).asJson().exec(component)
+    dispatch(getDataAuth(`${route}?action=maxorder`)).asJson().exec(component)
       .then(({ maxOrder }) => {
         dispatch({ type: GET_MAX_ORDER, maxOrder });
       });
@@ -76,7 +76,7 @@ export function newGame({ cover, ...values }) {
 
     formData.append('payload', JSON.stringify(values));
 
-    return dispatch(submitData(route)).post().form(formData).exec();
+    return dispatch(submitDataAuth(route)).post().form(formData).exec();
   };
 }
 
@@ -91,7 +91,7 @@ export function editGame({ id, cover, ...values }) {
 
     formData.append('payload', JSON.stringify(Object.assign({}, values, coverStringName)));
 
-    return dispatch(submitData(`${route}/${id}`)).put().form(formData).exec();
+    return dispatch(submitDataAuth(`${route}/${id}`)).put().form(formData).exec();
   };
 }
 
