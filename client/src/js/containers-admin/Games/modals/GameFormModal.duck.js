@@ -83,7 +83,7 @@ export function newGame({ cover, ...values }) {
 export function editGame({ id, cover, ...values }) {
   return (dispatch) => {
     const formData = new FormData();
-    const coverStringName = typeof cover === 'string' && { cover };
+    const coverStringName = cover && typeof cover === 'string' && { cover };
 
     if (typeof cover === 'object' && cover[0]) {
       formData.append('cover', cover[0], cover[0].name);

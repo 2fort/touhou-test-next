@@ -1,9 +1,8 @@
 import React from 'react';
 
-const Home = () => (
+export default () => (
   <div className="jumbotron">
-    <h1>Hello, admin!</h1>
+    <h1>Hello, world!</h1>
+    <p>Sample text here.</p>
   </div>
 );
-
-export default Home;

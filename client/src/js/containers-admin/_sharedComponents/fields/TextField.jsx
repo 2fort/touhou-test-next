@@ -5,7 +5,7 @@ const TextField = ({ input, label, placeholder, type, meta: { touched, error }, 
     <label htmlFor={input.name} className="col-sm-2 control-label">{label}</label>
     <div className="col-sm-10">
       <input className="form-control" disabled={disabled} {...input} placeholder={placeholder ? label : ''} type={type} />
-      {touched && (error && <span>{error}</span>)}
+      {touched && (error && <span className="form-error">{error}</span>)}
     </div>
   </div>
 );

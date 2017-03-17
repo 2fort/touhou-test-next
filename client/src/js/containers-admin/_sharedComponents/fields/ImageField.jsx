@@ -8,10 +8,11 @@ export default class ImageField extends Component {
 
   removeImgBtnHandler = () => {
     this.props.filePreview.revoke();
-    this.props.input.onChange({});
+    this.props.input.onChange('');
   }
 
   fileSelectHandler = (e) => {
+    this.props.input.onBlur();
     const files = e.target.files;
     if (files[0]) {
       this.props.filePreview.revoke();
@@ -27,7 +28,7 @@ export default class ImageField extends Component {
 
     const imageBlock = (
       <div>
-        <img alt="preview" src={filePreview.blob || defaultImage || ''} />
+        <img alt="preview" src={filePreview.blob || defaultImage || '/images/file-o.svg'} />
         <br />
         <button type="button" className="btn btn-primary" onClick={this.addImgBtnHandler}>Replace</button>
         {' '}
@@ -48,12 +49,12 @@ export default class ImageField extends Component {
             ref={(file) => { this.fileInput = file; }}
           />
 
-          {defaultImage || filePreview.blob
+          {value
             ? imageBlock
             : <button type="button" className="btn btn-primary" onClick={this.addImgBtnHandler}>Add</button>
           }
 
-          {touched && (error && <span>{error}</span>)}
+          {touched && (error && <span className="form-error">{error}</span>)}
         </div>
       </div>
     );
@@ -65,6 +66,7 @@ ImageField.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.any,
     onChange: PropTypes.func.isRequired,
+    onBlur: PropTypes.func.isRequired,
   }).isRequired,
   label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,

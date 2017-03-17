@@ -22,7 +22,7 @@ export function fetchGames() {
 
 export function deleteGame(id) {
   return dispatch =>
-    dispatch(submitDataAuth(`${route}/${id}`)).delete().exec();
+    dispatch(submitDataAuth(`${route}/${id}`)).delete().json({}).exec();
 }
 
 export function changeOrder(id, order) {

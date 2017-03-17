@@ -10,7 +10,7 @@ const TextFieldFilter = ({ input, label, type, meta: { touched, error }, disable
           <input checked={disabled} onChange={checkboxTrigger(input.name)} type="checkbox" /> blank
         </span>
       </div>
-      {touched && (error && <span>{error}</span>)}
+      {touched && (error && <span className="form-error">{error}</span>)}
     </div>
   </div>
 );

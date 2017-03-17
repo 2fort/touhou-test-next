@@ -12,7 +12,10 @@ export default (ComposedComponent) => {
     }
 
     add = (file) => {
-      this.setState({ blob: window.URL.createObjectURL(file) });
+      const imageType = /^image\//;
+      if (imageType.test(file.type)) {
+        this.setState({ blob: window.URL.createObjectURL(file) });
+      }
     }
 
     revoke = () => {

@@ -32,7 +32,7 @@ export function fetchAllGames() {
 
 export function deleteCharacter(id) {
   return dispatch =>
-    dispatch(submitDataAuth(`${route}/${id}`)).delete().exec();
+    dispatch(submitDataAuth(`${route}/${id}`)).delete().json({}).exec();
 }
 
 const defaultState = Immutable({
