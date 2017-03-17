@@ -17,4 +17,5 @@ script:
   - npm install && npm run lint && NODE_ENV=production webpack -p --config webpack.prod.config.js
   - cd ..
   - cd server
+  - mv config.example.js config.js
   - npm install && npm run lint
