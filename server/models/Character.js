@@ -20,6 +20,11 @@ const schema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  published: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
   link: {
     rel: {
       type: Schema.Types.ObjectId,

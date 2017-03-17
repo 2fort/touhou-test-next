@@ -19,10 +19,10 @@ const NavbarHeader = ({ unAuthUser }) => (
           <LinkContainer to="/admin/characters"><NavItem eventKey={3} href="#">Characters</NavItem></LinkContainer>
         </Nav>
         <Nav pullRight>
-          <NavItem eventKey={5} href="/" onClick={() => { window.location = '/'; }}>
+          <NavItem eventKey={4} href="/" onClick={() => { window.location = '/'; }}>
             <i className="fa fa-arrow-circle-o-left" aria-hidden="true" /> Back to app
           </NavItem>
-          <NavItem eventKey={4} href="/" onClick={unAuthUser}>
+          <NavItem eventKey={5} href="/" onClick={unAuthUser}>
             Logout <i className="fa fa-sign-out" aria-hidden="true" />
           </NavItem>
         </Nav>
