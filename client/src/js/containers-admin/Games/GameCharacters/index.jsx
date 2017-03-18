@@ -288,12 +288,12 @@ function mapStateToProps({ entities, domain: { gameCharactersTable, gameFormModa
 }
 
 function mapDispatchToProps(dispatch) {
-  const GameModalActions = (function () {
+  const GameModalActions = (function getGameModalActions() {
     const { setMode, setGameId, openModal } = GameFormModalActions;
     return { setMode, setGameId, openModal };
   }());
 
-  const CharModalActions = (function () {
+  const CharModalActions = (function getCharModalActions() {
     const { setMode, setCharId, openModal } = CharFormModalActions;
     return { setMode, setCharId, openModal };
   }());

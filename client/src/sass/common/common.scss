@@ -71,7 +71,7 @@ button {
 }
 
 .form-error {
-  color: red;
+  color: #f00;
 }
 
 .menu {
@@ -203,7 +203,8 @@ button {
   text-align: center;
   transition: all .2s;
 
-  button, a {
+  button,
+  a {
     align-items: center;
     background-color: #fff;
     display: flex;
@@ -226,7 +227,7 @@ button {
     &:hover {
       background-color: #f0efef;
       text-decoration: none;
-      border: none;
+      border: 0;
     }
 
     @media only screen and (max-width: 740px) {
