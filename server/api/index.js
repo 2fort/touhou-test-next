@@ -22,7 +22,7 @@ router.get('/games', async (req, res, next) => {
 
 router.get('/characters', async (req, res, next) => {
   try {
-    const characters = await Character.find({}, 'name image slug').exec();
+    const characters = await Character.find({ published: true }, 'name image slug').exec();
     return res.json(characters);
   } catch (e) {
     return next(e);
@@ -51,7 +51,7 @@ router.get('/games/:slug/characters', async (req, res, next) => {
       return res.status(404).json('Game not found!');
     }
 
-    const characters = await Character.find({ 'link.rel': game._id }).sort('link.order').exec();
+    const characters = await Character.find({ 'link.rel': game._id, published: true }).sort('link.order').exec();
     return res.json(characters);
     // return setTimeout(() => res.json(characters), 3000);
   } catch (e) {

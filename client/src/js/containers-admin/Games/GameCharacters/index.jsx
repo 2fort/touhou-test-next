@@ -134,6 +134,9 @@ class GameCharactersTable extends Component {
                 <Sort field="art.author">Art author</Sort>
               </th>
               <th className="text-center">
+                <Sort field="published">Published</Sort>
+              </th>
+              <th className="text-center">
                 <Sort field="_id">Id</Sort>
               </th>
               <th>Actions</th>
@@ -169,6 +172,9 @@ class GameCharactersTable extends Component {
                 </td>
                 <td className="toowide">
                   {char.art && char.art.author}
+                </td>
+                <td className="text-center">
+                  {char.published ? 'Yes' : 'No' }
                 </td>
                 <td className="text-center">
                   <span title={char.id}>{char.id.substr(-11, 11)}</span>

@@ -18,6 +18,10 @@ router.route('/')
 
       const params = controller.queryParams(req.query);
 
+      if (params.sort === 'title') {
+        params.sort = 'normalized';
+      }
+
       let func = Game
         .aggregate()
         .match(params.filter)
@@ -31,6 +35,7 @@ router.route('/')
           $addFields: {
             chars: { $size: '$chars' },
             id: '$_id',
+            normalized: { $toLower: '$title' },
           },
         })
         .project({

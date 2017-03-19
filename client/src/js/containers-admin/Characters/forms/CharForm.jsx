@@ -4,7 +4,7 @@ import { Alert } from 'react-bootstrap';
 import { Field, reduxForm, formValueSelector, propTypes } from 'redux-form';
 
 import { IMG_THUMBNAIL } from '../../../config';
-import { TextField, ImageField, OrderSelectField } from '../../_sharedComponents/fields';
+import { CheckboxField, TextField, ImageField, OrderSelectField } from '../../_sharedComponents/fields';
 import { required } from '../../_sharedComponents/validationFields';
 import FilePreviewHoc from '../../_sharedComponents/FilePreviewHoc';
 import Loading from '../../../containers/Base/components/Loading';
@@ -160,6 +160,7 @@ class CharForm extends Component {
           <Field name="art.author" type="text" component={TextField} label="Art author" />
           <Field name="art.url" type="text" component={TextField} label="Art url" />
           <Field name="wiki" type="text" component={TextField} label="Wiki" />
+          <Field name="published" component={CheckboxField} label="Published" />
 
           {error &&
             <Alert bsStyle="danger"><strong>Error: </strong>{error}</Alert>

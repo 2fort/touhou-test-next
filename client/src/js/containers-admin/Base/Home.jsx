@@ -2,7 +2,7 @@ import React from 'react';
 
 export default () => (
   <div className="jumbotron">
-    <h1>Hello, world!</h1>
-    <p>Sample text here.</p>
+    <h1>Home page</h1>
+    <p>of admin section</p>
   </div>
 );

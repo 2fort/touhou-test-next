@@ -12,6 +12,10 @@ router.route('/')
     try {
       const params = controller.queryParams(req.query, ['link.rel']);
 
+      if (params.sort === 'name') {
+        params.sort = 'normalized';
+      }
+
       let func = Character.aggregate()
         .match(params.filter)
         .lookup({
@@ -28,6 +32,7 @@ router.route('/')
             id: '$_id',
             game: '$link.rel.title',
             'link.rel.id': '$link.rel._id',
+            normalized: { $toLower: '$name' },
           },
         });
 
