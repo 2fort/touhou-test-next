@@ -4,8 +4,8 @@ import Helmet from 'react-helmet';
 const HelmetHead = () => (
   <Helmet
     htmlAttributes={{ lang: 'en' }}
-    titleTemplate="%s | Touhou"
-    defaultTitle="Touhou | Comiket"
+    titleTemplate="%s | Touhou Test"
+    defaultTitle="Touhou Test - Do you know Touhou characters well? Check your skills!"
     meta={[
       {
         name: 'description',

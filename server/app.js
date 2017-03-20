@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const helmet = require('helmet');
 
 const config = require('./config');
 require('./controller/passport');
@@ -11,13 +12,19 @@ const app = express();
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.MONGODB_ADDRESS);
-mongoose.set('debug', true);
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(helmet());
+}
+
+if (process.env.NODE_ENV === 'development') {
+  mongoose.set('debug', true);
+  app.use(morgan('combined'));
+}
 
 app.use(express.static('public'));
-app.use(morgan('combined'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 app.use(passport.initialize());
 
 app.use('/api', require('./api'));

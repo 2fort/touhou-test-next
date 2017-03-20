@@ -8,7 +8,10 @@ const requireSignin = passport.authenticate('local', { session: false });
 
 router.use('/admin', require('./admin'));
 
-router.post('/signup', authentication.signup);
+if (process.env.NODE_ENV === 'development') {
+  router.post('/signup', authentication.signup);
+}
+
 router.post('/signin', requireSignin, authentication.signin);
 
 router.get('/games', async (req, res, next) => {

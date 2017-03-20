@@ -21,3 +21,6 @@ Temp
 
 records.json
 stats.json
+
+client/npm-shrinkwrap.json
+server/npm-shrinkwrap.json

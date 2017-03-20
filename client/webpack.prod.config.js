@@ -155,7 +155,7 @@ module.exports = {
 
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Touhou Test - Do you know Touhou characters well? Test your skills!',
+      title: 'Touhou Test - Do you know Touhou characters well? Check your skills!',
       baseurl: BASE_URL,
       template: './src/index.ejs',
       chunks: ['common', 'vendorApp', 'app'],
