@@ -9,7 +9,7 @@ const HelmetHead = () => (
     meta={[
       {
         name: 'description',
-        content: 'Site about Touhou',
+        content: 'This application will help you quickly remember the characters from Touhou.',
       },
       {
         name: 'keywords',
