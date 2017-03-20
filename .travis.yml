@@ -14,7 +14,7 @@ addons:
 
 script:
   - cd client 
-  - npm install && npm run lint && NODE_ENV=production webpack -p --config webpack.prod.config.js
+  - npm install && NODE_ENV=production webpack -p --config webpack.prod.config.js
   - cd ..
   - cd server
   - mv config.example.js config.js
