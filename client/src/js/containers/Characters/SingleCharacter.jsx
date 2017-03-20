@@ -67,7 +67,12 @@ class SingleCharacter extends Component {
               <div className="singlechar-flex">
                 <div className="singlechar-img">
                   {currentCharacter.image
-                    ? <img itemProp="image" alt="char" src={IMG_COMPRESSED + currentCharacter.image} />
+                    ? <img
+                      key={currentCharacter.image}
+                      itemProp="image"
+                      alt="char"
+                      src={IMG_COMPRESSED + currentCharacter.image}
+                    />
                     : <i className="fa fa-file-image-o fa-5x" aria-hidden="true" />
                   }
                 </div>
