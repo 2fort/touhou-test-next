@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin');
@@ -41,7 +42,7 @@ module.exports = {
   },
 
   output: {
-    path: './build',
+    path: path.join(__dirname, 'build'),
     publicPath: '/',
     filename: '[name].[chunkhash:8].js',
     chunkFilename: '[name].[chunkhash:8].chunk.js',
@@ -106,7 +107,7 @@ module.exports = {
     ],
   },
 
-  recordsPath: 'records.json',
+  recordsPath: path.join(__dirname, 'records.json'),
 
   plugins: [
     new HtmlWebpackPlugin({
