@@ -18,6 +18,7 @@ import Pagination from '../../Base/components/Pagination';
 import LimitSelect from '../../Base/components/LimitSelect';
 import EntitiesCounter from '../../Base/components/EntitiesCounter';
 import FilterPanel from '../../Base/components/FilterPanel';
+import Ttools from '../../Base/components/TableTools';
 
 class GameCharactersTable extends Component {
   componentDidMount() {
@@ -90,9 +91,8 @@ class GameCharactersTable extends Component {
             <Pagination page={query.page} limit={query.limit} total={total} setPage={this.cb(component.setPage)} />
           </div>
           <div className="form-group">
-            <label style={{ marginLeft: '15px' }} htmlFor="limit">Per page: </label> {' '}
             <LimitSelect setLimit={this.cb(component.setLimit)} limit={query.limit} />
-          </div> {' '}
+          </div>
         </div>
 
         <div className="pull-left">
@@ -116,39 +116,47 @@ class GameCharactersTable extends Component {
           </button>
         </div>
 
-        <table className="table table-striped table-game-chars">
+        <Ttools.Table fixed className="table table-striped">
           <thead>
             <tr>
               <th>
                 <Sort field="name">Name</Sort>
               </th>
-              <th className="text-center">
-                <Sort field="link.order">
-                  Order
-                </Sort>
-              </th>
-              <th className="text-center">
+
+              <Ttools.Th center>
+                <Sort field="link.order">Order</Sort>
+              </Ttools.Th>
+
+              <Ttools.Th center>
                 Image
-              </th>
+              </Ttools.Th>
+
               <th>
                 <Sort field="art.author">Art author</Sort>
               </th>
-              <th className="text-center">
+
+              <Ttools.Th center>
                 <Sort field="published">Published</Sort>
-              </th>
-              <th className="text-center">
+              </Ttools.Th>
+
+              <Ttools.Th center>
                 <Sort field="_id">Id</Sort>
+              </Ttools.Th>
+
+              <th>
+                Actions
               </th>
-              <th>Actions</th>
             </tr>
           </thead>
-          <tbody className={pending ? 'loading' : ''}>
+
+          <Ttools.Tbody pending={pending}>
             {charsArray[0] && charsArray.map((char, i) => (
               <tr key={char.name}>
-                <td>
+                <Ttools.Td w={18}>
                   {char.name}
-                </td>
-                <td className="text-center">
+                </Ttools.Td>
+
+                <Ttools.Td w={12} center>
                   <button
                     type="button"
                     className="btn btn-link"
@@ -166,20 +174,25 @@ class GameCharactersTable extends Component {
                   >
                     <i className="fa fa-sort-desc" aria-hidden="true" />
                   </button>
-                </td>
-                <td className="table-image text-center">
+                </Ttools.Td>
+
+                <Ttools.Td w={14} center withImage>
                   {char.image && <img alt={char.name} src={IMG_THUMBNAIL + char.image} />}
-                </td>
-                <td className="toowide">
+                </Ttools.Td>
+
+                <Ttools.Td w={16} tooWide>
                   {char.art && char.art.author}
-                </td>
-                <td className="text-center">
+                </Ttools.Td>
+
+                <Ttools.Td w={10} center>
                   {char.published ? 'Yes' : 'No' }
-                </td>
-                <td className="text-center">
+                </Ttools.Td>
+
+                <Ttools.Td w={14} center>
                   <span title={char.id}>{char.id.substr(-11, 11)}</span>
-                </td>
-                <td className="tooshort">
+                </Ttools.Td>
+
+                <Ttools.Td w={14} tooShort>
                   {char.link && char.link.rel &&
                     <Link
                       target="_blank"
@@ -197,11 +210,11 @@ class GameCharactersTable extends Component {
                   <button type="button" className="btn btn-default" onClick={this.deleteCharBtnHandler(char.id)}>
                     <i className="fa fa-trash fa-lg" aria-hidden="true" />
                   </button>
-                </td>
+                </Ttools.Td>
               </tr>
             ))}
-          </tbody>
-        </table>
+          </Ttools.Tbody>
+        </Ttools.Table>
 
         <Pagination page={query.page} limit={query.limit} total={total} setPage={this.cb(component.setPage)} />
 

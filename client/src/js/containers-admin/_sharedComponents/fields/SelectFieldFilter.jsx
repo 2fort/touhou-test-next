@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ErrorSpan from '../ErrorSpan';
 
 const SelectFieldFilter = ({ input, label, meta: { touched, error }, disabled, checkboxTrigger, optionsSelect }) => (
   <div className="form-group">
@@ -13,7 +14,7 @@ const SelectFieldFilter = ({ input, label, meta: { touched, error }, disabled, c
           <input checked={disabled} onChange={checkboxTrigger(input.name)} type="checkbox" /> blank
         </span>
       </div>
-      {touched && (error && <span className="form-error">{error}</span>)}
+      {touched && (error && <ErrorSpan>{error}</ErrorSpan>)}
     </div>
   </div>
 );

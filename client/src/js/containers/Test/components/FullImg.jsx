@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import Modal from 'react-modal';
 import { IMG_COMPRESSED } from '../../../config';
+import * as style from './FullImg.style';
 
 class FullImg extends Component {
   constructor(props) {
@@ -20,11 +21,11 @@ class FullImg extends Component {
 
     return (
       <div>
-        <button type="button" onClick={this.trigger} className="btn-expand white">
+        <button type="button" onClick={this.trigger} className={style.btnExpand}>
           <i className="fa fa-expand" aria-hidden="true" />
         </button>
         <Modal isOpen={expanded} className="fullimgmodal" onRequestClose={this.trigger} contentLabel="FullImg">
-          <img alt="full" src={IMG_COMPRESSED + image} className="fullimg" {...imgProps} />
+          <img alt="full" src={IMG_COMPRESSED + image} className={style.fullimg} {...imgProps} />
         </Modal>
       </div>
     );

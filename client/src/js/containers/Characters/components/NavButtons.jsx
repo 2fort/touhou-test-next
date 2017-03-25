@@ -1,23 +1,24 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
+import * as style from './NavButtons.style';
 
 const NavButton = ({ disabled, to, arrow }) => {
   if (disabled) {
     return (
-      <div className="navigation">
+      <div className={style.navContainer}>
         {arrow === 'left'
-          ? <button type="button" disabled>&nbsp;&lt;&nbsp;</button>
-          : <button type="button" disabled>&nbsp;&gt;&nbsp;</button>
+          ? <button className={style.navItem} type="button" disabled>&nbsp;&lt;&nbsp;</button>
+          : <button className={style.navItem} type="button" disabled>&nbsp;&gt;&nbsp;</button>
         }
       </div>
     );
   }
 
   return (
-    <div className="navigation">
+    <div className={style.navContainer}>
       {arrow === 'left'
-        ? <Link to={to}>&nbsp;&lt;&nbsp;</Link>
-        : <Link to={to}>&nbsp;&gt;&nbsp;</Link>
+        ? <Link className={style.navItem} to={to}>&nbsp;&lt;&nbsp;</Link>
+        : <Link className={style.navItem} to={to}>&nbsp;&gt;&nbsp;</Link>
       }
     </div>
   );

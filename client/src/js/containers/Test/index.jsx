@@ -8,6 +8,7 @@ import Loading from '../Base/components/Loading';
 
 import { domainHoc } from '../../ducks/domain';
 import * as ownActions from './duck';
+import style from './index.style';
 
 class Test extends Component {
   componentDidMount() {
@@ -29,7 +30,7 @@ class Test extends Component {
 
         <TopButtons steps={steps} passedSteps={passedSteps} activeStep={activeStep} />
 
-        <Core goPrevStep={actions.goPrevStep} goNextStep={actions.goNextStep} >
+        <Core style={style} goPrevStep={actions.goPrevStep} goNextStep={actions.goNextStep} >
 
           <NavButtons.Prev steps={steps} activeStep={activeStep} goPrevStep={actions.goPrevStep} />
 

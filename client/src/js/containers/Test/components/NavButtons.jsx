@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import { classes } from 'typestyle';
+import * as style from './NavButtons.style';
 
 const NavButtons = {
   Prev: ({ steps, activeStep, goPrevStep }) => {
@@ -7,13 +9,13 @@ const NavButtons = {
 
     const color = (function decideColor() {
       if (disabled) return '';
-      if (prevStep.givenAnswer === prevStep.rightAnswer) return 'txt-green';
-      return 'txt-red';
+      if (prevStep.givenAnswer === prevStep.rightAnswer) return style.green;
+      return style.red;
     }());
 
     return (
-      <div className="navigation">
-        <button type="button" disabled={disabled} className={color} onClick={goPrevStep}>
+      <div className={style.navContainer}>
+        <button className={classes(style.navItem, color)} type="button" disabled={disabled} onClick={goPrevStep}>
           &nbsp;&lt;&nbsp;
         </button>
       </div>
@@ -26,14 +28,14 @@ const NavButtons = {
 
     const color = (function decideColor() {
       if (disabled) return '';
-      if (!nextStep.givenAnswer) return 'txt-blue';
-      if (nextStep.givenAnswer === nextStep.rightAnswer) return 'txt-green';
-      return 'txt-red';
+      if (!nextStep.givenAnswer) return style.blue;
+      if (nextStep.givenAnswer === nextStep.rightAnswer) return style.green;
+      return style.red;
     }());
 
     return (
-      <div className="navigation">
-        <button type="button" disabled={disabled} className={color} onClick={goNextStep}>
+      <div className={style.navContainer}>
+        <button className={classes(style.navItem, color)} type="button" disabled={disabled} onClick={goNextStep}>
           &nbsp;&gt;&nbsp;
         </button>
       </div>

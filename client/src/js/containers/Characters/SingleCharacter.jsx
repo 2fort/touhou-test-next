@@ -10,6 +10,7 @@ import Fetch404 from '../Base/components/Fetch404';
 
 import { domainHoc } from '../../ducks/domain';
 import * as ownActions from './SingleCharacter.duck';
+import * as style from './SingleCharacter.style';
 
 class SingleCharacter extends Component {
   componentDidMount() {
@@ -58,17 +59,18 @@ class SingleCharacter extends Component {
         </TopContainer>
 
         {pending ||
-          <div itemScope itemType="http://schema.org/Person" className="singlechar">
-            <h1 itemProp="name">{currentCharacter.name}</h1>
+          <div itemScope itemType="http://schema.org/Person">
+            <h1 className={style.header} itemProp="name">{currentCharacter.name}</h1>
 
-            <div className="singlechar-container">
+            <div className={style.container}>
               <NavButtons.Left disabled={!prevCharacter.name} to={`/browse/${params.game}/${prevCharacter.slug}`} />
 
-              <div className="singlechar-flex">
-                <div className="singlechar-img">
+              <div className={style.body}>
+                <div className={style.imgContainer}>
                   {currentCharacter.image
                     ? <img
                       key={currentCharacter.image}
+                      className={style.img}
                       itemProp="image"
                       alt="char"
                       src={IMG_COMPRESSED + currentCharacter.image}
@@ -76,13 +78,13 @@ class SingleCharacter extends Component {
                     : <i className="fa fa-file-image-o fa-5x" aria-hidden="true" />
                   }
                 </div>
-                <div className="singlechar-desc">
-                  <p>Character info:&nbsp;
+                <div className={style.desc}>
+                  <p className={style.pDesc}>Character info:&nbsp;
                     <a target="_blank" rel="noopener noreferrer" itemProp="sameAs" href={currentCharacter.wiki}>
                       {currentCharacter.wiki && currentCharacter.wiki.substring(7)}
                     </a>
                   </p>
-                  <p>Illustration author:{' '}
+                  <p className={style.pDesc}>Illustration author:{' '}
                     {currentCharacter.art &&
                       <a target="_blank" rel="noopener noreferrer" href={currentCharacter.art.url}>
                         {currentCharacter.art.author}

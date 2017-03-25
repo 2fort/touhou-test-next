@@ -1,8 +1,21 @@
 import React, { PropTypes } from 'react';
+import { classes, style } from 'typestyle';
+
+const main = style({
+  display: 'flex',
+  flexFlow: 'row nowrap',
+  alignItems: 'center',
+});
+
+const label = style({
+  alignSelf: 'flex-start',
+});
 
 const OrderSelectField = ({ input, list, max }) => (
-  <div className="form-group" style={{ display: 'flex', flexFlow: 'row nowrap', alignItems: 'center' }}>
-    <label htmlFor="link.order" className="col-sm-2 control-label" style={{ alignSelf: 'flex-start' }}>Order</label>
+  <div className={classes(main, 'form-group')}>
+    <label htmlFor="link.order" className={classes(label, 'col-sm-2 control-label')}>
+      Order
+    </label>
     <div className="col-sm-9">
       {list}
     </div>

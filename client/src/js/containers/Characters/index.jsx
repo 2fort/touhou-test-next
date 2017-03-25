@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import Loading from '../Base/components/Loading';
+import Container from '../Base/components/Container';
 
 const Characters = ({ children }) => (
-  <div className="simple-container">
+  <Container>
     {children}
     <Loading />
-  </div>
+  </Container>
 );
 
 Characters.propTypes = {

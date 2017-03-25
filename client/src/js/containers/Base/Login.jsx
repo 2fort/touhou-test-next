@@ -2,8 +2,12 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Field, reduxForm, propTypes } from 'redux-form';
+import { classes } from 'typestyle';
+
 import request from '../../api';
 import { getToken } from './duck';
+import Container from './components/Container';
+import * as style from './Login.style';
 
 class Login extends Component {
   constructor(props) {
@@ -45,18 +49,20 @@ class Login extends Component {
     }
 
     return (
-      <div className="simple-container">
-        <div className="login">
+      <Container>
+        <div className={style.loginContainer}>
           <form className="pure-form" onSubmit={handleSubmit(actions.getToken)}>
             <fieldset>
-              <Field name="username" component="input" type="text" placeholder="Username" />
-              <Field name="password" component="input" type="password" placeholder="Password" />
-              <button type="submit" className="pure-button pure-button-primary">Sign in</button>
+              <Field name="username" component="input" type="text" placeholder="Username" className={style.elem} />
+              <Field name="password" component="input" type="password" placeholder="Password" className={style.elem} />
+              <button type="submit" className={classes(style.elem, 'pure-button pure-button-primary')}>
+                Sign in
+              </button>
             </fieldset>
-            { error && <span className="form-error">User does not exist or wrong password</span> }
+            { error && <span className={style.error}>User does not exist or wrong password</span> }
           </form>
         </div>
-      </div>
+      </Container>
     );
   }
 }

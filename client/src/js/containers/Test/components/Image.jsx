@@ -1,12 +1,13 @@
 import React, { PropTypes } from 'react';
 import { IMG_COMPRESSED } from '../../../config';
+import * as style from './Image.style';
 
 const Image = ({ steps, activeStep }) => {
   const image = steps[activeStep - 1].image;
   return (
-    <div className="character-image">
+    <div className={style.imgContainer}>
       {image
-        ? <img key={image} alt="character" src={IMG_COMPRESSED + image} />
+        ? <img className={style.img} key={image} alt="character" src={IMG_COMPRESSED + image} />
         : <i className="fa fa-file-image-o fa-5x" aria-hidden="true" />
       }
     </div>

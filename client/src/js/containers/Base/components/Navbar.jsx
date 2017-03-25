@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
 import React, { PropTypes, Component } from 'react';
 import { Link, withRouter } from 'react-router';
+
 import { resetTest as testReset } from '../../Test/duck';
 import { resetTest as reverseTestReset } from '../../Test/ReverseTest.duck';
-
-const NavLink = props => <Link activeClassName="active" {...props} />;
+import * as style from './Navbar.style';
 
 class Navbar extends Component {
   constructor(props) {
@@ -23,37 +23,43 @@ class Navbar extends Component {
   render() {
     const { router } = this.props;
 
-    const inButton = this.state.expanded ? 'show' : 'hide';
+    const NavLink = props =>
+      <Link
+        className={style.link}
+        activeClassName={style.active}
+        onClick={this.hideMenu}
+        {...props}
+      />;
 
     return (
       <div>
-        <div className="menu">
-          <nav>
-            <Link onClick={this.hideMenu} className="logo" to="/">Touhou @ Comiket</Link>
+        <div className={style.menu}>
+          <nav className={style.nav}>
+            <Link onClick={this.hideMenu} className={style.logo} to="/">Touhou @ Comiket</Link>
             &nbsp;<div className="nav-noop" />
 
             {router.isActive('/test') &&
-              <button type="button" className="reload" title="Reset" onClick={() => { this.props.testReset(); }}>
+              <button type="button" className={style.reload} onClick={() => { this.props.testReset(); }}>
                 <i className="fa fa-fw fa-lg fa-refresh" aria-hidden="true" />
-                <span className="mobile-hide"> Reset</span>
+                <span className={style.desktopOnly}> Reset</span>
               </button>
             }
 
             {router.isActive('/reverse-test') &&
-              <button type="button" className="reload" title="Reset" onClick={() => { this.props.reverseTestReset(); }}>
+              <button type="button" className={style.reload} onClick={() => { this.props.reverseTestReset(); }}>
                 <i className="fa fa-fw fa-lg fa-refresh" aria-hidden="true" />
-                <span className="mobile-hide"> Reset</span>
+                <span className={style.desktopOnly}> Reset</span>
               </button>
             }
 
-            <button type="button" className="burger" onClick={this.triggerMenu}>
+            <button type="button" className={style.burger} onClick={this.triggerMenu}>
               <i className="fa fa-bars fa-lg" aria-hidden="true" />
             </button>
 
-            <div className={`collapsible ${inButton}`}>
-              <NavLink onClick={this.hideMenu} to="/test">Test</NavLink>
-              <NavLink onClick={this.hideMenu} to="/reverse-test">Reverse Test</NavLink>
-              <NavLink onClick={this.hideMenu} to="/browse">Browse</NavLink>
+            <div className={this.state.expanded ? style.collapsible : style.collapsibleHidden}>
+              <NavLink to="/test">Test</NavLink>
+              <NavLink to="/reverse-test">Reverse Test</NavLink>
+              <NavLink to="/browse">Browse</NavLink>
             </div>
           </nav>
         </div>

@@ -2,7 +2,15 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import timestamp from 'time-stamp';
+import { style, classes } from 'typestyle';
 import { del } from '../../../ducks/flashMessage';
+
+const sticky = style({
+  position: 'fixed',
+  width: 'inherit',
+  top: '20px',
+  zIndex: '1050',
+});
 
 class FlashMsg extends Component {
   componentWillUnmount() {
@@ -21,7 +29,7 @@ class FlashMsg extends Component {
     if (!msg.text) return null;
 
     return (
-      <div className={`alert alert-${msg.type} alert-dismissible sticky`} role="alert">
+      <div className={classes(`alert alert-${msg.type} alert-dismissible`, sticky)} role="alert">
         <button type="button" className="close" id="flashMessageBtn" aria-label="Close" onClick={this.closeBtnHandler}>
           <span aria-hidden="true">&times;</span>
         </button>

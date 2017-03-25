@@ -8,6 +8,7 @@ import { CheckboxField, TextField, ImageField, OrderSelectField } from '../../_s
 import { required } from '../../_sharedComponents/validationFields';
 import FilePreviewHoc from '../../_sharedComponents/FilePreviewHoc';
 import Loading from '../../../containers/Base/components/Loading';
+import Ttools from '../../Base/components/TableTools';
 
 class CharForm extends Component {
   constructor(props) {
@@ -44,8 +45,11 @@ class CharForm extends Component {
 
     const tableBody = newList.map((char, i) => (
       <tr className={char.id === initialValues.id ? 'info' : ''} key={char.name || i}>
-        <td>{i + 1}</td>
-        <td>
+        <Ttools.Td w={15} center>
+          {i + 1}
+        </Ttools.Td>
+
+        <Ttools.Td w={15} center>
           {char.image &&
             <img
               height={50}
@@ -53,26 +57,35 @@ class CharForm extends Component {
               src={filePreview.blobTest(char.image) ? char.image : IMG_THUMBNAIL + char.image}
             />
           }
-        </td>
-        <td>
+        </Ttools.Td>
+
+        <Ttools.Td w={70}>
           {char.name}
-        </td>
+        </Ttools.Td>
       </tr>
     ));
 
     const fullTable = (
-      <table className="table table-striped table-order-field">
+      <Ttools.Table fixed className="table table-striped">
         <thead>
           <tr>
-            <th>Position</th>
-            <th>Image</th>
-            <th>Name</th>
+            <Ttools.Th center>
+              Position
+            </Ttools.Th>
+
+            <Ttools.Th center>
+              Image
+            </Ttools.Th>
+
+            <th>
+              Name
+            </th>
           </tr>
         </thead>
         <tbody>
           {tableBody}
         </tbody>
-      </table>
+      </Ttools.Table >
     );
 
     return { charList: fullTable, max: tableBody.length };

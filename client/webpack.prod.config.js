@@ -1,6 +1,5 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin');
 const commitHash = require('child_process').execSync('git rev-parse --short HEAD').toString();
 
@@ -57,37 +56,11 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        exclude: /node_modules/,
         use: [
           {
-            loader: 'style-loader',
-          },
-          {
-            loader: 'resolve-url-loader',
-            options: {
-              silent: true,
-            },
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true,
-            },
+            loader: 'raw-loader',
           },
         ],
-      },
-      {
-        test: /\.scss$/,
-        exclude: /node_modules/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: { autoprefixer: false, sourceMap: true, importLoaders: 1 },
-            },
-            'postcss-loader', 'resolve-url-loader', 'sass-loader'],
-        }),
       },
       {
         test: /\.(js|jsx)$/,
@@ -118,15 +91,6 @@ module.exports = {
         ],
       },
       {
-        test: /\.(ttf|woff|woff2|eot)$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'url-loader',
-          },
-        ],
-      },
-      {
         test: /\.(svg|png|jpg|jpeg|gif)$/,
         exclude: /node_modules/,
         use: [
@@ -136,15 +100,6 @@ module.exports = {
               limit: 5000,
               name: 'img/[hash].[ext]',
             },
-          },
-        ],
-      },
-      {
-        test: /\.json$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'json-loader',
           },
         ],
       },
@@ -199,10 +154,6 @@ module.exports = {
       minChunks: Infinity,
     }),
     new webpack.NamedModulesPlugin(),
-    new ExtractTextPlugin({
-      filename: '[hash].[name].css',
-      allChunks: true,
-    }),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
   ],

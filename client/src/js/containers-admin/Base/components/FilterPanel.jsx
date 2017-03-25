@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap';
 import { Form, Field, reduxForm, propTypes } from 'redux-form';
 import * as validationFields from '../../_sharedComponents/validationFields';
 import { SelectFieldFilter, TextFieldFilter, TextField } from '../../_sharedComponents/fields';
+import * as style from './FilterPanel.style';
 
 class FilterPanel extends Component {
   constructor(props) {
@@ -62,9 +63,9 @@ class FilterPanel extends Component {
       }
 
       return (
-        <Button key={filterKey} onClick={this.filterButtonHandler(filterKey)} style={{ marginLeft: '7px' }}>
+        <Button key={filterKey} className={style.filterBtn} onClick={this.filterButtonHandler(filterKey)}>
           {label}{' '}<b>is</b>{' '}{value}
-          <span className="close-sign">✕</span>
+          <span className={style.closeSign}>✕</span>
         </Button>
       );
     });
@@ -135,7 +136,7 @@ class FilterPanel extends Component {
         {omitFilterButtons}
 
         {this.state.open &&
-          <div style={{ margin: '5px 0', padding: '10px 0', backgroundColor: '#f9f9f9' }}>
+          <div className={style.filterContainer}>
             <Form className="form-horizontal" onSubmit={handleSubmit(this.submit)}>
               {Fields}
             </Form>

@@ -33,49 +33,9 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        exclude: /node_modules/,
         use: [
           {
-            loader: 'style-loader',
-          },
-          {
-            loader: 'resolve-url-loader',
-            options: {
-              silent: true,
-            },
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true,
-            },
-          },
-        ],
-      },
-      {
-        test: /\.scss$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'style-loader',
-          },
-          {
-            loader: 'resolve-url-loader',
-            options: {
-              silent: true,
-            },
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true,
-            },
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              sourceMap: true,
-            },
+            loader: 'raw-loader',
           },
         ],
       },
@@ -92,15 +52,6 @@ module.exports = {
         ],
       },
       {
-        test: /\.(ttf|woff|woff2|eot)$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'file-loader',
-          },
-        ],
-      },
-      {
         test: /\.(svg|png|jpg|jpeg|gif)$/,
         exclude: /node_modules/,
         use: [
@@ -110,15 +61,6 @@ module.exports = {
               limit: 40000,
               name: 'img/[hash].[ext]',
             },
-          },
-        ],
-      },
-      {
-        test: /\.json$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'json-loader',
           },
         ],
       },

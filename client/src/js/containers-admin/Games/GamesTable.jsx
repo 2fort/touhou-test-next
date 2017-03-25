@@ -15,6 +15,7 @@ import Pagination from '../Base/components/Pagination';
 import LimitSelect from '../Base/components/LimitSelect';
 import EntitiesCounter from '../Base/components/EntitiesCounter';
 import FilterPanel from '../Base/components/FilterPanel';
+import Ttools from '../Base/components/TableTools';
 
 class GamesTable extends Component {
   componentDidMount() {
@@ -70,9 +71,8 @@ class GamesTable extends Component {
             <Pagination page={query.page} limit={query.limit} total={total} setPage={this.cb(component.setPage)} />
           </div>
           <div className="form-group">
-            <label style={{ marginLeft: '15px' }} htmlFor="limit">Per page: </label> {' '}
             <LimitSelect setLimit={this.cb(component.setLimit)} limit={query.limit} />
-          </div> {' '}
+          </div>
         </div>
 
         <div className="pull-left">
@@ -92,42 +92,51 @@ class GamesTable extends Component {
           </button>
         </div>
 
-        <table className="table table-striped games-table">
+        <Ttools.Table fixed className="table table-striped">
           <thead>
             <tr>
               <th>
                 <Sort field="title">Title</Sort>
               </th>
-              <th className="text-center">
+
+              <Ttools.Th center>
                 <Sort field="order">Order</Sort>
-              </th>
-              <th className="text-center">
+              </Ttools.Th>
+
+              <Ttools.Th center>
                 <Sort field="chars">Chars #</Sort>
-              </th>
-              <th className="text-center">
+              </Ttools.Th>
+
+              <Ttools.Th center>
                 Cover
-              </th>
-              <th className="text-center">
+              </Ttools.Th>
+
+              <Ttools.Th center>
                 <Sort field="prefix">Prefix</Sort>
-              </th>
-              <th className="text-center">
+              </Ttools.Th>
+
+              <Ttools.Th center>
                 <Sort field="year">Year</Sort>
-              </th>
-              <th className="text-center">
+              </Ttools.Th>
+
+              <Ttools.Th center>
                 <Sort field="_id">ID</Sort>
-              </th>
+              </Ttools.Th>
+
               <th>
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className={pending ? 'loading' : ''}>
+
+          <Ttools.Tbody pending={pending}>
             {gamesArray[0] && gamesArray.map((game, i) => (
               <tr key={game.id}>
-                <td>
+                <Ttools.Td w={25}>
                   <Link to={`/admin/games/${game.id}/characters`}>{game.title}</Link>
-                </td>
-                <td className="text-center">
+                </Ttools.Td>
+
+                <Ttools.Td w={10} center>
                   <button
                     type="button"
                     className="btn btn-link"
@@ -145,23 +154,29 @@ class GamesTable extends Component {
                   >
                     <i className="fa fa-sort-desc" aria-hidden="true" />
                   </button>
-                </td>
-                <td className="text-center">
+                </Ttools.Td>
+
+                <Ttools.Td w={10} center>
                   {game.chars}
-                </td>
-                <td className="text-center table-image">
+                </Ttools.Td>
+
+                <Ttools.Td w={10} center withImage>
                   {game.cover && <img alt={game.title} src={IMG_THUMBNAIL + game.cover} />}
-                </td>
-                <td className="text-center">
+                </Ttools.Td>
+
+                <Ttools.Td w={10} center>
                   {game.prefix}
-                </td>
-                <td className="text-center">
+                </Ttools.Td>
+
+                <Ttools.Td w={10} center>
                   {game.year}
-                </td>
-                <td className="text-center">
+                </Ttools.Td>
+
+                <Ttools.Td w={10} center>
                   <span title={game.id}>{game.id.substr(-11, 11)}</span>
-                </td>
-                <td>
+                </Ttools.Td>
+
+                <Ttools.Td w={15}>
                   <Link target="_blank" className="btn btn-default" to={`/characters/${game.slug}`}>
                     <i className="fa fa-eye" aria-hidden="true" />
                   </Link>
@@ -173,11 +188,11 @@ class GamesTable extends Component {
                   <button type="button" className="btn btn-default" onClick={this.deleteGameBtnHandler(game.id)}>
                     <i className="fa fa-trash fa-lg" aria-hidden="true" />
                   </button>
-                </td>
+                </Ttools.Td>
               </tr>
             ))}
-          </tbody>
-        </table>
+          </Ttools.Tbody>
+        </Ttools.Table>
 
         <Pagination page={query.page} limit={query.limit} total={total} setPage={this.cb(component.setPage)} />
 

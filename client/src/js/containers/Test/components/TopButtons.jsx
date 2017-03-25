@@ -1,27 +1,35 @@
 import React, { PropTypes } from 'react';
+import { classes } from 'typestyle';
+import * as style from './TopButtons.style';
 
 const TopButtons = ({ steps, passedSteps, activeStep }) => {
   const topButtons = steps.map((step, i) => {
-    let color = 'gray';
+    let color = style.gray;
     const active = i + 1 === activeStep;
 
     if (step.passed && step.rightAnswer === step.givenAnswer) {
-      color = 'green';
+      color = style.green;
     } else if (step.passed && step.rightAnswer !== step.givenAnswer) {
-      color = 'red';
+      color = style.red;
     } else if (i === passedSteps) {
-      color = 'blue';
+      color = style.blue;
     }
 
     return (
-      <div key={step.step} className={active ? `${color} active` : color}>
+      <div
+        key={step.step}
+        className={active
+          ? classes(style.elem, color, style.elemActive)
+          : classes(style.elem, color)
+        }
+      >
         &nbsp;
       </div>
     );
   });
 
   return (
-    <div className="topbuttons">
+    <div className={style.topbuttons}>
       {topButtons}
     </div>
   );

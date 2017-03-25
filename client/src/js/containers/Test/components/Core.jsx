@@ -25,7 +25,7 @@ class Core extends Component {
 
   render() {
     return (
-      <div className={this.props.reverse ? 'reverse-test' : 'test'}>
+      <div className={this.props.style}>
         {this.props.children}
       </div>
     );
@@ -37,7 +37,7 @@ Core.defaultProps = {
 };
 
 Core.propTypes = {
-  reverse: PropTypes.bool,
+  style: PropTypes.string.isRequired,
   goNextStep: PropTypes.func.isRequired,
   goPrevStep: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,

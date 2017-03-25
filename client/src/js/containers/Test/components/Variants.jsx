@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
+import { classes } from 'typestyle';
 import FullImg from './FullImg';
 import { IMG_THUMBNAIL } from '../../../config';
+import * as style from './Variants.style';
 
 function answer(name, activeStep, maxSteps, actions) {
   return () => {
@@ -19,13 +21,13 @@ const Variants = {
     const currentStep = steps[activeStep - 1];
 
     const charButtons = currentStep.buttons.map((bt) => {
-      let color = 'blue';
+      let color = style.blue;
 
       if (currentStep.passed) {
         if (bt.name === currentStep.rightAnswer) {
-          color = 'green';
+          color = style.green;
         } else if (bt.name === currentStep.givenAnswer && currentStep.givenAnswer !== currentStep.rightAnswer) {
-          color = 'red';
+          color = style.red;
         }
       }
 
@@ -34,7 +36,10 @@ const Variants = {
           type="button"
           key={bt.name}
           disabled={currentStep.passed}
-          className={bt.name === currentStep.givenAnswer ? `${color} active` : color}
+          className={bt.name === currentStep.givenAnswer
+            ? classes(style.btn, style.btnActive, color)
+            : classes(style.btn, color)
+          }
           onClick={answer(bt.name, activeStep, maxSteps, actions)}
         >
           {bt.name}
@@ -43,7 +48,7 @@ const Variants = {
     });
 
     return (
-      <div className="buttons">
+      <div className={style.buttons}>
         {charButtons}
       </div>
     );
@@ -60,13 +65,13 @@ const Variants = {
       const currentStep = steps[activeStep - 1];
 
       const charButtons = currentStep.buttons.map((bt, i) => {
-        let color = 'white';
+        let color = style.whiteColor;
 
         if (currentStep.passed) {
           if (bt.name === currentStep.rightAnswer) {
-            color = 'green';
+            color = style.green;
           } else if (bt.name === currentStep.givenAnswer && currentStep.givenAnswer !== currentStep.rightAnswer) {
-            color = 'red';
+            color = style.red;
           }
         }
 
@@ -74,8 +79,9 @@ const Variants = {
           <div
             key={bt.name}
             className={this.state.active === bt.name && !currentStep.passed
-              ? `variant-outer active ${color}`
-              : `variant-outer ${color}`}
+              ? classes(style.variantOuter, style.variantOuterActive, color)
+              : classes(style.variantOuter, color)
+            }
           >
             <button
               type="button"
@@ -92,7 +98,7 @@ const Variants = {
       });
 
       return (
-        <div className="buttons-img">
+        <div className={style.btnImg}>
           {charButtons}
         </div>
       );

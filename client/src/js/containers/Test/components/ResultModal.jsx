@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Modal from 'react-modal';
+import { style } from 'typestyle';
 
 class TestResultModal extends Component {
   onResetButtonClick = () => {
@@ -33,15 +34,14 @@ class TestResultModal extends Component {
 
     return (
       <Modal isOpen={isOpen} style={customStyles} onRequestClose={this.onCloseButtonClick} contentLabel="Results" >
-        <div className="my-modal">
-          <h2>Results:</h2>
-          <span className="correct">right answers: {correctAnswers}</span> <br />
-          <span className="incorrect">wrong answers: {incorrectAnswers}</span> <br />
-          <button className="blue btn-left" onClick={this.onResetButtonClick}>
-            <i className="fa fa-fw fa-lg fa-refresh" aria-hidden="true" /> Reset
-          </button>
-          <button className="green btn-right" onClick={this.onCloseButtonClick}>Close</button>
-        </div>
+        <h2 className={style({ marginTop: 0 })}>Results:</h2>
+        <i className="fa fa-check" aria-hidden="true" /> right answers: {correctAnswers} <br />
+        <i className="fa fa-times" aria-hidden="true" /> wrong answers: {incorrectAnswers} <br />
+        <br />
+        <button className="pure-button" onClick={this.onResetButtonClick}>
+          <i className="fa fa-fw fa-lg fa-refresh" aria-hidden="true" /> Reset
+        </button>{' '}
+        <button className="pure-button" onClick={this.onCloseButtonClick}>Close</button>
       </Modal>
     );
   }

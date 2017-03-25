@@ -10,9 +10,9 @@ window.Perf = Perf;*/
 import routes from './routes';
 import configureStore from './store-app';
 
-const store = configureStore();
+import './app.style';
 
-require('../sass/app.scss');
+const store = configureStore();
 
 render(
   <Provider store={store}>

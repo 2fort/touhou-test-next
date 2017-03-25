@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import * as style from './SortButton.style';
 
 function chooseIcon(field, reduxField) {
   const ascIcon = <i className="fa fa-sort-asc" aria-hidden="true" />;
@@ -15,7 +16,7 @@ function chooseIcon(field, reduxField) {
   return ascIcon;
 }
 
-class SortButtonExp extends Component {
+class SortButton extends Component {
   sort = () => {
     const { field, reduxField, setSort } = this.props;
 
@@ -36,22 +37,22 @@ class SortButtonExp extends Component {
     const icon = chooseIcon(field, reduxField);
 
     return (
-      <button type="button" className="blank" onClick={this.sort}>
-        {icon} <span className="sort">{children}</span>
+      <button type="button" className={style.blank} onClick={this.sort}>
+        {icon} <span className={style.sort}>{children}</span>
       </button>
     );
   }
 }
 
-SortButtonExp.defaultProps = {
+SortButton.defaultProps = {
   reduxField: '',
 };
 
-SortButtonExp.propTypes = {
+SortButton.propTypes = {
   field: PropTypes.string.isRequired,
   reduxField: PropTypes.string,
   children: PropTypes.string.isRequired,
   setSort: PropTypes.func.isRequired,
 };
 
-export default SortButtonExp;
+export default SortButton;

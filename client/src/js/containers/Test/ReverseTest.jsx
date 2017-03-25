@@ -8,6 +8,7 @@ import Loading from '../Base/components/Loading';
 
 import { domainHoc } from '../../ducks/domain';
 import * as ownActions from './ReverseTest.duck';
+import * as style from './ReverseTest.style';
 
 class ReverseTest extends Component {
   componentDidMount() {
@@ -29,12 +30,12 @@ class ReverseTest extends Component {
 
         <TopButtons steps={steps} passedSteps={passedSteps} activeStep={activeStep} />
 
-        <Core reverse goPrevStep={actions.goPrevStep} goNextStep={actions.goNextStep} >
+        <Core style={style.reverseTest} goPrevStep={actions.goPrevStep} goNextStep={actions.goNextStep} >
 
           <NavButtons.Prev steps={steps} activeStep={activeStep} goPrevStep={actions.goPrevStep} />
 
-          <div className="test-center">
-            <div className="character-name"><h1>{steps[activeStep - 1].rightAnswer}</h1></div>
+          <div className={style.testCenter}>
+            <div className={style.characterName}><h1>{steps[activeStep - 1].rightAnswer}</h1></div>
 
             <Variants.Image
               actions={{

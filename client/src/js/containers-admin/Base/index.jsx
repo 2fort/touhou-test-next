@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { style, classes } from 'typestyle';
 
 import request from '../../api';
 import * as ownActions from './duck';
@@ -56,7 +57,7 @@ class Base extends Component {
       <div {...divProps}>
         <LoadingLine />
         <NavbarHeader unAuthUser={actions.unAuthUser} />
-        <div className="container main-container">
+        <div className={classes('container', style({ marginTop: '70px' }))}>
           <FlashMsg />
           {children}
         </div>

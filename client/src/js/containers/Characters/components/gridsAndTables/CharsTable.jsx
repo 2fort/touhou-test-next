@@ -1,14 +1,16 @@
 import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
+import { classes } from 'typestyle';
 import { IMG_THUMBNAIL } from '../../../../config';
+import * as style from './style';
 
 const Table = ({ entity, pathname }) => {
   const tableData = entity.map(char => (
     <tr key={char.name}>
-      <td className="td-centered">
+      <td className={style.tdCentered}>
         {char.image &&
-          <Link className="imagelink" to={`${pathname}/${char.slug}`}>
-            <img alt="char" src={IMG_THUMBNAIL + char.image} />
+          <Link className={style.imagelink} to={`${pathname}/${char.slug}`}>
+            <img className={style.tableImg} alt="char" src={IMG_THUMBNAIL + char.image} />
           </Link>
         }
       </td>
@@ -24,10 +26,10 @@ const Table = ({ entity, pathname }) => {
   ));
 
   const data = (() => (
-    <table className="pure-table pure-table-striped">
+    <table className={classes(style.fullTable, 'pure-table pure-table-striped')}>
       <thead>
         <tr>
-          <th className="td-centered">Art</th>
+          <th className={style.tdCentered}>Art</th>
           <th>Name</th>
           <th>Wiki</th>
         </tr>
@@ -39,7 +41,7 @@ const Table = ({ entity, pathname }) => {
   ))();
 
   return (
-    <div className="flex-container">
+    <div className={style.flexContainer}>
       {data}
     </div>
   );

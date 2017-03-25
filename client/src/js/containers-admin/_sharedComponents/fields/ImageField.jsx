@@ -1,5 +1,8 @@
 import React, { Component, PropTypes } from 'react';
+import { style } from 'typestyle';
+import { important } from 'csx';
 import { IMG_THUMBNAIL } from '../../../config';
+import ErrorSpan from '../ErrorSpan';
 
 export default class ImageField extends Component {
   addImgBtnHandler = () => {
@@ -28,7 +31,11 @@ export default class ImageField extends Component {
 
     const imageBlock = (
       <div>
-        <img alt="preview" src={filePreview.blob || defaultImage || '/images/file-o.svg'} />
+        <img
+          alt="preview"
+          src={filePreview.blob || defaultImage || '/images/file-o.svg'}
+          className={style({ maxWidth: '250px', maxHeight: '150px', marginBottom: '5px' })}
+        />
         <br />
         <button type="button" className="btn btn-primary" onClick={this.addImgBtnHandler}>Replace</button>
         {' '}
@@ -39,12 +46,11 @@ export default class ImageField extends Component {
     return (
       <div className="form-group">
         <label htmlFor={input.name} className="col-sm-2 control-label">{label}</label>
-        <div className="col-sm-10 form-image">
+        <div className="col-sm-10">
           <input
             {...input}
             type={type}
-            className="pure-input-2-3"
-            style={{ display: 'none' }}
+            className={style({ display: important('none') })}
             onChange={this.fileSelectHandler}
             ref={(file) => { this.fileInput = file; }}
           />
@@ -54,7 +60,7 @@ export default class ImageField extends Component {
             : <button type="button" className="btn btn-primary" onClick={this.addImgBtnHandler}>Add</button>
           }
 
-          {touched && (error && <span className="form-error">{error}</span>)}
+          {touched && (error && <ErrorSpan>{error}</ErrorSpan>)}
         </div>
       </div>
     );

@@ -41,7 +41,7 @@ class CharactersList extends Component {
         {mode === 'table' && <CharsTable entity={charaters} pathname={location.pathname} />}
 
         {!pending && !charaters[0] &&
-          <div style={{ textAlign: 'center' }}>This category is empty!</div>
+          <Fetch404>This category is empty!</Fetch404>
         }
       </div>
     );

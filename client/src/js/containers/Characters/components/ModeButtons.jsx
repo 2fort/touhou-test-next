@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { changeMode } from '../../Base/duck';
+import * as style from './ModeButtons.style';
 
 class ModeButtons extends Component {
   componentWillMount() {
@@ -33,14 +34,14 @@ class ModeButtons extends Component {
 
   render() {
     return (
-      <div className="modebuttons">
+      <div className={style.btn}>
         <button type="button" title="Grid" onClick={this.btnChangeMode('grid')}>
           <i className="fa fa-th-large fa-fw fa-lg" aria-hidden="true" />
-          <span className="mobile-hide">Grid</span>
+          <span className={style.desktopOnly}>Grid</span>
         </button>
         <button type="button" title="Table" onClick={this.btnChangeMode('table')}>
           <i className="fa fa-table fa-fw fa-lg" aria-hidden="true" />
-          <span className="mobile-hide">Table</span>
+          <span className={style.desktopOnly}>Table</span>
         </button>
       </div>
     );

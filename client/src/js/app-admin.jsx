@@ -8,10 +8,12 @@ import createBrowserHistory from 'history/lib/createBrowserHistory';
 import routes from './routes-admin';
 import configureStore from './store-admin';
 
+import './app-admin.style';
+
 const history = useRouterHistory(createBrowserHistory)({ parseQueryString: parse, stringifyQuery: stringify });
 const store = configureStore();
 
-require('../sass/app-admin.scss');
+// require('../sass/app-admin.scss');
 
 render(
   <Provider store={store}>
