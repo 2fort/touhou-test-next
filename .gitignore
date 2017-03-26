@@ -15,7 +15,6 @@ client/build
 TODO
 
 server/node_modules
-server/config.js
 
 Temp
 
@@ -24,3 +23,5 @@ stats.json
 
 client/npm-shrinkwrap.json
 server/npm-shrinkwrap.json
+
+server/.env

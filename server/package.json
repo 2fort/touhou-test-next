@@ -1,20 +1,25 @@
 {
   "name": "touhou-test-next-server",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "NODE_PATH=. NODE_ENV=development supervisor app.js",
-    "start-prod": "NODE_PATH=. NODE_ENV=production supervisor app.js",
-    "lint": "eslint \"./api/**/*\" \"./controller/**/*\" \"./lib/**/*\" \"./models/**/*\""
+    "start": "NODE_ENV=development nodemon -r dotenv/config app.js",
+    "start-prod": "NODE_ENV=production nodemon -r dotenv/config app.js",
+    "lint": "eslint app.js \"./api/**/*\" \"./controller/**/*\" \"./lib/**/*\" \"./models/**/*\""
   },
   "author": "Alexander Kirsanov",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2fort/touhou-test-next"
+  },
   "dependencies": {
     "babel-eslint": "^7.1.1",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.16.1",
     "cpr": "^2.0.2",
+    "dotenv": "^4.0.0",
     "eslint": "^3.16.1",
     "eslint-config-airbnb-base": "^11.1.0",
     "eslint-plugin-import": "^2.2.0",

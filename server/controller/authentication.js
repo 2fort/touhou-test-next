@@ -1,11 +1,9 @@
 const User = require('../models/User');
 const jwt = require('jwt-simple');
 
-const config = require('../config');
-
 function tokenForUser(user) {
   const timestamp = new Date().getTime();
-  return jwt.encode({ sub: user.id, iat: timestamp }, config.SECRET);
+  return jwt.encode({ sub: user.id, iat: timestamp }, process.env.SECRET);
 }
 
 this.signup = async function signup(req, res, next) {

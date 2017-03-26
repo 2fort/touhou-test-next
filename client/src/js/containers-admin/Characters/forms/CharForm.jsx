@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Alert } from 'react-bootstrap';
 import { Field, reduxForm, formValueSelector, propTypes } from 'redux-form';
 
-import { IMG_THUMBNAIL } from '../../../config';
 import { CheckboxField, TextField, ImageField, OrderSelectField } from '../../_sharedComponents/fields';
 import { required } from '../../_sharedComponents/validationFields';
 import FilePreviewHoc from '../../_sharedComponents/FilePreviewHoc';
@@ -54,7 +53,7 @@ class CharForm extends Component {
             <img
               height={50}
               alt="char preview"
-              src={filePreview.blobTest(char.image) ? char.image : IMG_THUMBNAIL + char.image}
+              src={filePreview.blobTest(char.image) ? char.image : process.env.IMG_THUMBNAIL + char.image}
             />
           }
         </Ttools.Td>

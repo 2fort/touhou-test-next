@@ -1,8 +1,8 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const commitHash = require('child_process').execSync('git rev-parse --short HEAD').toString();
+const processEnv = require('./webpack.env');
 
-const BASE_URL = 'http://localhost';
+const BASE_URL = process.env.BASEURL || 'http://localhost';
 
 module.exports = {
   entry: {
@@ -83,20 +83,7 @@ module.exports = {
       filename: 'admin.html',
       inject: 'body',
     }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('development'),
-      },
-      'process.commitHash': {
-        COMMIT_HASH: JSON.stringify(commitHash),
-      },
-      'process.config': {
-        BASE_URL: JSON.stringify(BASE_URL),
-        IMG_ORIG: JSON.stringify('/images/l/'),
-        IMG_COMPRESSED: JSON.stringify('/images/m/'),
-        IMG_THUMBNAIL: JSON.stringify('/images/s/'),
-      },
-    }),
+    new webpack.DefinePlugin(processEnv(BASE_URL)),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
   ],

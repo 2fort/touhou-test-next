@@ -9,7 +9,6 @@ import QueryStringHOC from '../../Base/hocs/QueryStringHOC';
 import * as ownActions from './duck';
 import * as GameFormModalActions from '../modals/GameFormModal.duck';
 import * as CharFormModalActions from '../../Characters/modals/CharFormModal.duck';
-import { IMG_THUMBNAIL } from '../../../config';
 
 import GameFormModal from '../modals/GameFormModal';
 import CharFormModal from '../../Characters/modals/CharFormModal';
@@ -177,7 +176,7 @@ class GameCharactersTable extends Component {
                 </Ttools.Td>
 
                 <Ttools.Td w={14} center withImage>
-                  {char.image && <img alt={char.name} src={IMG_THUMBNAIL + char.image} />}
+                  {char.image && <img alt={char.name} src={process.env.IMG_THUMBNAIL + char.image} />}
                 </Ttools.Td>
 
                 <Ttools.Td w={16} tooWide>

@@ -13,9 +13,8 @@ addons:
     - g++-4.8
 
 script:
-  - cd client 
-  - npm install && npm run lint && NODE_ENV=production webpack -p --config webpack.prod.config.js
+  - cd client
+  - npm run lint && yarn && npm run build:server
   - cd ..
   - cd server
-  - mv config.example.js config.js
-  - npm install && npm run lint
+  - npm run lint

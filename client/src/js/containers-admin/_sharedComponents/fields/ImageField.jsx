@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { style } from 'typestyle';
 import { important } from 'csx';
-import { IMG_THUMBNAIL } from '../../../config';
 import ErrorSpan from '../ErrorSpan';
 
 export default class ImageField extends Component {
@@ -27,7 +26,7 @@ export default class ImageField extends Component {
   render() {
     const { input: { value, ...input }, label, type, meta: { touched, error }, filePreview } = this.props;
 
-    const defaultImage = value && typeof value === 'string' ? IMG_THUMBNAIL + value : null;
+    const defaultImage = value && typeof value === 'string' ? process.env.IMG_THUMBNAIL + value : null;
 
     const imageBlock = (
       <div>

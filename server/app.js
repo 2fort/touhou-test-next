@@ -5,13 +5,12 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const helmet = require('helmet');
 
-const config = require('./config');
 require('./controller/passport');
 
 const app = express();
 
 mongoose.Promise = global.Promise;
-mongoose.connect(config.MONGODB_ADDRESS);
+mongoose.connect(process.env.DB_HOST);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(helmet());

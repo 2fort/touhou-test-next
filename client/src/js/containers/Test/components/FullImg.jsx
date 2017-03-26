@@ -1,6 +1,5 @@
 import React, { PropTypes, Component } from 'react';
 import Modal from 'react-modal';
-import { IMG_COMPRESSED } from '../../../config';
 import * as style from './FullImg.style';
 
 class FullImg extends Component {
@@ -25,7 +24,7 @@ class FullImg extends Component {
           <i className="fa fa-expand" aria-hidden="true" />
         </button>
         <Modal isOpen={expanded} className="fullimgmodal" onRequestClose={this.trigger} contentLabel="FullImg">
-          <img alt="full" src={IMG_COMPRESSED + image} className={style.fullimg} {...imgProps} />
+          <img alt="full" src={process.env.IMG_COMPRESSED + image} className={style.fullimg} {...imgProps} />
         </Modal>
       </div>
     );

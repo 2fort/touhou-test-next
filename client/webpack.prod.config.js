@@ -2,9 +2,9 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin');
-const commitHash = require('child_process').execSync('git rev-parse --short HEAD').toString();
+const processEnv = require('./webpack.env');
 
-const BASE_URL = 'http://touhou-jsx.dev';
+const BASE_URL = process.env.BASEURL || 'http://touhou-jsx.dev';
 
 function chunksSortModeExp(chunk1, chunk2, orders) {
   const order1 = orders.indexOf(chunk1.names[0]);
@@ -30,6 +30,9 @@ module.exports = {
       'redux-form',
       'redux-thunk',
       'seamless-immutable',
+      'csstips',
+      'csx',
+      'typestyle',
     ],
     vendorApp: [
       'hammerjs', 'react-helmet', 'react-modal',
@@ -136,20 +139,7 @@ module.exports = {
     new InlineManifestWebpackPlugin({
       name: 'webpackManifest',
     }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production'),
-      },
-      'process.commitHash': {
-        COMMIT_HASH: JSON.stringify(commitHash),
-      },
-      'process.config': {
-        BASE_URL: JSON.stringify(BASE_URL),
-        IMG_ORIG: JSON.stringify('/images/l/'),
-        IMG_COMPRESSED: JSON.stringify('/images/m/'),
-        IMG_THUMBNAIL: JSON.stringify('/images/s/'),
-      },
-    }),
+    new webpack.DefinePlugin(processEnv(BASE_URL)),
     new webpack.optimize.CommonsChunkPlugin({
       names: ['vendorAdmin', 'vendorApp', 'common', 'manifest'],
       minChunks: Infinity,

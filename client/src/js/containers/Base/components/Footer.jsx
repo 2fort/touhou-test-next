@@ -18,6 +18,6 @@ export default () => (
       target="_blank"
       rel="noopener noreferrer"
     >
-      {process.commitHash.COMMIT_HASH}</a> build.
+      {process.env.COMMIT_HASH}</a> build.
   </div>
 );

@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
 import { classes } from 'typestyle';
-import { IMG_THUMBNAIL } from '../../../../config';
 import * as style from './style';
 
 const Table = ({ entity, pathname }) => {
@@ -10,7 +9,7 @@ const Table = ({ entity, pathname }) => {
       <td className={style.tdCentered}>
         {game.cover &&
           <Link className={style.imagelink} to={`${pathname}/${game.slug}`}>
-            <img className={style.tableImg} alt="char" src={IMG_THUMBNAIL + game.cover} />
+            <img className={style.tableImg} alt="char" src={process.env.IMG_THUMBNAIL + game.cover} />
           </Link>
         }
       </td>

@@ -7,7 +7,6 @@ import { domainHoc } from '../../ducks/domain';
 import QueryStringHOC from '../Base/hocs/QueryStringHOC';
 import * as ownActions from './GamesTable.duck';
 import { setMode, setGameId, openModal } from './modals/GameFormModal.duck';
-import { IMG_THUMBNAIL } from '../../config';
 
 import GameFormModal from './modals/GameFormModal';
 import SortButton from '../Base/components/SortButton';
@@ -161,7 +160,7 @@ class GamesTable extends Component {
                 </Ttools.Td>
 
                 <Ttools.Td w={10} center withImage>
-                  {game.cover && <img alt={game.title} src={IMG_THUMBNAIL + game.cover} />}
+                  {game.cover && <img alt={game.title} src={process.env.IMG_THUMBNAIL + game.cover} />}
                 </Ttools.Td>
 
                 <Ttools.Td w={10} center>

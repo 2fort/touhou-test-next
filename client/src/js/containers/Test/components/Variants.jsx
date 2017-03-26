@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { classes } from 'typestyle';
 import FullImg from './FullImg';
-import { IMG_THUMBNAIL } from '../../../config';
 import * as style from './Variants.style';
 
 function answer(name, activeStep, maxSteps, actions) {
@@ -90,7 +89,7 @@ const Variants = {
               onMouseEnter={() => { this.setState({ active: bt.name }); }}
               onMouseLeave={() => { this.setState({ active: '' }); }}
             >
-              <img alt={`variant ${i}`} src={IMG_THUMBNAIL + bt.image} />
+              <img alt={`variant ${i}`} src={process.env.IMG_THUMBNAIL + bt.image} />
             </button>
             <FullImg image={bt.image} />
           </div>

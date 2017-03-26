@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
 import { classes } from 'typestyle';
-import { IMG_THUMBNAIL } from '../../../../config';
 import * as style from './style';
 
 const Grid = ({ entity, pathname }) => {
@@ -10,7 +9,7 @@ const Grid = ({ entity, pathname }) => {
       <p className={style.headline}>
         <Link className={style.imagelink} to={`${pathname}/${game.slug}`}>
           {game.cover
-            ? <img className={style.thumbnail} alt="char" src={IMG_THUMBNAIL + game.cover} />
+            ? <img className={style.thumbnail} alt="char" src={process.env.IMG_THUMBNAIL + game.cover} />
             : <i className={classes(style.bar, 'fa fa-file-image-o fa-5x')} aria-hidden="true" />
           }
         </Link>

@@ -7,7 +7,6 @@ import { domainHoc } from '../../ducks/domain';
 import QueryStringHOC from '../Base/hocs/QueryStringHOC';
 import * as ownActions from './CharactersTable.duck';
 import { setMode, setCharId, openModal } from './modals/CharFormModal.duck';
-import { IMG_THUMBNAIL } from '../../config';
 
 import CharFormModal from './modals/CharFormModal';
 import SortButton from '../Base/components/SortButton';
@@ -129,7 +128,7 @@ class CharactersTable extends Component {
                 </Ttools.Td>
 
                 <Ttools.Td w={14} center withImage>
-                  {char.image && <img alt={char.name} src={IMG_THUMBNAIL + char.image} />}
+                  {char.image && <img alt={char.name} src={process.env.IMG_THUMBNAIL + char.image} />}
                 </Ttools.Td >
 
                 <Ttools.Td w={18}>

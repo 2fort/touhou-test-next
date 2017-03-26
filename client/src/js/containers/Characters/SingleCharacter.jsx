@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { Link } from 'react-router';
 import Helmet from 'react-helmet';
 
-import { IMG_COMPRESSED } from '../../config';
 import { TopContainer, Breadcrumbs, NavButtons } from './components';
 import Fetch404 from '../Base/components/Fetch404';
 
@@ -73,7 +72,7 @@ class SingleCharacter extends Component {
                       className={style.img}
                       itemProp="image"
                       alt="char"
-                      src={IMG_COMPRESSED + currentCharacter.image}
+                      src={process.env.IMG_COMPRESSED + currentCharacter.image}
                     />
                     : <i className="fa fa-file-image-o fa-5x" aria-hidden="true" />
                   }
