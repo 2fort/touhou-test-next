@@ -29,6 +29,7 @@ install:
   - cd ..
   - cd server
   - yarn
+  - cd ..
 
 before_script:
   - cd client
@@ -36,6 +37,7 @@ before_script:
   - cd ..
   - cd server
   - npm run lint
+  - cd ..
 
 script:
   - cd client
