@@ -75,7 +75,15 @@ module.exports = {
             options: {
               babelrc: false,
               compact: true,
-              plugins: ['lodash'],
+              plugins: [
+                [
+                  'transform-react-remove-prop-types',
+                  {
+                    ignoreFilenames: ['node_modules'],
+                  },
+                ],
+                'lodash',
+              ],
               presets: [
                 [
                   'env', {

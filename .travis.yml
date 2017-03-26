@@ -14,7 +14,7 @@ addons:
 
 script:
   - cd client
-  - npm run lint && yarn && npm run build:server
+  - yarn && npm run lint && npm run build:server
   - cd ..
   - cd server
-  - npm run lint
+  - yarn && npm run lint
