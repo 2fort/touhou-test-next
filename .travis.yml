@@ -18,14 +18,25 @@ addons:
     packages:
     - g++-4.8
 
-before-script:
+before_install:
   - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
   - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
   - sudo apt-get update && sudo apt-get install yarn
 
-script:
+install:
   - cd client
-  - yarn && npm run lint && npm run build:server
+  - yarn
   - cd ..
   - cd server
-  - yarn && npm run lint
+  - yarn
+
+before_script:
+  - cd client
+  - npm run lint
+  - cd ..
+  - cd server
+  - npm run lint
+
+script:
+  - cd client
+  - npm run build:server
