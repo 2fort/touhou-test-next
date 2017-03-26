@@ -5,6 +5,9 @@ node_js:
 env:
   - CXX=g++-4.8
 
+cache:
+  yarn: true
+
 addons:
   apt:
     sources:
@@ -12,9 +15,16 @@ addons:
     packages:
     - g++-4.8
 
-script:
+before-script:
   - cd client
-  - yarn && npm run lint && npm run build:server
+  - yarn
   - cd ..
   - cd server
-  - yarn && npm run lint
+  - yarn
+
+script:
+  - cd client
+  - npm run lint && npm run build:server
+  - cd ..
+  - cd server
+  - npm run lint
