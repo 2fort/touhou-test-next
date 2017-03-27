@@ -37,6 +37,7 @@ cssRule('a', {
 });
 
 cssRule('button', {
+  fontFamily: 'Arial, Helvetica, Tahoma, sans-serif',
   background: 'none',
   border: 0,
   cursor: 'pointer',
@@ -48,4 +49,8 @@ cssRule('button', {
       cursor: 'default',
     },
   },
+});
+
+cssRule('input', {
+  fontFamily: 'Arial, Helvetica, Tahoma, sans-serif',
 });

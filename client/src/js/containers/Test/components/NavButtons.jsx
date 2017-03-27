@@ -1,21 +1,26 @@
 import React, { PropTypes } from 'react';
-import { classes } from 'typestyle';
-import * as style from './NavButtons.style';
+import { classes, style } from 'typestyle';
+import * as styles from './NavButtons.style';
 
 const NavButtons = {
   Prev: ({ steps, activeStep, goPrevStep }) => {
     const prevStep = steps[activeStep - 2];
     const disabled = activeStep === 1;
 
-    const color = (function decideColor() {
+    function decideColor() {
       if (disabled) return '';
-      if (prevStep.givenAnswer === prevStep.rightAnswer) return style.green;
-      return style.red;
-    }());
+      if (prevStep.givenAnswer === prevStep.rightAnswer) return process.colors.green;
+      return process.colors.red;
+    }
 
     return (
-      <div className={style.navContainer}>
-        <button className={classes(style.navItem, color)} type="button" disabled={disabled} onClick={goPrevStep}>
+      <div className={styles.navContainer}>
+        <button
+          className={classes(styles.navItem, style({ color: decideColor() }))}
+          type="button"
+          disabled={disabled}
+          onClick={goPrevStep}
+        >
           &nbsp;&lt;&nbsp;
         </button>
       </div>
@@ -26,16 +31,21 @@ const NavButtons = {
     const nextStep = steps[activeStep];
     const disabled = activeStep === maxSteps || activeStep === passedSteps + 1;
 
-    const color = (function decideColor() {
+    function decideColor() {
       if (disabled) return '';
-      if (!nextStep.givenAnswer) return style.blue;
-      if (nextStep.givenAnswer === nextStep.rightAnswer) return style.green;
-      return style.red;
-    }());
+      if (!nextStep.givenAnswer) return process.colors.blue;
+      if (nextStep.givenAnswer === nextStep.rightAnswer) return process.colors.green;
+      return process.colors.red;
+    }
 
     return (
-      <div className={style.navContainer}>
-        <button className={classes(style.navItem, color)} type="button" disabled={disabled} onClick={goNextStep}>
+      <div className={styles.navContainer}>
+        <button
+          className={classes(styles.navItem, style({ color: decideColor() }))}
+          type="button"
+          disabled={disabled}
+          onClick={goNextStep}
+        >
           &nbsp;&gt;&nbsp;
         </button>
       </div>

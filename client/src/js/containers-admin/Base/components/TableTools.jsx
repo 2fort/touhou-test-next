@@ -17,12 +17,13 @@ const Table = ({ children, className, fixed }) => {
 };
 
 Table.defaultProps = {
+  children: '',
   className: '',
   fixed: false,
 };
 
 Table.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   className: PropTypes.string,
   fixed: PropTypes.bool,
 };
@@ -43,12 +44,13 @@ const Th = ({ children, className, center }) => {
 };
 
 Th.defaultProps = {
+  children: '',
   className: '',
   center: false,
 };
 
 Th.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   className: PropTypes.string,
   center: PropTypes.bool,
 };
@@ -85,6 +87,7 @@ const Td = ({ children, className, w, center, withImage, tooWide, tooShort }) =>
 };
 
 Td.defaultProps = {
+  children: '',
   className: '',
   w: 0,
   center: false,
@@ -94,7 +97,7 @@ Td.defaultProps = {
 };
 
 Td.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   className: PropTypes.string,
   w: PropTypes.number,
   center: PropTypes.bool,

@@ -5,8 +5,18 @@ node_js:
 sudo:
   required
 
+env:
+  - CXX=g++-4.8
+
 cache:
   yarn: true
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
 
 before_install:
   - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
@@ -18,7 +28,7 @@ install:
   - yarn
   - cd ..
   - cd server
-  - yarn add babel-eslint eslint eslint-config-airbnb-base eslint-plugin-import
+  - yarn
   - cd ..
 
 before_script:

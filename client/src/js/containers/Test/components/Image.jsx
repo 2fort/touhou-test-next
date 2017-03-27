@@ -5,10 +5,12 @@ const Image = ({ steps, activeStep }) => {
   const image = steps[activeStep - 1].image;
   return (
     <div className={style.imgContainer}>
-      {image
-        ? <img className={style.img} key={image} alt="character" src={process.env.IMG_COMPRESSED + image} />
-        : <i className="fa fa-file-image-o fa-5x" aria-hidden="true" />
-      }
+      <div className={style.innerContainer}>
+        {image
+          ? <img className={style.img} key={image} alt="character" src={process.env.IMG_COMPRESSED + image} />
+          : <i className="fa fa-file-image-o fa-5x" aria-hidden="true" />
+        }
+      </div>
     </div>
   );
 };

@@ -1,12 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { style } from 'typestyle';
+import * as csstips from 'csstips';
 
-const st = style({
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
+const st = style(csstips.flexRoot, csstips.center, csstips.centerJustified, {
   minHeight: '150px',
 });
 

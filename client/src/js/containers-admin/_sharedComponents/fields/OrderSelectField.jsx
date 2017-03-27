@@ -1,15 +1,9 @@
 import React, { PropTypes } from 'react';
 import { classes, style } from 'typestyle';
+import * as csstips from 'csstips';
 
-const main = style({
-  display: 'flex',
-  flexFlow: 'row nowrap',
-  alignItems: 'center',
-});
-
-const label = style({
-  alignSelf: 'flex-start',
-});
+const main = style(csstips.horizontal, csstips.center);
+const label = style(csstips.selfStart);
 
 const OrderSelectField = ({ input, list, max }) => (
   <div className={classes(main, 'form-group')}>

@@ -1,11 +1,8 @@
 import React, { PropTypes } from 'react';
 import { style } from 'typestyle';
+import * as csstips from 'csstips';
 
-const css = style({
-  display: 'flex',
-  flexDirection: 'row',
-  flexWrap: 'nowrap',
-  justifyContent: 'space-between',
+const css = style(csstips.horizontal, csstips.betweenJustified, {
   padding: '1rem 1rem .5rem',
 });
 

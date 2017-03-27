@@ -1,15 +1,13 @@
 import { style, media, classes } from 'typestyle';
+import * as csstips from 'csstips';
 
 export const menu = style({
   backgroundColor: '#222',
   boxShadow: '0 0 1px 1px rgba(0, 0, 0, .14), 0 0 2px 2px rgba(0, 0, 0, .098), 0 0 5px 1px rgba(0, 0, 0, .084)',
 });
 
-export const collapsible = style({
-  display: 'flex',
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-}, media({ maxWidth: 750 }, { flex: '9 0 100%' }),
+export const collapsible = style(csstips.horizontal, csstips.wrap,
+  media({ maxWidth: 750 }, { ...csstips.vertical, width: '100%' }),
 );
 
 export const collapsibleHidden = classes(
@@ -19,12 +17,10 @@ export const collapsibleHidden = classes(
   ),
 );
 
-export const nav = style({
+export const nav = style(csstips.horizontal, csstips.wrap, {
   margin: '0 auto',
+  padding: '0 8px',
   maxWidth: '80rem',
-  display: 'flex',
-  flexDirection: 'row',
-  flexWrap: 'wrap',
 });
 
 const navLinkElement = {
@@ -43,12 +39,13 @@ export const link = style(navLinkElement, {
   marginLeft: '.5rem',
   textDecoration: 'none',
   borderTop: '2px transparent solid',
+  borderBottom: '2px transparent solid',
   $nest: {
     '&:hover': {
       borderBottom: '2px #077ed9 solid',
     },
   },
-}, media({ maxWidth: 750 }, { flex: '1 0 90%' }));
+});
 
 export const logo = style(navLinkElement, {
   fontSize: '1.1rem',

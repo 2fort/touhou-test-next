@@ -1,16 +1,14 @@
-import { style, media } from 'typestyle';
+import { style } from 'typestyle';
+import * as csstips from 'csstips';
 
-export const imgContainer = style({
+export const imgContainer = style(csstips.flex3, csstips.horizontal, csstips.centerJustified, csstips.center, {
   background: '#fefefe',
-  flex: '1 1 67%',
-  margin: 'auto 0',
-  textAlign: 'center',
+});
+
+export const innerContainer = style(csstips.content, {
+  maxWidth: '100%',
 });
 
 export const img = style({
-  marginBottom: '-4px',
-  maxHeight: '768px',
-  maxWidth: '95%',
-}, media({ maxHeight: 768 }, { maxHeight: '80vmin' }),
-  media({ maxHeight: 415 }, { maxHeight: '75vmin' }),
-);
+  maxWidth: '100%',
+});

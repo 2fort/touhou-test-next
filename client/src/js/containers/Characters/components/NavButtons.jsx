@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import * as style from './NavButtons.style';
+import * as style from '../../Test/components/NavButtons.style';
 
 const NavButton = ({ disabled, to, arrow }) => {
   if (disabled) {

@@ -1,9 +1,9 @@
 import { style, media } from 'typestyle';
+import * as csstips from 'csstips';
 
-export const flexContainer = style({
-  display: 'flex',
-  flexDirection: 'row',
-  flexWrap: 'wrap',
+export const flexContainer = style(csstips.horizontal, csstips.wrap, {
+  '-ms-flex-align': 'baseline',
+  '-webkit-align-items': 'baseline',
   alignItems: 'baseline',
   overflowX: 'auto',
   padding: '0 1rem .5rem',
@@ -14,8 +14,8 @@ export const headline = style({
   margin: '.2rem 0 0',
 });
 
-export const flexItem = style({
-  flex: '1 0 150px',
+export const flexItem = style(csstips.flex, csstips.content, {
+  width: '150px',
   margin: '.5rem 1rem',
   textAlign: 'center',
 }, media({ maxWidth: 580 }, { margin: '.5rem .4rem' }));

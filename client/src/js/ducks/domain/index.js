@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import Immutable from 'seamless-immutable';
 import hoc from './hoc';
 
@@ -20,6 +19,11 @@ const SET_LIMIT = 'SET_LIMIT';
 const SET_QUERY = 'SET_QUERY';
 
 export const domainHoc = hoc;
+
+function lowerFirst(str) {
+  const firstLetter = str.substr(0, 1).toLowerCase();
+  return firstLetter + str.substr(1);
+}
 
 export function generateComponent(component) {
   return {
@@ -76,7 +80,7 @@ export function generateComponent(component) {
     ),
 
     getState: () => (dispatch, getState) =>
-      getState().domain[_.lowerFirst(component)],
+      getState().domain[lowerFirst(component)],
   };
 }
 

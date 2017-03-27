@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin');
 const processEnv = require('./webpack.env');
 
+const NODE_ENV = process.env.NODE_ENV || 'production';
 const BASE_URL = process.env.BASEURL || 'http://touhou-jsx.dev';
 
 function chunksSortModeExp(chunk1, chunk2, orders) {
@@ -147,7 +148,7 @@ module.exports = {
     new InlineManifestWebpackPlugin({
       name: 'webpackManifest',
     }),
-    new webpack.DefinePlugin(processEnv(BASE_URL)),
+    new webpack.DefinePlugin(processEnv(NODE_ENV, BASE_URL)),
     new webpack.optimize.CommonsChunkPlugin({
       names: ['vendorAdmin', 'vendorApp', 'common', 'manifest'],
       minChunks: Infinity,

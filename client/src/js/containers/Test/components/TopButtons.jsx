@@ -4,24 +4,23 @@ import * as style from './TopButtons.style';
 
 const TopButtons = ({ steps, passedSteps, activeStep }) => {
   const topButtons = steps.map((step, i) => {
-    let color = style.gray;
     const active = i + 1 === activeStep;
 
-    if (step.passed && step.rightAnswer === step.givenAnswer) {
-      color = style.green;
-    } else if (step.passed && step.rightAnswer !== step.givenAnswer) {
-      color = style.red;
-    } else if (i === passedSteps) {
-      color = style.blue;
+    function pickColor() {
+      if (step.passed && step.rightAnswer === step.givenAnswer) {
+        return style.green;
+      } else if (step.passed && step.rightAnswer !== step.givenAnswer) {
+        return style.red;
+      } else if (i === passedSteps) {
+        return style.blue;
+      }
+      return style.gray;
     }
 
     return (
       <div
         key={step.step}
-        className={active
-          ? classes(style.elem, color, style.elemActive)
-          : classes(style.elem, color)
-        }
+        className={classes(style.elem, pickColor(), active && style.elemActive)}
       >
         &nbsp;
       </div>

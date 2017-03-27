@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const processEnv = require('./webpack.env');
 
+const NODE_ENV = process.env.NODE_ENV || 'development';
 const BASE_URL = process.env.BASEURL || 'http://localhost';
 
 module.exports = {
@@ -83,7 +84,7 @@ module.exports = {
       filename: 'admin.html',
       inject: 'body',
     }),
-    new webpack.DefinePlugin(processEnv(BASE_URL)),
+    new webpack.DefinePlugin(processEnv(NODE_ENV, BASE_URL)),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
   ],
