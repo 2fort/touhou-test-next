@@ -1,0 +1,15 @@
+engines:
+  eslint:
+    enabled: true
+    checks:
+      import/no-unresolved:
+        enabled: false
+    config:
+      extensions:
+      - .js
+      - .jsx
+
+ratings:
+   paths:
+   - "**.js"
+   - "**.jsx"
