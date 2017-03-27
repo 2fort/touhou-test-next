@@ -12,12 +12,7 @@ import * as CharFormModalActions from '../../Characters/modals/CharFormModal.duc
 
 import GameFormModal from '../modals/GameFormModal';
 import CharFormModal from '../../Characters/modals/CharFormModal';
-import SortButton from '../../Base/components/SortButton';
-import Pagination from '../../Base/components/Pagination';
-import LimitSelect from '../../Base/components/LimitSelect';
-import EntitiesCounter from '../../Base/components/EntitiesCounter';
-import FilterPanel from '../../Base/components/FilterPanel';
-import Ttools from '../../Base/components/TableTools';
+import { SortButton, Pagination, LimitSelect, EntitiesCounter, FilterPanel, SwapOrder, Ttools } from '../../Base/components';
 
 class GameCharactersTable extends Component {
   componentDidMount() {
@@ -156,23 +151,7 @@ class GameCharactersTable extends Component {
                 </Ttools.Td>
 
                 <Ttools.Td w={12} center>
-                  <button
-                    type="button"
-                    className="btn btn-link"
-                    onClick={this.swapOrderBtnHandler(char.id, char.link.order - 1)}
-                    disabled={char.link.order === 1}
-                  >
-                    <i className="fa fa-sort-asc" aria-hidden="true" />
-                  </button>
-                  {char.link.order}
-                  <button
-                    type="button"
-                    className="btn btn-link"
-                    onClick={this.swapOrderBtnHandler(char.id, char.link.order + 1)}
-                    disabled={char.link.order === total}
-                  >
-                    <i className="fa fa-sort-desc" aria-hidden="true" />
-                  </button>
+                  <SwapOrder id={char.id} order={char.link.order} total={total} orderFunc={this.swapOrderBtnHandler} />
                 </Ttools.Td>
 
                 <Ttools.Td w={14} center withImage>

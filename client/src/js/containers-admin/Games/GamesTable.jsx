@@ -9,12 +9,7 @@ import * as ownActions from './GamesTable.duck';
 import { setMode, setGameId, openModal } from './modals/GameFormModal.duck';
 
 import GameFormModal from './modals/GameFormModal';
-import SortButton from '../Base/components/SortButton';
-import Pagination from '../Base/components/Pagination';
-import LimitSelect from '../Base/components/LimitSelect';
-import EntitiesCounter from '../Base/components/EntitiesCounter';
-import FilterPanel from '../Base/components/FilterPanel';
-import Ttools from '../Base/components/TableTools';
+import { SortButton, Pagination, LimitSelect, EntitiesCounter, FilterPanel, SwapOrder, Ttools } from '../Base/components';
 
 class GamesTable extends Component {
   componentDidMount() {
@@ -136,23 +131,7 @@ class GamesTable extends Component {
                 </Ttools.Td>
 
                 <Ttools.Td w={10} center>
-                  <button
-                    type="button"
-                    className="btn btn-link"
-                    onClick={this.swapOrderBtnHandler(game.id, game.order - 1)}
-                    disabled={game.order === 1}
-                  >
-                    <i className="fa fa-sort-asc" aria-hidden="true" />
-                  </button>
-                  {game.order}
-                  <button
-                    type="button"
-                    className="btn btn-link"
-                    onClick={this.swapOrderBtnHandler(game.id, game.order + 1)}
-                    disabled={game.order === total}
-                  >
-                    <i className="fa fa-sort-desc" aria-hidden="true" />
-                  </button>
+                  <SwapOrder id={game.id} order={game.order} total={total} orderFunc={this.swapOrderBtnHandler} />
                 </Ttools.Td>
 
                 <Ttools.Td w={10} center>

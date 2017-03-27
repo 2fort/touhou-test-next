@@ -9,12 +9,7 @@ import * as ownActions from './CharactersTable.duck';
 import { setMode, setCharId, openModal } from './modals/CharFormModal.duck';
 
 import CharFormModal from './modals/CharFormModal';
-import SortButton from '../Base/components/SortButton';
-import Pagination from '../Base/components/Pagination';
-import LimitSelect from '../Base/components/LimitSelect';
-import EntitiesCounter from '../Base/components/EntitiesCounter';
-import FilterPanel from '../Base/components/FilterPanel';
-import Ttools from '../Base/components/TableTools';
+import { SortButton, Pagination, LimitSelect, EntitiesCounter, FilterPanel, Ttools } from '../Base/components/';
 
 class CharactersTable extends Component {
   componentDidMount() {
