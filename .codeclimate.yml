@@ -4,6 +4,8 @@ engines:
     checks:
       import/no-unresolved:
         enabled: false
+      import/extensions:
+        enabled: false
     config:
       extensions:
       - .js
