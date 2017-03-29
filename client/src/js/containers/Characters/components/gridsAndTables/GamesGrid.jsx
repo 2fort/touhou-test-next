@@ -6,24 +6,29 @@ import * as style from './style';
 const Grid = ({ entity, pathname }) => {
   const data = entity.map(game => (
     <div key={game.title} className={style.flexItem}>
-      <p className={style.headline}>
+      <div>
         <Link className={style.imagelink} to={`${pathname}/${game.slug}`}>
           {game.cover
-            ? <img className={style.thumbnail} alt="char" src={process.env.IMG_THUMBNAIL + game.cover} />
+            ? <img className={style.thumbnail} alt={game.title} src={process.env.IMG_THUMBNAIL + game.cover} />
             : <i className={classes(style.bar, 'fa fa-file-image-o fa-5x')} aria-hidden="true" />
           }
         </Link>
-      </p>
-      <p className={style.headline}>
+      </div>
+      <div>
         <Link to={`${pathname}/${game.slug}`}>{game.title}</Link>
-      </p>
-      <p className={style.headline}>{game.year}</p>
+      </div>
+      <span>{game.year}</span>
     </div>
+  ));
+
+  const layoutFix = new Array(10).fill(0).map((elem, i) => (
+    <div key={`additional ${i + 1}`} className={style.flexItem} />
   ));
 
   return (
     <div className={style.flexContainer}>
       {data}
+      {layoutFix}
     </div>
   );
 };

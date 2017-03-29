@@ -11,8 +11,6 @@ const thumb = {
 
 export const container = style({
   height: '30px',
-  margin: '1.25rem auto 0',
-  maxWidth: '80rem',
 });
 
 export const inside = style({

@@ -20,7 +20,6 @@ export const gray = style({
 
 export const topbuttons = style(csstips.horizontal, {
   margin: '-1rem auto 1rem',
-  maxWidth: '80rem',
 });
 
 export const elem = style(csstips.flex, {

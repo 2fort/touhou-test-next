@@ -1,7 +1,7 @@
 import { style, media } from 'typestyle';
 import * as csstips from 'csstips';
 
-export const flexContainer = style(csstips.horizontal, csstips.wrap, {
+export const flexContainer = style(csstips.horizontal, csstips.wrap, csstips.aroundJustified, {
   '-ms-flex-align': 'baseline',
   '-webkit-align-items': 'baseline',
   alignItems: 'baseline',
@@ -9,16 +9,23 @@ export const flexContainer = style(csstips.horizontal, csstips.wrap, {
   padding: '0 1rem .5rem',
 }, media({ maxWidth: 580 }, { padding: '0 .5rem .5rem' }));
 
-export const headline = style({
-  padding: 0,
-  margin: '.2rem 0 0',
-});
-
-export const flexItem = style(csstips.flex, csstips.content, {
+export const flexItem = style(csstips.content, csstips.vertical, csstips.verticallySpaced('.2rem'), {
   width: '150px',
-  margin: '.5rem 1rem',
+  margin: '.65rem .85rem',
   textAlign: 'center',
-}, media({ maxWidth: 580 }, { margin: '.5rem .4rem' }));
+  '&:empty': {
+    height: 0,
+    margin: '0 .85rem',
+  },
+},
+  media({ maxWidth: 580 }, {
+    margin: '.5rem .4rem',
+    '&:empty': {
+      height: 0,
+      margin: '0 .4rem',
+    },
+  },
+));
 
 export const thumbnail = style({
   maxWidth: '150px',

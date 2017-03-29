@@ -4,7 +4,6 @@ import { style } from 'typestyle';
 const st = style({
   fontSize: '.9rem',
   margin: '1rem auto',
-  maxWidth: '80rem',
   textAlign: 'center',
 });
 
