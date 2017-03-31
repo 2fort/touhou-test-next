@@ -18,7 +18,7 @@ this.dealWithFile = async function dealWithFile(file) {
       // generate compressed image
       utils.resizeWithSharp(file.path, file.filename, null, 768, process.env.IMG_COMPRESSED),
       // generate thumbnail image
-      utils.resizeWithSharp(file.path, file.filename, 150, 150, process.env.IMG_THUMBNAIL),
+      utils.resizeWithSharp(file.path, file.filename, 300, 300, process.env.IMG_THUMBNAIL),
     ]);
     // move uploaded file to IMG_ORIG folder
     await utils.moveFile(file.path, process.env.IMG_ORIG + file.filename);

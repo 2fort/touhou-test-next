@@ -13,9 +13,18 @@ export const navItem = style(csstips.horizontal, csstips.center, {
   padding: '0 5px',
   $nest: {
     '&:hover': {
-      backgroundColor: '#f0efef',
       textDecoration: 'none',
-      border: 0,
+      borderBottom: 0,
+    },
+    '@media (hover: hover)': {
+      '&:hover': {
+        backgroundColor: '#f0efef',
+      },
+    },
+    '@media (-moz-touch-enabled: 0)': {
+      '&:hover': {
+        backgroundColor: '#f0efef',
+      },
     },
     '&:disabled': {
       backgroundColor: white.toHexString(),

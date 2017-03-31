@@ -66,5 +66,7 @@ export const imgButton = style({
 
 export const transparentImg = style({
   backgroundColor: '#fff',
+  maxHeight: '150px',
+  maxWidth: '150px',
 });
 
