@@ -5,7 +5,7 @@ const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin');
 const processEnv = require('./webpack.env');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
-const BASE_URL = process.env.BASEURL || 'http://touhou-jsx.dev';
+const BASE_URL = process.env.BASE_URL || 'http://touhou-jsx.dev';
 
 function chunksSortModeExp(chunk1, chunk2, orders) {
   const order1 = orders.indexOf(chunk1.names[0]);

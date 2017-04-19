@@ -2,15 +2,23 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import Hammer from 'hammerjs';
 
+delete Hammer.defaults.cssProps.userSelect;
+
 class Core extends Component {
   componentDidMount() {
+    const isDesktop = window.matchMedia('(hover: hover)') || window.matchMedia('(-moz-touch-enabled: 0)');
+
+    if (isDesktop.matches) return;
+
     this.mc = new Hammer.Manager(findDOMNode(this));
     this.mc.add(new Hammer.Swipe({ direction: Hammer.DIRECTION_HORIZONTAL }));
     this.mc.on('swipe', this.handlePan);
   }
 
   componentWillUnmount() {
-    this.mc.off('swipe', this.handlePan);
+    if (this.mc) {
+      this.mc.off('swipe', this.handlePan);
+    }
   }
 
   handlePan = (e) => {
