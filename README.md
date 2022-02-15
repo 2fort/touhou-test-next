@@ -7,27 +7,6 @@ Project about Touhou characters.
 ### Technology
 React/redux on client side, node.js/Express as API-server and MongoDB as a data store.
 
-### Live demo
-[http://touhou.comiket.ru](http://touhou.comiket.ru)
-
-Read-only access to /admin page:
-<table>
-  <thead>
-    <tr>
-      <th>url</th>
-      <th>Username</th>
-      <th>Password</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>http://touhou.comiket.ru/login</td>
-      <td>demo</td>
-      <td>test</td>
-    </tr>
-  </tbody>
-</table>
-
 ### Motivation
 I created this app to learn and understand better React, redux and REST-api.
 
