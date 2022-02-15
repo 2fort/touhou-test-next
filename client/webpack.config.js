@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const processEnv = require('./webpack.env');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
@@ -87,6 +88,9 @@ module.exports = {
     new webpack.DefinePlugin(processEnv(NODE_ENV, BASE_URL)),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
+    new CopyWebpackPlugin([
+      { from: 'public/**/*' },
+    ]),
   ],
 
   // devtool: 'cheap-module-eval-source-map',
@@ -106,21 +110,5 @@ module.exports = {
     },
     stats: 'minimal',
     port: 8081,
-    proxy: {
-      '/images': {
-        target: {
-          host: 'localhost',
-          protocol: 'http:',
-          port: 8082,
-        },
-      },
-      '/api': {
-        target: {
-          host: 'localhost',
-          protocol: 'http:',
-          port: 8082,
-        },
-      },
-    },
   },
 };

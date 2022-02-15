@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin');
 const processEnv = require('./webpack.env');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const BASE_URL = process.env.BASE_URL || 'http://touhou-jsx.dev';
@@ -34,6 +35,7 @@ module.exports = {
       'csstips',
       'csx',
       'typestyle',
+      'msw',
     ],
     vendorApp: [
       'hammerjs', 'react-helmet', 'react-modal',
@@ -153,6 +155,9 @@ module.exports = {
       names: ['vendorAdmin', 'vendorApp', 'common', 'manifest'],
       minChunks: Infinity,
     }),
+    new CopyWebpackPlugin([
+      { from: 'public/**/*' },
+    ]),
     new webpack.NamedModulesPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),

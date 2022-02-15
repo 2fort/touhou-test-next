@@ -6,10 +6,9 @@
   "scripts": {
     "start": "webpack-dev-server",
     "lint": "eslint \"./src/js/**/*\"",
-    "clean": "cd build && ls | xargs rm -rf && cd ..",
-    "build": "npm run clean && NODE_ENV=production BASE_URL=http://touhou-jsx.dev webpack -p --config webpack.prod.config.js",
+    "build": "rimraf build && cross-env NODE_ENV=production BASE_URL=http://touhou-jsx.dev webpack -p --config webpack.prod.config.js",
     "build:stats": "npm run build --json > stats.json",
-    "build:server": "NODE_ENV=production BASE_URL=http://touhou.comiket.ru webpack -p --config webpack.prod.config.js"
+    "build:server": "cross-env NODE_ENV=production BASE_URL=https://touhou-test.surge.sh webpack -p --config webpack.prod.config.js"
   },
   "author": "Alexander Kirsanov",
   "license": "MIT",
@@ -28,6 +27,7 @@
     "babel-preset-react": "^6.23.0",
     "babel-preset-stage-2": "^6.22.0",
     "babel-runtime": "^6.23.0",
+    "copy-webpack-plugin": "4.2.3",
     "del": "^2.2.2",
     "eslint": "^3.18.0",
     "eslint-config-airbnb": "^14.1.0",
@@ -44,11 +44,13 @@
     "webpack-dev-server": "^2.4.2"
   },
   "dependencies": {
+    "cross-env": "6",
     "csstips": "^0.2.0",
     "csx": "^8.2.1",
     "flat": "^2.0.1",
     "hammerjs": "^2.0.8",
     "lodash": "^4.17.4",
+    "msw": "^0.36.8",
     "normalizr": "^3.2.2",
     "purecss": "^0.6.2",
     "qs": "^6.4.0",
@@ -65,8 +67,12 @@
     "redux": "^3.6.0",
     "redux-form": "6.5.0",
     "redux-thunk": "^2.2.0",
+    "rimraf": "^3.0.2",
     "seamless-immutable": "^7.1.1",
     "time-stamp": "^1.0.1",
     "typestyle": "^1.2.1"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }
